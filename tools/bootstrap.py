@@ -62,6 +62,7 @@ def main() -> int:
     ap.add_argument("--dir", type=Path, default=ROOT / "build" / "upstream")
     ap.add_argument("--clean", action="store_true", help="reset the tree to the pinned commit first")
     ap.add_argument("--spanish-rom", type=Path, help="stage the Spanish data from a clean BPES ROM")
+    ap.add_argument("--ptbr-rom", type=Path, help="stage the PT-BR data from a clean PT-BR ROM")
     ap.add_argument("--make", action="store_true", help="build the tools and the 3DSX afterwards")
     ap.add_argument("-j", "--jobs", type=int, default=4)
     ap.add_argument("--python", default=sys.executable, help="Python the build calls (PYTHON=)")
@@ -80,12 +81,12 @@ def main() -> int:
         head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=tree, capture_output=True,
                               text=True).stdout.strip()
     stale = not marker.exists() or marker.read_text().strip() != digest
-    if args.clean or args.spanish_rom or previous_locale or head != commit or stale:
+    if args.clean or args.spanish_rom or args.ptbr_rom or previous_locale or head != commit or stale:
         if head != commit:
             fetch(tree, repo, commit)
         run(["git", "reset", "-q", "--hard", commit], cwd=tree)
         (tree / ".emerald3ds-locale").unlink(missing_ok=True)
-        if args.spanish_rom or previous_locale:
+        if args.spanish_rom or args.ptbr_rom or previous_locale:
             # Objects and staged data of the other language must not be
             # reused: rebuild every native object when the language changes.
             shutil.rmtree(tree / "3ds_port/build", ignore_errors=True)
@@ -129,12 +130,15 @@ def main() -> int:
     shutil.copy2(ROOT / "upstream.lock", tree / "upstream.lock")
     print("bootstrap: tree ready at %s" % tree)
 
-    if args.make or args.spanish_rom:
+    if args.make or args.spanish_rom or args.ptbr_rom:
         run(["make", "tools", "-j%d" % args.jobs], cwd=tree)
         run(["make", "generated", "-j%d" % args.jobs], cwd=tree)
     if args.spanish_rom:
         run([args.python, ROOT / "tools/localize_spanish.py", "--tree", tree,
              "--rom", args.spanish_rom.resolve()])
+    if args.ptbr_rom:
+        run([args.python, ROOT / "tools/localize_ptbr.py", "--tree", tree,
+             "--rom", args.ptbr_rom.resolve()])
     if args.make:
         run(["make", "-C", "3ds_port", "-j%d" % args.jobs, "PYTHON=%s" % args.python], cwd=tree)
     return 0

@@ -167,6 +167,7 @@ in the releases.
 python tools/bootstrap.py        # pinned upstream + patches + port -> build/upstream
 python tools/bootstrap.py --make # also builds the 3DSX there
 python tools/bootstrap.py --make --spanish-rom esmeralda.gba  # Spanish build
+python tools/bootstrap.py --make --ptbr-rom emerald_ptbr.gba  # Portuguese (PT-BR) build
 ```
 
 The Spanish build takes its texts and graphics from your own clean Spanish

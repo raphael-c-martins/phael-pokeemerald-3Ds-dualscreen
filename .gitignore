@@ -41,3 +41,11 @@ __pycache__/
 .agents/
 session-*.md
 .public-denylist
+
+# Temporarios e insumos locais
+\# TEMPORARIO/
+TEMPORARIO/
+/logs/
+*.log
+.venv/
+dist_3ds/
