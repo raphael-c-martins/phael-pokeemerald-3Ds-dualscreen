@@ -1197,6 +1197,8 @@ static int StrWidth(const Font *font, const u8 *str)
             width = 0;
             continue;
         }
+        if (g >= 272)
+            continue;
         width += font->widths[g];
     }
     return width > best ? width : best;
@@ -1204,6 +1206,8 @@ static int StrWidth(const Font *font, const u8 *str)
 
 static int DrawGlyph(const Font *font, u16 glyph, int x, int y, u16 fg, u16 shadow)
 {
+    if (glyph >= 272)
+        return 0;
     const u16 *base = font->glyphs + glyph * 0x20;
     int width = font->widths[glyph];
     int sx = x + sOX;
@@ -1256,6 +1260,8 @@ static int DrawStr(const Font *font, const u8 *str, int x, int y, u16 fg, u16 sh
             y += font->lineHeight;
             continue;
         }
+        if (g >= 272)
+            continue;
         x += DrawGlyph(font, g, x, y, fg, shadow);
     }
     return x;
@@ -1274,6 +1280,8 @@ static void DrawStrCentered(const Font *font, const u8 *str, int cx, int y, u16 
 /* Whether a glyph paints (glyph or shadow) the pixel at column px of row. */
 static bool8 GlyphInk(const Font *font, u16 glyph, int px, int row)
 {
+    if (glyph >= 272)
+        return FALSE;
     u16 bits = font->glyphs[glyph * 0x20 + (row >= 8 ? 0x10 : 0) + (px / 8) * 8 + (row & 7)];
     u8 byte = (px & 7) < 4 ? bits >> 8 : bits & 0xFF;
     u8 v = (byte >> (6 - 2 * (px & 3))) & 3;
@@ -1291,6 +1299,8 @@ static void InkColumns(const Font *font, const u8 *str, int *x0, int *x1)
     *x1 = 0;
     for (u16 g; (g = NextGlyph(&str)) != 0xFFFF && g != 0xFFFE;)
     {
+        if (g >= 272)
+            continue;
         int width = font->widths[g] > 16 ? 16 : font->widths[g];
 
         for (int px = 0; px < width; ++px)
@@ -1649,6 +1659,8 @@ static void StepSmoothJob(void)
 
             if (g == 0xFFFF || g == 0xFFFE)
                 break;
+            if (g >= 272)
+                continue;
             if (n == SJ_GLYPHS_A_STEP)
             {
                 /* The rest next step, from this glyph on. */
@@ -1851,6 +1863,8 @@ static void DrawFlatStr(const Font *font, const u8 *str, int x, int y, int k, Rg
 
         for (u16 g; (g = NextGlyph(&s)) != 0xFFFF && g != 0xFFFE;)
         {
+            if (g >= 272)
+                continue;
             const u16 *base = font->glyphs + g * 0x20;
             int width = font->widths[g] > 16 ? 16 : font->widths[g];
 
