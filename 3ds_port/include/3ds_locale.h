@@ -3,10 +3,7 @@
 
 #include "constants/global.h"
 
-#if GAME_LANGUAGE == LANGUAGE_SPANISH
-#define CTR_TEXT(english, spanish) (spanish)
-#else
-#define CTR_TEXT(english, spanish) (english)
-#endif
+/* No port 3DS PT-BR, usamos as variantes localizadas para os textos da engine */
+#define CTR_TEXT(english, localized) (localized)
 
 #endif

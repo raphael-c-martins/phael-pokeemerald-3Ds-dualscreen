@@ -84,8 +84,33 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 
 ---
 
-## 🎯 Próximo Passo: Milestone v3 (Branch `tentativa3`)
-1. **Tradução da UI da Engine 3DS (`3ds_bottom_ui.c`):** Traduzir termos do touch (Mochila, Trainer Card, Telas de Salvar "Deseja salvar o jogo?", "Sim/Não", Opções do 3DS).
-2. **Expansão de Scripts de Mapas:** Traduzir os eventos de Littleroot Town (Casa do jogador 1F/2F, Casa do rival, Laboratório do Birch e Início da Rota 101).
-3. **Ambiente de Demonstração no PC:** Configurar script de execução/exibição emulada no computador para visualização direta do progresso.
+## 🚀 09/10/2026 - Milestone v3: Localização de Telas de Salvamento, Interface Touch e Eventos Iniciais
+- **Branch Ativa:** `tentativa3`
+- **Binário Gerado:** `dist_3ds/emerald3ds_v3.3dsx` (33.542.204 bytes) e `dist_3ds/emerald3ds.3dsx`.
+- **Status do Build:** Sucesso absoluto (código de saída 0, 6.423/6.423 assets verificados e validados, ABI estável).
+
+### 🛠️ Modificações Realizadas na v3:
+1. **Engine 3DS e Interface Touch (`3ds_locale.h` e `3ds_bottom_ui.c`):**
+   - Ativação da macro `CTR_TEXT` para resolução nativa de strings localizadas nos botões touch.
+   - Tradução dos títulos das abas do menu de configurações inferior: `SETTINGS`, `ENHANCEMENTS`, `CHEATS` -> **`OPÇÕES`**, **`MELHORIAS`**, **`TRAPAÇAS`**.
+2. **Strings de Sistema e Menus (`tools/localize_ptbr.py`):**
+   - Tradução dos botões de decisão: `SIM` / `NÃO`.
+   - Categorias da mochila touch: `ITENS`, `POKéBOLAS`, `TMs e HMs`, `FRUTAS`, `ITENS-CHAVE`, `FECHAR BOLSA`.
+   - Identificadores do Trainer Card: `NOME: `, `DINHEIRO`, `TEMPO`, `Nº ID`, `INSÍGNIAS`.
+3. **Telas e Diálogos de Salvamento (`data/text/save.inc`):**
+   - Diálogos completos de gravação: *"Deseja salvar o jogo?"*, *"Já existe um arquivo salvo. Sobrescrever o arquivo?"*, *"SALVANDO… NÃO DESLIGUE O CONSOLE."* e *"{PLAYER} salvou o jogo."*.
+4. **Diálogos de História e Mapas Iniciais:**
+   - **Littleroot Town Externa:** Placas da cidade, do laboratório e da casa do jogador.
+   - **Casa do Jogador (2F e 1F):** Diálogos do quarto (relógio parado, GameCube, caderno de notas) e do andar térreo (diálogos da mãe ao entrar, aviso do relógio, notícia de Petalburg Gym na TV e indicação do Prof. Birch).
+   - **Casa do Rival (May):** Diálogos com a mãe da May e primeira conversa com a rival no quarto.
+   - **Laboratório do Prof. Birch:** Diálogo do cientista explicando trabalho de campo e ausência do Birch.
+   - **Rota 101:** Evento de perseguição do Zigzagoon, grito de socorro do Birch (*"S-socorro!"*, *"Na minha BOLSA! Tem uma POKéBOLA!"*), resgate e diálogo de agradecimento ao entregar o Pokémon inicial.
+
+---
+
+## 🎯 Próximo Passo: Validação da Milestone v3 no Console Físico
+1. Copiar `dist_3ds/emerald3ds_v3.3dsx` (ou renomeado para `emerald3ds.3dsx`) para o cartão SD do Nintendo 3DS na pasta `/3ds/emerald3ds/`.
+2. Abrir o Homebrew Launcher no 3DS e rodar o jogo.
+3. Testar a navegação na casa, fala com a mãe, menu de salvar, interação com a rival e início do salvamento do Birch na Rota 101.
+
 

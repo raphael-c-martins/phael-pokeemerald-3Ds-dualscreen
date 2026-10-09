@@ -4251,7 +4251,7 @@ static void DrawExtraCell(const ViewState *s, int row, const CtrExtra *extra)
 /* The tabs: SETTINGS (the options) and each page that has extras. */
 static void DrawOptionTabs(const ViewState *s)
 {
-    static const char *const names[CTR_EXTRAS_PAGES] = {"SETTINGS", "ENHANCEMENTS", "CHEATS"};
+    static const char *const names[CTR_EXTRAS_PAGES] = {"OPÇÕES", "MELHORIAS", "TRAPAÇAS"};
     u8 pages[CTR_EXTRAS_PAGES], count = 0;
     int capTop, capBottom, cap;
 
