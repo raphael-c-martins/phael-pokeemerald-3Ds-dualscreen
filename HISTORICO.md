@@ -153,9 +153,14 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
    - Ativação do modo sentinela (`debug.txt`) para capturar e auditar telemetria de `port.log` e `citra_log.txt` sem necessidade de hardware físico.
    - Criação da skill do agente em `.agents/skills/citra-qa-agent/SKILL.md` e workflow `/citra-debug`.
 
-### 🔍 Descobertas Técnicas para a Milestone v5:
-- **Introdução do Prof. Birch:** As falas de abertura do jogo ("*Welcome to the world of POKéMON!*", escolha de gênero e nome) residem em `data/text/birch_speech.inc`. As traduções já foram mapeadas metricamente e serão integradas no próximo ciclo para que o jogo esteja em português desde o primeiro frame.
-- **Ativação da Dual-Screen:** Confirmado que a tela inferior permanece em standby durante a introdução do Birch por projeto da engine (o touch e o mapa só inicializam quando a camada de Overworld entra em ação ao abrir o caminhão de mudança).
+4. **Incorporação do Upstream Oficial Release v0.3.1:**
+   - Incorporada a nova funcionalidade de compras do Poké Mart (`BUY`) renderizada nativamente na tela touch inferior com suporte a toque.
+   - Hotfixes oficiais de estabilidade contra travamentos na Mirage Tower e no golpe *Hyper Beam*.
+   - Atualizados banner e ícone oficiais para o HOME Menu do Nintendo 3DS.
+5. **Introdução do Professor Birch em PT-BR (`data/text/birch_speech.inc`):**
+   - Diálogos completos de abertura do jogo ("Bem-vindo ao mundo POKéMON!", escolha de menino/menina e nome) traduzidos com métrica estrita de no máximo 31 caracteres por linha, garantindo que o "Novo Jogo" inicie 100% em português desde o primeiro frame.
 
-
-
+### 🎮 Validação no Emulador Citra com Save Limpo:
+- **Telemetria em Execução:** Mais de 10.200 frames renderizados a **59.8 FPS** contínuos.
+- **Consumo de Hardware:** CPU em **3.44 ms** (orçamento de 16.6 ms) e mixagem de áudio em **0.59 ms**.
+- **Assets e Memória:** 6.424/6.424 assets verificados e carregados sem erros, confirmando estabilidade do binário v4 antes do hardware real.

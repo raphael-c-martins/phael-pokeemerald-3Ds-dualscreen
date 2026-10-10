@@ -1856,6 +1856,128 @@ def apply_petalburg_strings(tree: Path) -> None:
     check_and_apply(p_pm, rep_pm, "data/maps/PetalburgCity_Mart/scripts.inc")
 
 
+def apply_birch_speech_strings(tree: Path) -> None:
+    p = tree / "data/text/birch_speech.inc"
+    replacements = {
+        ('gText_Birch_Welcome::\n'
+         '\t.string "Hi! Sorry to keep you waiting!\\p"\n'
+         '\t.string "Welcome to the world of POKéMON!\\p"\n'
+         '\t.string "My name is BIRCH.\\p"\n'
+         '\t.string "But everyone calls me the POKéMON\\n"\n'
+         '\t.string "PROFESSOR.\\p"\n'
+         '\t.string "$"'):
+        ('gText_Birch_Welcome::\n'
+         '\t.string "Olá! Desculpe a demora!\\p"\n'
+         '\t.string "Bem-vindo ao mundo POKéMON!\\p"\n'
+         '\t.string "Meu nome é BIRCH.\\p"\n'
+         '\t.string "Mas todos me chamam de\\n"\n'
+         '\t.string "PROFESSOR POKéMON.\\p"\n'
+         '\t.string "$"'),
+
+        ('gText_Birch_Pokemon::\n'
+         '\t.string "This is what we call a “POKéMON.”\\p"\n'
+         '\t.string "\\n"\n'
+         '\t.string "$"'):
+        ('gText_Birch_Pokemon::\n'
+         '\t.string "Isto é o que chamamos\\n"\n'
+         '\t.string "de “POKéMON.”\\p"\n'
+         '\t.string "\\n"\n'
+         '\t.string "$"'),
+
+        ('gText_Birch_MainSpeech::\n'
+         '\t.string "This world is widely inhabited by\\n"\n'
+         '\t.string "creatures known as POKéMON.\\p"\n'
+         '\t.string "We humans live alongside POKéMON,\\n"\n'
+         '\t.string "at times as friendly playmates, and\\l"\n'
+         '\t.string "at times as cooperative workmates.\\p"\n'
+         '\t.string "And sometimes, we band together\\n"\n'
+         '\t.string "and battle others like us.\\p"\n'
+         '\t.string "But despite our closeness, we don\'t\\n"\n'
+         '\t.string "know everything about POKéMON.\\p"\n'
+         '\t.string "In fact, there are many, many\\n"\n'
+         '\t.string "secrets surrounding POKéMON.\\p"\n'
+         '\t.string "To unravel POKéMON mysteries,\\n"\n'
+         '\t.string "I\'ve been undertaking research.\\l"\n'
+         '\t.string "That\'s what I do.\\p"\n'
+         '\t.string "$"'):
+        ('gText_Birch_MainSpeech::\n'
+         '\t.string "Este mundo é habitado por\\n"\n'
+         '\t.string "criaturas chamadas POKéMON.\\p"\n'
+         '\t.string "Nós convivemos com os POKéMON,\\n"\n'
+         '\t.string "às vezes como bons amigos,\\l"\n'
+         '\t.string "e às vezes trabalhando juntos.\\p"\n'
+         '\t.string "E em certos momentos, nós\\n"\n'
+         '\t.string "batalhamos entre nós.\\p"\n'
+         '\t.string "Mas apesar de tão próximos,\\n"\n'
+         '\t.string "não sabemos tudo sobre eles.\\p"\n'
+         '\t.string "Na verdade, ainda existem muitos\\n"\n'
+         '\t.string "mistérios sobre os POKéMON.\\p"\n'
+         '\t.string "Para desvendar esses mistérios,\\n"\n'
+         '\t.string "eu faço pesquisas de campo.\\l"\n'
+         '\t.string "Essa é a minha vida.\\p"\n'
+         '\t.string "$"'),
+
+        ('gText_Birch_AndYouAre::\n'
+         '\t.string "And you are?$"'):
+        ('gText_Birch_AndYouAre::\n'
+         '\t.string "E quem é você?$"'),
+
+        ('gText_Birch_BoyOrGirl::\n'
+         '\t.string "Are you a boy?\\n"\n'
+         '\t.string "Or are you a girl?$"'):
+        ('gText_Birch_BoyOrGirl::\n'
+         '\t.string "Você é um menino?\\n"\n'
+         '\t.string "Ou é uma menina?$"'),
+
+        ('gText_Birch_WhatsYourName::\n'
+         '\t.string "All right.\\n"\n'
+         '\t.string "What\'s your name?$"'):
+        ('gText_Birch_WhatsYourName::\n'
+         '\t.string "Muito bem.\\n"\n'
+         '\t.string "Qual é o seu nome?$"'),
+
+        ('gText_Birch_SoItsPlayer::\n'
+         '\t.string "So it\'s {PLAYER}{KUN}?$"'):
+        ('gText_Birch_SoItsPlayer::\n'
+         '\t.string "Então é {PLAYER}{KUN}?$"'),
+
+        ('gText_Birch_YourePlayer::\n'
+         '\t.string "Ah, okay!\\p"\n'
+         '\t.string "You\'re {PLAYER}{KUN} who\'s moving to my\\n"\n'
+         '\t.string "hometown of LITTLEROOT.\\l"\n'
+         '\t.string "I get it now!\\p"\n'
+         '\t.string "$"'):
+        ('gText_Birch_YourePlayer::\n'
+         '\t.string "Ah, sim!\\p"\n'
+         '\t.string "Você é {PLAYER}{KUN}, que vai morar\\n"\n'
+         '\t.string "na minha cidade, VILA RAIZ.\\l"\n'
+         '\t.string "Agora tudo faz sentido!\\p"\n'
+         '\t.string "$"'),
+
+        ('gText_Birch_AreYouReady::\n'
+         '\t.string "All right, are you ready?\\p"\n'
+         '\t.string "Your very own adventure is about\\n"\n'
+         '\t.string "to unfold.\\p"\n'
+         '\t.string "Take courage, and leap into the\\n"\n'
+         '\t.string "world of POKéMON where dreams,\\l"\n'
+         '\t.string "adventure, and friendships await!\\p"\n'
+         '\t.string "Well, I\'ll be expecting you later.\\n"\n'
+         '\t.string "Come see me in my POKéMON LAB.\\p"\n'
+         '\t.string "$"'):
+        ('gText_Birch_AreYouReady::\n'
+         '\t.string "Muito bem, está pronto?\\p"\n'
+         '\t.string "Sua grande jornada está\\n"\n'
+         '\t.string "prestes a começar.\\p"\n'
+         '\t.string "Tenha coragem e entre no mundo\\n"\n'
+         '\t.string "dos POKéMON, onde sonhos e\\l"\n'
+         '\t.string "grandes amizades o aguardam!\\p"\n'
+         '\t.string "Estarei esperando por você.\\n"\n'
+         '\t.string "Venha ao meu LABORATÓRIO.\\p"\n'
+         '\t.string "$"'),
+    }
+    check_and_apply(p, replacements, "data/text/birch_speech.inc (Introdução Birch)")
+
+
 def stage(tree: Path, rom_path: Path) -> None:
     manifest_path = ROOT / "tools/locales/ptbr.json.gz"
     if not manifest_path.exists():
@@ -1912,6 +2034,7 @@ def stage(tree: Path, rom_path: Path) -> None:
     ensure_charmap(tree)
     apply_system_strings(tree)
     apply_save_strings(tree)
+    apply_birch_speech_strings(tree)
     apply_nurse_and_mart_strings(tree)
     apply_battle_strings(tree)
     apply_trainers_strings(tree)

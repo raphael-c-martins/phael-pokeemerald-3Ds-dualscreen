@@ -136,6 +136,12 @@ def main() -> int:
     p_run.add_argument("--wait", type=int, default=0, help="Tempo de execução antes de fechar (segundos)")
     p_run.add_argument("--save", type=Path, default=None, help="Caminho de um save .sav para injetar")
 
+    # test
+    p_test = sub.add_parser("test", help="Executa teste automatizado de QA no Citra com auditoria")
+    p_test.add_argument("--clean-save", action="store_true", help="Remove save anterior para testar New Game limpo")
+    p_test.add_argument("--target", type=Path, default=None, help="Caminho do .3dsx (default: mais recente)")
+    p_test.add_argument("--wait", type=int, default=0, help="Tempo de execução em segundos (0 = livre)")
+
     # logs
     sub.add_parser("logs", help="Audita a telemetria e os logs de port.log e citra_log.txt")
 
@@ -152,6 +158,22 @@ def main() -> int:
         if args.save:
             setup_sdmc(save_path=args.save)
         return run_citra(target, use_gui=not args.cli, wait_seconds=args.wait)
+
+    elif args.command == "test":
+        target = args.target or get_latest_3dsx()
+        if not target:
+            print("[ERRO] Nenhum executável .3dsx encontrado para executar.")
+            return 1
+        if args.clean_save:
+            save_file = SDMC_EMERALD / "emerald3ds.sav"
+            if save_file.exists():
+                save_file.unlink()
+                print(f"[Citra Runner] Save anterior removido para teste limpo: {save_file}")
+        setup_sdmc(enable_debug=True)
+        print(f"[Citra QA] Iniciando teste autônomo do executável: {target.name}")
+        rc = run_citra(target, use_gui=True, wait_seconds=args.wait)
+        inspect_telemetry()
+        return rc
 
     elif args.command == "logs":
         inspect_telemetry()
