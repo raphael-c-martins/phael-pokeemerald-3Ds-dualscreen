@@ -49,3 +49,4 @@ TEMPORARIO/
 *.log
 .venv/
 dist_3ds/
+*.lnk
