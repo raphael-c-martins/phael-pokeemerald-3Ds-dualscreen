@@ -45,6 +45,7 @@ session-*.md
 # Temporarios e insumos locais
 \# TEMPORARIO/
 TEMPORARIO/
+scratch/
 /logs/
 *.log
 .venv/

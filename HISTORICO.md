@@ -164,3 +164,53 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 - **Telemetria em Execução:** Mais de 10.200 frames renderizados a **59.8 FPS** contínuos.
 - **Consumo de Hardware:** CPU em **3.44 ms** (orçamento de 16.6 ms) e mixagem de áudio em **0.59 ms**.
 - **Assets e Memória:** 6.424/6.424 assets verificados e carregados sem erros, confirmando estabilidade do binário v4 antes do hardware real.
+
+---
+
+## 🚀 10/10/2026 - Milestone v5: Layout Widescreen de Batalhas, Pokédex PT-BR, Batalhas sem "Foe" e Diálogos até o 3º Ginásio
+- **Branch Ativa:** `tentativa5`
+- **Binário Gerado:** `dist_3ds/emerald3ds_v5.3dsx` e `dist_3ds/emerald3ds.3dsx`.
+- **Status da Compilação:** **SUCESSO ABSOLUTO** (Engine ABI validada, 6.423/6.423 assets empacotados e aprovados).
+
+### 🛠️ Modificações Arquiteturais e Funcionalidades Implementadas na v5:
+
+1. **Ajuste Geométrico Widescreen das Caixas de Batalha (Healthboxes nos Cantos):**
+   - **Diagnóstico:** A tela superior do Nintendo 3DS possui resolução panorâmica de 400x240 pixels (ao contrário dos 240x160 do Game Boy Advance clássico). Com o zoom de batalha do motor 3DS (`CTR_BATTLE_ZOOM = 1.4x`), as healthboxes padrão do GBA (`x = 44` e `x = 158`) ficavam aglomeradas no meio da tela, deixando mais de 60 pixels pretos desperdiçados nas bordas laterais.
+   - **Solução Arquitetural:** Modificada a função `InitBattlerHealthboxCoords` em `src/battle_interface.c` e criado hook automatizado `apply_widescreen_battle_layout` em `tools/localize_ptbr.py`:
+     - **Caixa de HP do Oponente:** Movida para a extremidade superior-esquerda (`x = 24, y = 26`).
+     - **Caixa de HP do Jogador:** Movida para a extremidade inferior-direita (`x = 180, y = 88`).
+     - **Batalhas em Dupla (Double Battles):** Coordenadas reposicionadas proporcionalmente para manter simetria e visibilidade desobstruída dos sprites dos Pokémon em campo.
+
+2. **Localização Completa dos Menus e Modos da Pokédex (`src/strings.c`):**
+   - Eliminados todos os textos em inglês nas listagens e pesquisas da Pokédex:
+     - Modos de visualização: `MODO NÚMERICO`, `MODO A A Z`, `MODO MAIS PESADO`, `MODO MAIS LEVE`, `MODO MAIS ALTO`, `MODO MAIS BAIXO`.
+     - Telas de navegação e busca: `NÃO ESPECIFICAR`, `NENHUM`, `PESQUISAR`, `PÁGINA`, `ÁREA`, `GRITO`.
+     - Filtros cromáticos: `VERMELHO`, `AZUL`, `AMARELO`, `VERDE`, `PRETO`, `MARROM`, `ROXO`, `CINZA`, `BRANCO`, `ROSA`.
+
+3. **Correção de Mensagens de Obtenção de Itens e Frutas (`obtain_item.inc` e `berry_tree.inc`):**
+   - Resolvido o furo onde itens pegos no chão ou recebidos exibiam frases em inglês (*"Phael put away the POTION..."*):
+     - Mensagens padronizadas: *"{PLAYER} guardou o {STR_VAR_2} no BOLSO DE ITENS."*, *"{PLAYER} guardou o {STR_VAR_2} no BOLSO DE TMs e HMs."*, etc.
+     - Notificações de mochila cheia: *"A BOLSA está cheia… Não há espaço para {STR_VAR_2}."*
+     - Ciclo interativo das árvores de bagas: solo macio, plantio, brotos, rega e colheita traduzidos em português nativo.
+
+4. **Tradução Dinâmica de Batalhas e Remoção do Prefixo "Foe " (`src/battle_message.c`):**
+   - **Solução para Mensagens de Batalha:** No motor do GBA, mensagens de ataque utilizavam o prefixo hardcoded `"Foe "` (ex.: *"Foe WURMPLE's attack missed!"*). Os prefixos `sText_FoePkmnPrefix` e `sText_WildPkmnPrefix` foram zerados (`_("")`), fazendo com que o nome do monstrinho apareça natural e limpo:
+     - *"WURMPLE errou o ataque!"*
+     - *"POOCHYENA evitou o golpe!"*
+     - *"POOCHYENA teve sua energia drenada!"*
+     - Mensagens de efetividade, status, recuo e condições climáticas adaptadas para PT-BR respeitando os buffers de batalha.
+
+5. **Interface Touch Inferior do 3DS em PT-BR Seguro (`3ds_port/src/3ds_extras.c`):**
+   - Todas as 22 opções das abas de Melhorias e Trapaças da tela touch inferior traduzidas para português em ASCII puro, garantindo total estabilidade na rotina de renderização `Ascii(...)` sem risco de corrupção gráfica:
+     - `VELOCIDADE`, `EXP AO CAPTURAR`, `EXP COMPARTILHADA`, `EVOL. TROCA LV40`, `HMS SEM GOLPE`, `SELVAGENS VISIVEIS`, `TAXA DE ENCONTRO`, `CHANCE DE SHINY`, `SEMPRE CAPTURAR`, `VITORIA INSTANTANEA`, `OVOS RAPIDOS`, `DINHEIRO INFINITO`, `DEX HOENN COMPLETA`, `DEX NACIONAL LIGADA`, `DAR ITENS`, etc.
+
+6. **Mapeamento e Tradução Massiva até o 3º Ginásio (Mauville City):**
+   - Pipeline automatizado com 64 novos blocos de diálogos essenciais cobrindo:
+     - **Rota 104 & Cabana do Sr. Briney:** Diálogos do marinheiro e Peeko.
+     - **Floresta Petalburg:** Confronto completo com o capanga da Equipe Aqua, resgate do pesquisador da Devon e entrega da Great Ball, caçadores de insetos.
+     - **Cidade de Rustboro:** Placas, Escola de Treinadores, Ginásio da Líder Roxanne (desafio, derrota, Insígnia de Pedra e TM39 Tumba de Rochas), Casa do Cortador (HM01 Cut) e Presidente Stone no 3º andar da Devon Corp (pedido da entrega da Carta a Steven).
+     - **Rota 116 & Túnel Rusturf:** Embate contra a Equipe Aqua, resgate da Peeko e recuperação das Peças Devon.
+     - **Vila de Dewford & Granite Cave:** Placas da ilha, Ginásio do Líder Brawly (Insígnia do Punho), Homem do Flash na entrada da caverna (HM05 Flash) e encontro com Steven Stone na câmara profunda (entrega da Carta e recebimento do TM Asa de Aço).
+     - **Cidade de Slateport & Rota 110:** Museu Oceânico (confronto Aqua e entrega ao Cap. Stern) e Casa dos Truques.
+     - **Cidade de Mauville:** Ginásio do Líder Wattson (Insígnia Dínamo), Rydel Bicicletas (diálogo completo e escolha da Bicicleta Mach ou Acro) e Cassino de Mauville.
+   - Rigor métrico com limite máximo de 32 a 34 caracteres por linha, prevenindo qualquer estouro de balão.

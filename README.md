@@ -185,6 +185,7 @@ the development loop, loose data, data packs and host tests.
 | [Install and update](docs/INSTALLATION.md) | Installation, sound setup and updating an existing installation. |
 | [Development](docs/DEVELOPMENT.md) | Build requirements, workflow and tests. |
 | [Spanish build](docs/SPANISH.md) | Playing in Spanish with your own Pokémon Esmeralda (Spain) ROM. |
+| [PT-BR build](HISTORICO.md) | Versão em Português do Brasil com adaptação Dual Screen e layout widescreen. |
 | [Architecture](docs/ARCHITECTURE.md) | How the engine and the 3DS backend fit together. |
 | [Asset pipeline](docs/ASSET_PIPELINE.md) | How game data is prepared for the port. |
 | [Releasing](docs/RELEASING.md) | Building and packaging a release. |

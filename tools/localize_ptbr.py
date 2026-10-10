@@ -17,7 +17,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "builder"))
+sys.path.insert(0, str(ROOT / "tools"))
 from emerald3ds_builder.rom import load_rom
+from locales_gym1_to_gym3 import apply_gym1_to_gym3_strings
 
 PTBR_SHA1 = "18a2b0acdba046c71b8677bb58c9ee7d36f7a91f"
 
@@ -127,6 +129,47 @@ def apply_system_strings(tree: Path) -> None:
         'const u8 gText_SendOut[] = _("SEND OUT");': 'const u8 gText_SendOut[] = _("ENVIAR");',
         'const u8 gText_Switch2[] = _("SWITCH");': 'const u8 gText_Switch2[] = _("MUDAR");',
         'const u8 gText_Summary5[] = _("SUMMARY");': 'const u8 gText_Summary5[] = _("DADOS");',
+
+        # Pokédex (Modos de listagem, busca e cores)
+        'const u8 gText_SearchCompleted[] = _("Search completed.");': 'const u8 gText_SearchCompleted[] = _("Busca concluída.");',
+        'const u8 gText_NoMatchingPkmnWereFound[] = _("No matching POKéMON were found.");': 'const u8 gText_NoMatchingPkmnWereFound[] = _("Nenhum POKéMON encontrado.");',
+        'const u8 gText_SearchForPkmnBasedOnParameters[] = _("Search for POKéMON based on\\nselected parameters.");': 'const u8 gText_SearchForPkmnBasedOnParameters[] = _("Buscar POKéMON com base nos\\nparâmetros selecionados.");',
+        'const u8 gText_SwitchPokedexListings[] = _("Switch POKéDEX listings.");': 'const u8 gText_SwitchPokedexListings[] = _("Mudar listagem da POKéDEX.");',
+        'const u8 gText_ReturnToPokedex[] = _("Return to the POKéDEX.");': 'const u8 gText_ReturnToPokedex[] = _("Retornar à POKéDEX.");',
+        'const u8 gText_SelectPokedexMode[] = _("Select the POKéDEX mode.");': 'const u8 gText_SelectPokedexMode[] = _("Selecione o modo da POKéDEX.");',
+        'const u8 gText_SelectPokedexListingMode[] = _("Select the POKéDEX listing mode.");': 'const u8 gText_SelectPokedexListingMode[] = _("Selecione a listagem da POKéDEX.");',
+        'const u8 gText_ListByFirstLetter[] = _("List by the first letter in the name.\\nSpotted POKéMON only.");': 'const u8 gText_ListByFirstLetter[] = _("Listar pela primeira letra do nome.\\nPOKéMON avistados apenas.");',
+        'const u8 gText_ListByBodyColor[] = _("List by body color.\\nSpotted POKéMON only.");': 'const u8 gText_ListByBodyColor[] = _("Listar pela cor do corpo.\\nPOKéMON avistados apenas.");',
+        'const u8 gText_ListByType[] = _("List by type.\\nOwned POKéMON only.");': 'const u8 gText_ListByType[] = _("Listar por tipo.\\nPOKéMON capturados apenas.");',
+        'const u8 gText_ExecuteSearchSwitch[] = _("Execute search/switch.");': 'const u8 gText_ExecuteSearchSwitch[] = _("Executar busca/troca.");',
+        'const u8 gText_DexHoennTitle[] = _("HOENN DEX");': 'const u8 gText_DexHoennTitle[] = _("DEX DE HOENN");',
+        'const u8 gText_DexNatTitle[] = _("NATIONAL DEX");': 'const u8 gText_DexNatTitle[] = _("DEX NACIONAL");',
+        'const u8 gText_DexSortNumericalTitle[] = _("NUMERICAL MODE");': 'const u8 gText_DexSortNumericalTitle[] = _("MODO NUMÉRICO");',
+        'const u8 gText_DexSortAtoZTitle[] = _("A TO Z MODE");': 'const u8 gText_DexSortAtoZTitle[] = _("MODO DE A A Z");',
+        'const u8 gText_DexSortHeaviestTitle[] = _("HEAVIEST MODE");': 'const u8 gText_DexSortHeaviestTitle[] = _("MODO MAIS PESADO");',
+        'const u8 gText_DexSortLightestTitle[] = _("LIGHTEST MODE");': 'const u8 gText_DexSortLightestTitle[] = _("MODO MAIS LEVE");',
+        'const u8 gText_DexSortTallestTitle[] = _("TALLEST MODE");': 'const u8 gText_DexSortTallestTitle[] = _("MODO MAIS ALTO");',
+        'const u8 gText_DexSortSmallestTitle[] = _("SMALLEST MODE");': 'const u8 gText_DexSortSmallestTitle[] = _("MODO MAIS BAIXO");',
+        'const u8 gText_DexSearchColorRed[] = _("RED");': 'const u8 gText_DexSearchColorRed[] = _("VERMELHO");',
+        'const u8 gText_DexSearchColorBlue[] = _("BLUE");': 'const u8 gText_DexSearchColorBlue[] = _("AZUL");',
+        'const u8 gText_DexSearchColorYellow[] = _("YELLOW");': 'const u8 gText_DexSearchColorYellow[] = _("AMARELO");',
+        'const u8 gText_DexSearchColorGreen[] = _("GREEN");': 'const u8 gText_DexSearchColorGreen[] = _("VERDE");',
+        'const u8 gText_DexSearchColorBlack[] = _("BLACK");': 'const u8 gText_DexSearchColorBlack[] = _("PRETO");',
+        'const u8 gText_DexSearchColorBrown[] = _("BROWN");': 'const u8 gText_DexSearchColorBrown[] = _("MARROM");',
+        'const u8 gText_DexSearchColorPurple[] = _("PURPLE");': 'const u8 gText_DexSearchColorPurple[] = _("ROXO");',
+        'const u8 gText_DexSearchColorGray[] = _("GRAY");': 'const u8 gText_DexSearchColorGray[] = _("CINZA");',
+        'const u8 gText_DexSearchColorWhite[] = _("WHITE");': 'const u8 gText_DexSearchColorWhite[] = _("BRANCO");',
+        'const u8 gText_DexSearchColorPink[] = _("PINK");': 'const u8 gText_DexSearchColorPink[] = _("ROSA");',
+        'const u8 gText_DexHoennDescription[] = _("HOENN region\'s POKéDEX");': 'const u8 gText_DexHoennDescription[] = _("POKéDEX da região de HOENN");',
+        'const u8 gText_DexNatDescription[] = _("National edition POKéDEX");': 'const u8 gText_DexNatDescription[] = _("Edição nacional da POKéDEX");',
+        'const u8 gText_DexSortNumericalDescription[] = _("POKéMON are listed according to their\\nnumber.");': 'const u8 gText_DexSortNumericalDescription[] = _("Os POKéMON são listados pelo\\nseu número.");',
+        'const u8 gText_DexSortAtoZDescription[] = _("Spotted and owned POKéMON are listed\\nalphabetically.");': 'const u8 gText_DexSortAtoZDescription[] = _("POKéMON avistados e obtidos são\\nlistados em ordem alfabética.");',
+        'const u8 gText_DexSortHeaviestDescription[] = _("Owned POKéMON are listed from the\\nheaviest to the lightest.");': 'const u8 gText_DexSortHeaviestDescription[] = _("POKéMON obtidos são listados do\\nmais pesado ao mais leve.");',
+        'const u8 gText_DexSortLightestDescription[] = _("Owned POKéMON are listed from the\\nlightest to the heaviest.");': 'const u8 gText_DexSortLightestDescription[] = _("POKéMON obtidos são listados do\\nmais leve ao mais pesado.");',
+        'const u8 gText_DexSortTallestDescription[] = _("Owned POKéMON are listed from the\\ntallest to the smallest.");': 'const u8 gText_DexSortTallestDescription[] = _("POKéMON obtidos são listados do\\nmais alto ao mais baixo.");',
+        'const u8 gText_DexSortSmallestDescription[] = _("Owned POKéMON are listed from the\\nsmallest to the tallest.");': 'const u8 gText_DexSortSmallestDescription[] = _("POKéMON obtidos são listados do\\nmais baixo ao mais alto.");',
+        'const u8 gText_DexSearchDontSpecify[] = _("DON\'T SPECIFY.");': 'const u8 gText_DexSearchDontSpecify[] = _("NÃO ESPECIFICAR.");',
+        'const u8 gText_DexSearchTypeNone[] = _("NONE");': 'const u8 gText_DexSearchTypeNone[] = _("NENHUM");',
     }
     check_and_apply(strings_c, replacements, "src/strings.c (Menus e Loja)")
 
@@ -284,8 +327,414 @@ def apply_battle_strings(tree: Path) -> None:
 
         'static const u8 sText_AttackerUsedX[] = _("{B_ATK_NAME_WITH_PREFIX} used\\n{B_BUFF2}");':
         'static const u8 sText_AttackerUsedX[] = _("{B_ATK_NAME_WITH_PREFIX} usou\\n{B_BUFF2}");',
+
+        # Mensagens de batalha (v5)
+        'static const u8 sText_AttackMissed[] = _("{B_ATK_NAME_WITH_PREFIX}\'s\\nattack missed!");':
+        'static const u8 sText_AttackMissed[] = _("{B_ATK_NAME_WITH_PREFIX}\\nerrou o ataque!");',
+
+        'static const u8 sText_PkmnEnergyDrained[] = _("{B_DEF_NAME_WITH_PREFIX} had its\\nenergy drained!");':
+        'static const u8 sText_PkmnEnergyDrained[] = _("{B_DEF_NAME_WITH_PREFIX} teve sua\\nenergia drenada!");',
+
+        'static const u8 sText_WildPkmnPrefix[] = _("Wild ");':
+        'static const u8 sText_WildPkmnPrefix[] = _("");',
+
+        'static const u8 sText_FoePkmnPrefix[] = _("Foe ");':
+        'static const u8 sText_FoePkmnPrefix[] = _("");',
+
+        'static const u8 sText_FoePkmnPrefix2[] = _("Foe");':
+        'static const u8 sText_FoePkmnPrefix2[] = _("");',
+
+        'static const u8 sText_FoePkmnPrefix3[] = _("Foe");':
+        'static const u8 sText_FoePkmnPrefix3[] = _("");',
+
+        'static const u8 sText_FoePkmnPrefix4[] = _("Foe");':
+        'static const u8 sText_FoePkmnPrefix4[] = _("");',
+
+        'static const u8 sText_PkmnProtectedItself[] = _("{B_DEF_NAME_WITH_PREFIX}\\nprotected itself!");':
+        'static const u8 sText_PkmnProtectedItself[] = _("{B_DEF_NAME_WITH_PREFIX}\\nprotegeu-se!");',
+
+        'static const u8 sText_AvoidedDamage[] = _("{B_DEF_NAME_WITH_PREFIX} avoided\\ndamage with {B_DEF_ABILITY}!");':
+        'static const u8 sText_AvoidedDamage[] = _("{B_DEF_NAME_WITH_PREFIX} evitou\\ndano com {B_DEF_ABILITY}!");',
+
+        'static const u8 sText_PkmnAvoidedAttack[] = _("{B_DEF_NAME_WITH_PREFIX} avoided\\nthe attack!");':
+        'static const u8 sText_PkmnAvoidedAttack[] = _("{B_DEF_NAME_WITH_PREFIX} evitou\\no ataque!");',
+
+        'static const u8 sText_ItDoesntAffect[] = _("It doesn\'t affect\\n{B_DEF_NAME_WITH_PREFIX}…");':
+        'static const u8 sText_ItDoesntAffect[] = _("Não afetou\\n{B_DEF_NAME_WITH_PREFIX}…");',
+
+        'static const u8 sText_HitXTimes[] = _("Hit {B_BUFF1} time(s)!");':
+        'static const u8 sText_HitXTimes[] = _("Acertou {B_BUFF1} vez(es)!");',
+
+        'static const u8 sText_PkmnFellAsleep[] = _("{B_EFF_NAME_WITH_PREFIX}\\nfell asleep!");':
+        'static const u8 sText_PkmnFellAsleep[] = _("{B_EFF_NAME_WITH_PREFIX}\\nadormeceu!");',
+
+        'static const u8 sText_PkmnAlreadyAsleep[] = _("{B_DEF_NAME_WITH_PREFIX} is\\nalready asleep!");':
+        'static const u8 sText_PkmnAlreadyAsleep[] = _("{B_DEF_NAME_WITH_PREFIX} já\\nestá dormindo!");',
+
+        'static const u8 sText_PkmnWasntAffected[] = _("{B_DEF_NAME_WITH_PREFIX}\\nwasn\'t affected!");':
+        'static const u8 sText_PkmnWasntAffected[] = _("{B_DEF_NAME_WITH_PREFIX}\\nnão foi afetado!");',
+
+        'static const u8 sText_PkmnWasPoisoned[] = _("{B_EFF_NAME_WITH_PREFIX}\\nwas poisoned!");':
+        'static const u8 sText_PkmnWasPoisoned[] = _("{B_EFF_NAME_WITH_PREFIX}\\nfoi envenenado!");',
+
+        'static const u8 sText_PkmnHurtByPoison[] = _("{B_ATK_NAME_WITH_PREFIX} is hurt\\nby poison!");':
+        'static const u8 sText_PkmnHurtByPoison[] = _("{B_ATK_NAME_WITH_PREFIX} sofreu\\ncom o veneno!");',
+
+        'static const u8 sText_PkmnAlreadyPoisoned[] = _("{B_DEF_NAME_WITH_PREFIX} is already\\npoisoned.");':
+        'static const u8 sText_PkmnAlreadyPoisoned[] = _("{B_DEF_NAME_WITH_PREFIX} já\\nestá envenenado.");',
+
+        'static const u8 sText_PkmnBadlyPoisoned[] = _("{B_EFF_NAME_WITH_PREFIX} is badly\\npoisoned!");':
+        'static const u8 sText_PkmnBadlyPoisoned[] = _("{B_EFF_NAME_WITH_PREFIX} foi gravemente\\nenvenenado!");',
+
+        'static const u8 sText_PkmnWasBurned[] = _("{B_EFF_NAME_WITH_PREFIX} was burned!");':
+        'static const u8 sText_PkmnWasBurned[] = _("{B_EFF_NAME_WITH_PREFIX}\\nfoi queimado!");',
+
+        'static const u8 sText_PkmnHurtByBurn[] = _("{B_ATK_NAME_WITH_PREFIX} is hurt\\nby its burn!");':
+        'static const u8 sText_PkmnHurtByBurn[] = _("{B_ATK_NAME_WITH_PREFIX} sofreu com\\na queimadura!");',
+
+        'static const u8 sText_PkmnAlreadyHasBurn[] = _("{B_DEF_NAME_WITH_PREFIX} already\\nhas a burn.");':
+        'static const u8 sText_PkmnAlreadyHasBurn[] = _("{B_DEF_NAME_WITH_PREFIX} já está\\nqueimado.");',
+
+        'static const u8 sText_PkmnWasParalyzed[] = _("{B_EFF_NAME_WITH_PREFIX} is paralyzed!\\nIt may be unable to move!");':
+        'static const u8 sText_PkmnWasParalyzed[] = _("{B_EFF_NAME_WITH_PREFIX} está paralisado!\\nPode não se mover!");',
+
+        'static const u8 sText_PkmnIsParalyzed[] = _("{B_ATK_NAME_WITH_PREFIX} is paralyzed!\\nIt can\'t move!");':
+        'static const u8 sText_PkmnIsParalyzed[] = _("{B_ATK_NAME_WITH_PREFIX} está paralisado!\\nNão pode se mover!");',
+
+        'static const u8 sText_PkmnIsConfused[] = _("{B_ATK_NAME_WITH_PREFIX} is\\nconfused!");':
+        'static const u8 sText_PkmnIsConfused[] = _("{B_ATK_NAME_WITH_PREFIX} está\\nconfuso!");',
+
+        'static const u8 sText_PkmnHealedConfusion[] = _("{B_ATK_NAME_WITH_PREFIX} snapped\\nout of confusion!");':
+        'static const u8 sText_PkmnHealedConfusion[] = _("{B_ATK_NAME_WITH_PREFIX} curou-se\\nda confusão!");',
+
+        'static const u8 sText_PkmnWasConfused[] = _("{B_EFF_NAME_WITH_PREFIX} became\\nconfused!");':
+        'static const u8 sText_PkmnWasConfused[] = _("{B_EFF_NAME_WITH_PREFIX} ficou\\nconfuso!");',
+
+        'static const u8 sText_ItHurtConfusion[] = _("It hurt itself in its\\nconfusion!");':
+        'static const u8 sText_ItHurtConfusion[] = _("{B_ATK_NAME_WITH_PREFIX} feriu-se\\nna sua confusão!");',
+
+        'static const u8 sText_PkmnFlinched[] = _("{B_ATK_NAME_WITH_PREFIX} flinched!");':
+        'static const u8 sText_PkmnFlinched[] = _("{B_ATK_NAME_WITH_PREFIX} hesitou!");',
+
+        'static const u8 sText_PkmnHitWithRecoil[] = _("{B_ATK_NAME_WITH_PREFIX} is hit\\nwith recoil!");':
+        'static const u8 sText_PkmnHitWithRecoil[] = _("{B_ATK_NAME_WITH_PREFIX} sofreu dano\\nde recuo!");',
+
+        'static const u8 sText_StatsWontIncrease[] = _("{B_ATK_NAME_WITH_PREFIX}\'s {B_BUFF1}\\nwon\'t go higher!");':
+        'static const u8 sText_StatsWontIncrease[] = _("{B_BUFF1} de {B_ATK_NAME_WITH_PREFIX}\\nnão subirá mais!");',
+
+        'static const u8 sText_StatsWontDecrease[] = _("{B_DEF_NAME_WITH_PREFIX}\'s {B_BUFF1}\\nwon\'t go lower!");':
+        'static const u8 sText_StatsWontDecrease[] = _("{B_BUFF1} de {B_DEF_NAME_WITH_PREFIX}\\nnão cairá mais!");',
+
+        'static const u8 sText_PkmnRegainedHealth[] = _("{B_DEF_NAME_WITH_PREFIX} regained\\nhealth!");':
+        'static const u8 sText_PkmnRegainedHealth[] = _("{B_DEF_NAME_WITH_PREFIX} recuperou\\nsaúde!");',
+
+        'static const u8 sText_PkmnHPFull[] = _("{B_DEF_NAME_WITH_PREFIX}\'s\\nHP is full!");':
+        'static const u8 sText_PkmnHPFull[] = _("O HP de\\n{B_DEF_NAME_WITH_PREFIX} está cheio!");',
+
+        'static const u8 sText_NoRunningFromTrainers[] = _("No! There\'s no running\\nfrom a TRAINER battle!\\p");':
+        'static const u8 sText_NoRunningFromTrainers[] = _("Não! Não pode fugir\\nde batalha de TREINADOR!\\p");',
+
+        'static const u8 sText_CantEscape[] = _("Can\'t escape!\\p");':
+        'static const u8 sText_CantEscape[] = _("Não pode fugir!\\p");',
+
+        'static const u8 sText_CantEscape2[] = _("Can\'t escape!\\p");':
+        'static const u8 sText_CantEscape2[] = _("Não pode fugir!\\p");',
+
+        'static const u8 sText_PlayerWhiteout[] = _("{B_PLAYER_NAME} is out of\\nusable POKéMON!\\p");':
+        'static const u8 sText_PlayerWhiteout[] = _("{B_PLAYER_NAME} não tem mais\\nPOKéMON utilizáveis!\\p");',
+
+        'static const u8 sText_PlayerWhiteout2[] = _("{B_PLAYER_NAME} whited out!{PAUSE_UNTIL_PRESS}");':
+        'static const u8 sText_PlayerWhiteout2[] = _("{B_PLAYER_NAME} desmaiou!{PAUSE_UNTIL_PRESS}");',
+
+        'static const u8 sText_StatSharply[] = _("sharply ");':
+        'static const u8 sText_StatSharply[] = _("drasticamente ");',
+
+        'const u8 gText_StatRose[] = _("rose!");':
+        'const u8 gText_StatRose[] = _("subiu!");',
+
+        'static const u8 sText_StatHarshly[] = _("harshly ");':
+        'static const u8 sText_StatHarshly[] = _("drasticamente ");',
+
+        'static const u8 sText_StatFell[] = _("fell!");':
+        'static const u8 sText_StatFell[] = _("caiu!");',
+
+        'static const u8 sText_AttackersStatRose[] = _("{B_ATK_NAME_WITH_PREFIX}\'s {B_BUFF1}\\n{B_BUFF2}");':
+        'static const u8 sText_AttackersStatRose[] = _("{B_BUFF1} de\\n{B_ATK_NAME_WITH_PREFIX} {B_BUFF2}");',
+
+        'const u8 gText_DefendersStatRose[] = _("{B_DEF_NAME_WITH_PREFIX}\'s {B_BUFF1}\\n{B_BUFF2}");':
+        'const u8 gText_DefendersStatRose[] = _("{B_BUFF1} de\\n{B_DEF_NAME_WITH_PREFIX} {B_BUFF2}");',
+
+        'static const u8 sText_AttackersStatFell[] = _("{B_ATK_NAME_WITH_PREFIX}\'s {B_BUFF1}\\n{B_BUFF2}");':
+        'static const u8 sText_AttackersStatFell[] = _("{B_BUFF1} de\\n{B_ATK_NAME_WITH_PREFIX} {B_BUFF2}");',
+
+        'static const u8 sText_DefendersStatFell[] = _("{B_DEF_NAME_WITH_PREFIX}\'s {B_BUFF1}\\n{B_BUFF2}");':
+        'static const u8 sText_DefendersStatFell[] = _("{B_BUFF1} de\\n{B_DEF_NAME_WITH_PREFIX} {B_BUFF2}");',
+
+        'static const u8 sText_Attack2[] = _("ATTACK");':
+        'static const u8 sText_Attack2[] = _("ATAQUE");',
+
+        'static const u8 sText_Defense2[] = _("DEFENSE");':
+        'static const u8 sText_Defense2[] = _("DEFESA");',
+
+        'static const u8 sText_Speed[] = _("SPEED");':
+        'static const u8 sText_Speed[] = _("VELOCIDADE");',
+
+        'static const u8 sText_SpAtk2[] = _("SP. ATK");':
+        'static const u8 sText_SpAtk2[] = _("ATQ. ESP.");',
+
+        'static const u8 sText_SpDef2[] = _("SP. DEF");':
+        'static const u8 sText_SpDef2[] = _("DEF. ESP.");',
+
+        'static const u8 sText_Accuracy[] = _("accuracy");':
+        'static const u8 sText_Accuracy[] = _("precisão");',
+
+        'static const u8 sText_Evasiveness[] = _("evasiveness");':
+        'static const u8 sText_Evasiveness[] = _("evasão");',
     }
     check_and_apply(battle_c, replacements, "src/battle_message.c (Batalhas)")
+
+
+def apply_item_and_berry_strings(tree: Path) -> None:
+    # 1. Obter itens
+    p_item = tree / "data/text/obtain_item.inc"
+    rep_item = {
+        ('gText_ObtainedTheItem::\n'
+         '\t.string "Obtained the {STR_VAR_2}!$"'):
+        ('gText_ObtainedTheItem::\n'
+         '\t.string "Obteve {STR_VAR_2}!$"'),
+
+        ('gText_TheBagIsFull::\n'
+         '\t.string "The BAG is full…$"'):
+        ('gText_TheBagIsFull::\n'
+         '\t.string "A MOCHILA está cheia…$"'),
+
+        ('gText_PutItemInPocket::\n'
+         '\t.string "{PLAYER} put away the {STR_VAR_2}\\n"\n'
+         '\t.string "in the {STR_VAR_3} POCKET.$"'):
+        ('gText_PutItemInPocket::\n'
+         '\t.string "{PLAYER} guardou {STR_VAR_2}\\n"\n'
+         '\t.string "no BOLSO de {STR_VAR_3}.$"'),
+
+        ('gText_PlayerFoundOneItem::\n'
+         '\t.string "{PLAYER} found one {STR_VAR_2}!$"'):
+        ('gText_PlayerFoundOneItem::\n'
+         '\t.string "{PLAYER} encontrou {STR_VAR_2}!$"'),
+
+        ('gText_TooBadBagIsFull::\n'
+         '\t.string "Too bad!\\n"\n'
+         '\t.string "The BAG is full…$"'):
+        ('gText_TooBadBagIsFull::\n'
+         '\t.string "Que pena!\\n"\n'
+         '\t.string "A MOCHILA está cheia…$"'),
+
+        ('gText_PlayerPutItemInBag::\n'
+         '\t.string "{PLAYER} put away the {STR_VAR_2}\\n"\n'
+         '\t.string "in the BAG.$"'):
+        ('gText_PlayerPutItemInBag::\n'
+         '\t.string "{PLAYER} guardou {STR_VAR_2}\\n"\n'
+         '\t.string "na MOCHILA.$"'),
+
+        ('gText_ObtainedTheDecor::\n'
+         '\t.string "Obtained the {STR_VAR_2}!$"'):
+        ('gText_ObtainedTheDecor::\n'
+         '\t.string "Obteve a decoração\\n"\n'
+         '\t.string "{STR_VAR_2}!$"'),
+
+        ('gText_NoRoomLeftForAnother::\n'
+         '\t.string "Too bad! There\'s no room left for\\n"\n'
+         '\t.string "another {STR_VAR_2}…$"'):
+        ('gText_NoRoomLeftForAnother::\n'
+         '\t.string "Que pena! Sem espaço para\\n"\n'
+         '\t.string "outro {STR_VAR_2}…$"'),
+
+        ('gText_TheDecorWasTransferredToThePC::\n'
+         '\t.string "The {STR_VAR_2} was transferred\\n"\n'
+         '\t.string "to the PC.$"'):
+        ('gText_TheDecorWasTransferredToThePC::\n'
+         '\t.string "{STR_VAR_2} foi enviado\\n"\n'
+         '\t.string "para o PC.$"'),
+    }
+    check_and_apply(p_item, rep_item, "data/text/obtain_item.inc (Obter Itens)")
+
+    # 2. Plantio e colheita de frutas
+    p_berry = tree / "data/scripts/berry_tree.inc"
+    rep_berry = {
+        ('BerryTree_Text_ItsSoftLoamySoil:\n'
+         '\t.string "It\'s soft, loamy soil.$"'):
+        ('BerryTree_Text_ItsSoftLoamySoil:\n'
+         '\t.string "É uma terra macia e fértil.$"'),
+
+        ('BerryTree_Text_WantToPlant:\n'
+         '\t.string "It\'s soft, loamy soil.\\n"\n'
+         '\t.string "Want to plant a BERRY?$"'):
+        ('BerryTree_Text_WantToPlant:\n'
+         '\t.string "É uma terra macia e fértil.\\n"\n'
+         '\t.string "Quer plantar uma FRUTA?$"'),
+
+        ('BerryTree_Text_PlantedOneBerry:\n'
+         '\t.string "{PLAYER} planted one {STR_VAR_1} in\\n"\n'
+         '\t.string "the soft, loamy soil.$"'):
+        ('BerryTree_Text_PlantedOneBerry:\n'
+         '\t.string "{PLAYER} plantou uma {STR_VAR_1}\\n"\n'
+         '\t.string "na terra macia e fértil.$"'),
+
+        ('BerryTree_Text_BerryGrowthStage1:\n'
+         '\t.string "One {STR_VAR_1} was planted here.$"'):
+        ('BerryTree_Text_BerryGrowthStage1:\n'
+         '\t.string "Uma {STR_VAR_1} foi plantada aqui.$"'),
+
+        ('BerryTree_Text_BerryGrowthStage2:\n'
+         '\t.string "{STR_VAR_1} has sprouted.$"'):
+        ('BerryTree_Text_BerryGrowthStage2:\n'
+         '\t.string "{STR_VAR_1} brotou.$"'),
+
+        ('BerryTree_Text_BerryGrowthStage3:\n'
+         '\t.string "This {STR_VAR_1} plant is growing taller.$"'):
+        ('BerryTree_Text_BerryGrowthStage3:\n'
+         '\t.string "Esta planta de {STR_VAR_1} cresceu.$"'),
+
+        ('BerryTree_Text_BerryGrowthStage4:\n'
+         '\t.string "These {STR_VAR_1} flowers are blooming\\n"\n'
+         '\t.string "{STR_VAR_2}.$"'):
+        ('BerryTree_Text_BerryGrowthStage4:\n'
+         '\t.string "Flores de {STR_VAR_1} estão\\n"\n'
+         '\t.string "desabrochando {STR_VAR_2}.$"'),
+
+        ('BerryTree_Text_WantToPick:\n'
+         '\t.string "You found {STR_VAR_2} {STR_VAR_1}!\\p"\n'
+         '\t.string "Do you want to pick the\\n"\n'
+         '\t.string "{STR_VAR_1}?$"'):
+        ('BerryTree_Text_WantToPick:\n'
+         '\t.string "Encontrou {STR_VAR_2} {STR_VAR_1}!\\p"\n'
+         '\t.string "Quer colher a\\n"\n'
+         '\t.string "{STR_VAR_1}?$"'),
+
+        ('BerryTree_Text_PickedTheBerry:\n'
+         '\t.string "{PLAYER} picked the {STR_VAR_2} {STR_VAR_1}.$"'):
+        ('BerryTree_Text_PickedTheBerry:\n'
+         '\t.string "{PLAYER} colheu {STR_VAR_2} {STR_VAR_1}.$"'),
+
+        ('BerryTree_Text_PutAwayBerry:\n'
+         '\t.string "{PLAYER} put away the {STR_VAR_1}\\n"\n'
+         '\t.string "in the BAG\'s BERRIES POCKET.\\p"\n'
+         '\t.string "The soil returned to its soft and\\n"\n'
+         '\t.string "loamy state.$"'):
+        ('BerryTree_Text_PutAwayBerry:\n'
+         '\t.string "{PLAYER} guardou {STR_VAR_1}\\n"\n'
+         '\t.string "no BOLSO DE FRUTAS da MOCHILA.\\p"\n'
+         '\t.string "A terra voltou ao seu estado\\n"\n'
+         '\t.string "macio e fértil.$"'),
+
+        ('BerryTree_Text_BerryPocketFull:\n'
+         '\t.string "The BAG\'s BERRIES POCKET is full.\\p"\n'
+         '\t.string "The {STR_VAR_1} couldn\'t be taken.$"'):
+        ('BerryTree_Text_BerryPocketFull:\n'
+         '\t.string "O BOLSO DE FRUTAS está cheio.\\p"\n'
+         '\t.string "A {STR_VAR_1} não pôde ser pega.$"'),
+
+        ('BerryTree_Text_BerryLeftUnpicked:\n'
+         '\t.string "{PLAYER} left the {STR_VAR_1}\\n"\n'
+         '\t.string "unpicked.$"'):
+        ('BerryTree_Text_BerryLeftUnpicked:\n'
+         '\t.string "{PLAYER} deixou a {STR_VAR_1}\\n"\n'
+         '\t.string "sem colher.$"'),
+
+        ('BerryTree_Text_WantToWater:\n'
+         '\t.string "Want to water the {STR_VAR_1} with the\\n"\n'
+         '\t.string "WAILMER PAIL?$"'):
+        ('BerryTree_Text_WantToWater:\n'
+         '\t.string "Quer regar a {STR_VAR_1} com o\\n"\n'
+         '\t.string "BALDE WAILMER?$"'),
+
+        ('BerryTree_Text_WateredTheBerry:\n'
+         '\t.string "{PLAYER} watered the {STR_VAR_1}.$"'):
+        ('BerryTree_Text_WateredTheBerry:\n'
+         '\t.string "{PLAYER} regou a {STR_VAR_1}.$"'),
+
+        ('BerryTree_Text_PlantIsDelighted:\n'
+         '\t.string "The plant seems to be delighted.$"'):
+        ('BerryTree_Text_PlantIsDelighted:\n'
+         '\t.string "A planta parece contente.$"'),
+    }
+    check_and_apply(p_berry, rep_berry, "data/scripts/berry_tree.inc (Frutas)")
+
+
+def apply_widescreen_battle_layout(tree: Path) -> None:
+    p = tree / "src/battle_interface.c"
+    if not p.exists():
+        return
+    text = p.read_text(encoding="utf-8")
+    old_block = """void InitBattlerHealthboxCoords(u8 battler)
+{
+    s16 x = 0, y = 0;
+
+    if (!IsDoubleBattle())
+    {
+        if (GetBattlerSide(battler) != B_SIDE_PLAYER)
+            x = 44, y = 30;
+        else
+            x = 158, y = 88;
+    }
+    else
+    {
+        switch (GetBattlerPosition(battler))
+        {
+        case B_POSITION_PLAYER_LEFT:
+            x = 138, y = 68;
+            break;
+        case B_POSITION_PLAYER_RIGHT:
+            x = 159, y = 91;
+            break;
+        case B_POSITION_OPPONENT_LEFT:
+            x = 40, y = 19;
+            break;
+        case B_POSITION_OPPONENT_RIGHT:
+            x = 22, y = 42;
+            break;
+        }
+    }
+
+    UpdateSpritePos(gHealthboxSpriteIds[battler], x, y);
+}"""
+
+    new_block = """void InitBattlerHealthboxCoords(u8 battler)
+{
+    s16 x = 0, y = 0;
+
+    if (!IsDoubleBattle())
+    {
+        if (GetBattlerSide(battler) != B_SIDE_PLAYER)
+            x = 24, y = 26;
+        else
+            x = 180, y = 88;
+    }
+    else
+    {
+        switch (GetBattlerPosition(battler))
+        {
+        case B_POSITION_PLAYER_LEFT:
+            x = 178, y = 76;
+            break;
+        case B_POSITION_PLAYER_RIGHT:
+            x = 190, y = 101;
+            break;
+        case B_POSITION_OPPONENT_LEFT:
+            x = 24, y = 19;
+            break;
+        case B_POSITION_OPPONENT_RIGHT:
+            x = 14, y = 44;
+            break;
+        }
+    }
+
+    UpdateSpritePos(gHealthboxSpriteIds[battler], x, y);
+}"""
+    if old_block in text:
+        text = text.replace(old_block, new_block)
+        p.write_bytes(text.replace("\r\n", "\n").encode("utf-8"))
+        print("[src/battle_interface.c]: Layout widescreen de healthboxes aplicado com sucesso.")
+    elif "x = 24, y = 26;" in text:
+        print("[src/battle_interface.c]: Layout widescreen de healthboxes já configurado.")
 
 
 def apply_littleroot_strings(tree: Path) -> None:
@@ -966,6 +1415,103 @@ def apply_littleroot_strings(tree: Path) -> None:
          '\t.string "achar espécies diferentes.\\p"\n'
          '\t.string "Se eu achar algum bem fofo, vou\\n"\n'
          '\t.string "pegar com as POKéBOLAS!$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_BirchIsntOneForDeskWork:\n'
+         '\t.string "The PROF isn\'t one for doing desk work.\\n"\n'
+         '\t.string "He\'s the type of person who would\\l"\n'
+         '\t.string "rather go outside and experience\\l"\n'
+         '\t.string "things than read about them here.$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_BirchIsntOneForDeskWork:\n'
+         '\t.string "O PROFESSOR não é de ficar preso\\n"\n'
+         '\t.string "ao trabalho de escritório.\\l"\n'
+         '\t.string "Ele prefere sair e vivenciar\\l"\n'
+         '\t.string "as coisas no campo do que\\l"\n'
+         '\t.string "apenas ler sobre elas aqui.$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_BirchEnjoysRivalsHelpToo:\n'
+         '\t.string "PROF. BIRCH is studying the habitats\\n"\n'
+         '\t.string "and distribution of POKéMON.\\p"\n'
+         '\t.string "The PROF enjoys {RIVAL}\'s help, too.\\n"\n'
+         '\t.string "There\'s a lot of love there.$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_BirchEnjoysRivalsHelpToo:\n'
+         '\t.string "O PROF. BIRCH estuda os habitats\\n"\n'
+         '\t.string "e a distribuição dos POKéMON.\\p"\n'
+         '\t.string "Ele adora a ajuda de {RIVAL},\\n"\n'
+         '\t.string "eles são muito unidos.$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_OhYourBagsFull:\n'
+         '\t.string "Oh? Your BAG\'s full.$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_OhYourBagsFull:\n'
+         '\t.string "Ah? Sua MOCHILA está cheia.$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_MayWhereShouldIGoNext:\n'
+         '\t.string "MAY: I wonder where I should go look\\n"\n'
+         '\t.string "for POKéMON next?$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_MayWhereShouldIGoNext:\n'
+         '\t.string "MAY: Para onde devo ir procurar\\n"\n'
+         '\t.string "POKéMON agora?$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_BrendanGotPokedexTooTakeThese:\n'
+         '\t.string "BRENDAN: Huh…\\n"\n'
+         '\t.string "So you got a POKéDEX, too.\\p"\n'
+         '\t.string "Well then, here.\\n"\n'
+         '\t.string "I\'ll give you these.$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_BrendanGotPokedexTooTakeThese:\n'
+         '\t.string "BRENDAN: Ah…\\n"\n'
+         '\t.string "Você também ganhou uma POKéDEX.\\p"\n'
+         '\t.string "Bem, então tome.\\n"\n'
+         '\t.string "Vou lhe dar isto aqui.$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_CatchCoolPokemonWithPokeBalls:\n'
+         '\t.string "BRENDAN: You know it\'s more fun to\\n"\n'
+         '\t.string "have a whole bunch of POKéMON.\\p"\n'
+         '\t.string "I\'m going to explore all over the place\\n"\n'
+         '\t.string "to find different POKéMON.\\p"\n'
+         '\t.string "If I find any cool POKéMON, you bet\\n"\n'
+         '\t.string "I\'ll try to get them with POKé BALLS.$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_CatchCoolPokemonWithPokeBalls:\n'
+         '\t.string "BRENDAN: É muito mais legal ter\\n"\n'
+         '\t.string "um montão de POKéMON.\\p"\n'
+         '\t.string "Vou explorar toda parte para\\n"\n'
+         '\t.string "encontrar vários diferentes.\\p"\n'
+         '\t.string "Se eu achar algum bem legal,\\n"\n'
+         '\t.string "vou capturar com as POKéBOLAS!$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_HeyYourBagsFull:\n'
+         '\t.string "Hey, your BAG\'s full.$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_HeyYourBagsFull:\n'
+         '\t.string "Ei, sua MOCHILA está cheia.$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_BrendanWhereShouldIGoNext:\n'
+         '\t.string "BRENDAN: Where should I look for\\n"\n'
+         '\t.string "POKéMON next…$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_BrendanWhereShouldIGoNext:\n'
+         '\t.string "BRENDAN: Onde será que eu procuro\\n"\n'
+         '\t.string "POKéMON agora…$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_SeriousLookingMachine:\n'
+         '\t.string "It\'s a serious-looking machine.\\n"\n'
+         '\t.string "The PROF must use this for research.$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_SeriousLookingMachine:\n'
+         '\t.string "É uma máquina bem avançada.\\n"\n'
+         '\t.string "O PROFESSOR a usa na pesquisa.$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_PCUsedForResearch:\n'
+         '\t.string "It\'s a PC used for research.\\n"\n'
+         '\t.string "Better not mess around with it.$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_PCUsedForResearch:\n'
+         '\t.string "É um computador de pesquisa.\\n"\n'
+         '\t.string "Melhor não mexer nele.$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_CrammedWithBooksOnPokemon:\n'
+         '\t.string "It\'s crammed with books on POKéMON.$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_CrammedWithBooksOnPokemon:\n'
+         '\t.string "Está repleto de livros de POKéMON.$"'),
+
+        ('LittlerootTown_ProfessorBirchsLab_Text_BookTooHardToRead:\n'
+         '\t.string "It\'s a book that\'s too hard to read.$"'):
+        ('LittlerootTown_ProfessorBirchsLab_Text_BookTooHardToRead:\n'
+         '\t.string "É um livro difícil demais de ler.$"'),
     }
     check_and_apply(p_lab, rep_lab, "data/maps/LittlerootTown_ProfessorBirchsLab/scripts.inc")
 
@@ -2037,6 +2583,8 @@ def stage(tree: Path, rom_path: Path) -> None:
     apply_birch_speech_strings(tree)
     apply_nurse_and_mart_strings(tree)
     apply_battle_strings(tree)
+    apply_item_and_berry_strings(tree)
+    apply_widescreen_battle_layout(tree)
     apply_trainers_strings(tree)
     apply_littleroot_strings(tree)
     apply_route101_strings(tree)
@@ -2044,9 +2592,10 @@ def stage(tree: Path, rom_path: Path) -> None:
     apply_route103_strings(tree)
     apply_route102_strings(tree)
     apply_petalburg_strings(tree)
+    apply_gym1_to_gym3_strings(tree)
 
-    (tree / ".emerald3ds-locale").write_bytes(b"PTBR stable v4\n")
-    print(f"PT-BR staging v4 complete! {applied_edits} edits applied across {applied_files} source files.")
+    (tree / ".emerald3ds-locale").write_bytes(b"PTBR stable v5\n")
+    print(f"PT-BR staging v5 complete! {applied_edits} edits applied across {applied_files} source files.")
 
 
 def main() -> None:

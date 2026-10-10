@@ -1,0 +1,322 @@
+[
+  {
+    "file": "data/maps/Route104/scripts.inc",
+    "label": "Route104_Text_BrineyLivesInSeasideCottage",
+    "block": "Route104_Text_BrineyLivesInSeasideCottage:\n\t.string \"Naquela cabana à beira-mar\\n\"\n\t.string \"vive o SR. BRINEY.\\p\"\n\t.string \"Ele foi um grande marinheiro\\n\"\n\t.string \"que nunca temeu as tempestades.$\"\n"
+  },
+  {
+    "file": "data/maps/Route104/scripts.inc",
+    "label": "Route104_Text_RouteSignRustboro",
+    "block": "Route104_Text_RouteSignRustboro:\n\t.string \"ROTA 104\\n\"\n\t.string \"{UP_ARROW} CIDADE DE RUSTBORO$\"\n"
+  },
+  {
+    "file": "data/maps/Route104_MrBrineysHouse/scripts.inc",
+    "label": "Route104_MrBrineysHouse_Text_WaitUpPeeko",
+    "block": "Route104_MrBrineysHouse_Text_WaitUpPeeko:\n\t.string \"SR. BRINEY: Calma, garota!\\n\"\n\t.string \"Espere, PEEKO!$\"\n"
+  },
+  {
+    "file": "data/maps/Route104_MrBrineysHouse/scripts.inc",
+    "label": "Route104_MrBrineysHouse_Text_Peeko",
+    "block": "Route104_MrBrineysHouse_Text_Peeko:\n\t.string \"PEEKO: Pii piihyoro!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_NotAOneToBeFound",
+    "block": "PetalburgWoods_Text_NotAOneToBeFound:\n\t.string \"Hummm…\\n\"\n\t.string \"Não acho nenhum por aqui…$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_HaveYouSeenShroomish",
+    "block": "PetalburgWoods_Text_HaveYouSeenShroomish:\n\t.string \"Olá, você viu algum POKéMON\\n\"\n\t.string \"chamado SHROOMISH por aqui?\\p\"\n\t.string \"Eu adoro esse POKéMON.$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_IWasGoingToAmbushYou",
+    "block": "PetalburgWoods_Text_IWasGoingToAmbushYou:\n\t.string \"Eu ia te emboscar, mas você\\n\"\n\t.string \"demorou uma eternidade nesta\\l\"\n\t.string \"FLORESTA PETALBURG!\\p\"\n\t.string \"Cansei de esperar, então vim cá!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_HandOverThosePapers",
+    "block": "PetalburgWoods_Text_HandOverThosePapers:\n\t.string \"Você! Pesquisador da DEVON!\\n\"\n\t.string \"Entregue esses papéis agora!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_YouHaveToHelpMe",
+    "block": "PetalburgWoods_Text_YouHaveToHelpMe:\n\t.string \"Aaaaaah!\\p\"\n\t.string \"Você é um TREINADOR, não é?\\n\"\n\t.string \"Precisa me ajudar, por favor!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_NoOneCrossesTeamAqua",
+    "block": "PetalburgWoods_Text_NoOneCrossesTeamAqua:\n\t.string \"Hã? O que pensa que está fazendo?\\n\"\n\t.string \"Acha que vai proteger ele?\\p\"\n\t.string \"Ninguém mexe com a EQUIPE AQUA\\n\"\n\t.string \"e sai impune!\\p\"\n\t.string \"Vou te ensinar a não se meter\\n\"\n\t.string \"no nosso caminho!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_YoureKiddingMe",
+    "block": "PetalburgWoods_Text_YoureKiddingMe:\n\t.string \"Não é possível! Você é forte!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_YouveGotSomeNerve",
+    "block": "PetalburgWoods_Text_YouveGotSomeNerve:\n\t.string \"Grrr… Que petulância se meter\\n\"\n\t.string \"com a EQUIPE AQUA!\\p\"\n\t.string \"Eu lutaria de novo, mas estou\\n\"\n\t.string \"sem POKéMON sobrando…\\p\"\n\t.string \"Mas nós da EQUIPE AQUA estamos\\n\"\n\t.string \"atrás de algo em RUSTBORO!\\p\"\n\t.string \"Hoje eu deixo você passar!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_ThatWasAwfullyClose",
+    "block": "PetalburgWoods_Text_ThatWasAwfullyClose:\n\t.string \"Ufa… Por pouco!\\p\"\n\t.string \"Graças a você ele não levou\\n\"\n\t.string \"estes documentos vitais.\\p\"\n\t.string \"Como agradecimento, tome esta\\n\"\n\t.string \"GRANDE BOLA!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_TeamAquaAfterSomethingInRustboro",
+    "block": "PetalburgWoods_Text_TeamAquaAfterSomethingInRustboro:\n\t.string \"Aquele bandido da EQUIPE AQUA\\n\"\n\t.string \"disse que procuravam algo\\l\"\n\t.string \"em RUSTBORO também?$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_ICantBeWastingTime",
+    "block": "PetalburgWoods_Text_ICantBeWastingTime:\n\t.string \"Ai, não! É uma crise!\\n\"\n\t.string \"Não posso perder mais tempo!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_YoureLoadedWithItems",
+    "block": "PetalburgWoods_Text_YoureLoadedWithItems:\n\t.string \"Sua mochila está cheia.\\n\"\n\t.string \"Não posso te dar a GRANDE BOLA.$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_GoBugPokemonTeam",
+    "block": "PetalburgWoods_Text_GoBugPokemonTeam:\n\t.string \"Capturei um monte de POKéMON!\\p\"\n\t.string \"Vai, vai, vai!\\n\"\n\t.string \"Minha equipe de POKéMON INSETO!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_ICouldntWin",
+    "block": "PetalburgWoods_Text_ICouldntWin:\n\t.string \"Tenho tantos POKéMON e mesmo\\n\"\n\t.string \"assim não venci…$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_ImOutOfPokeBalls",
+    "block": "PetalburgWoods_Text_ImOutOfPokeBalls:\n\t.string \"Peguei tantos POKéMON que\\n\"\n\t.string \"acabaram minhas POKéBOLAS.$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_InstantlyPopularWithBugPokemon",
+    "block": "PetalburgWoods_Text_InstantlyPopularWithBugPokemon:\n\t.string \"Se levar POKéMON INSETO para\\n\"\n\t.string \"a escola, você fica popular!$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_CantBePopularIfILose",
+    "block": "PetalburgWoods_Text_CantBePopularIfILose:\n\t.string \"Não dá para ser popular assim.$\"\n"
+  },
+  {
+    "file": "data/maps/PetalburgWoods/scripts.inc",
+    "label": "PetalburgWoods_Text_PeopleRespectYou",
+    "block": "PetalburgWoods_Text_PeopleRespectYou:\n\t.string \"Se tiver um POKéMON INSETO\\n\"\n\t.string \"grandão, todos te respeitam.$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity/scripts.inc",
+    "label": "RustboroCity_Text_CitySign",
+    "block": "RustboroCity_Text_CitySign:\n\t.string \"CIDADE DE RUSTBORO\\n\"\n\t.string \"“A cidade que une a natureza\\n\"\n\t.string \"à mais pura ciência.”$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity/scripts.inc",
+    "label": "RustboroCity_Text_GymSign",
+    "block": "RustboroCity_Text_GymSign:\n\t.string \"GINÁSIO POKéMON DE RUSTBORO\\n\"\n\t.string \"LÍDER: ROXANNE\\n\"\n\t.string \"“A aluna exemplar das rochas!”$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity/scripts.inc",
+    "label": "RustboroCity_Text_DevonCorpSign",
+    "block": "RustboroCity_Text_DevonCorpSign:\n\t.string \"CORPORAÇÃO DEVON\\n\"\n\t.string \"“Para todas as suas necessidades,\\n\"\n\t.string \"os produtos DEVON são a solução!”$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity/scripts.inc",
+    "label": "RustboroCity_Text_CuttersHouse",
+    "block": "RustboroCity_Text_CuttersHouse:\n\t.string \"CASA DO CORTADOR$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity_Gym/scripts.inc",
+    "label": "RustboroCity_Gym_Text_RoxanneIntro",
+    "block": "RustboroCity_Gym_Text_RoxanneIntro:\n\t.string \"Olá! Eu sou ROXANNE, a LÍDER\\n\"\n\t.string \"DO GINÁSIO DE RUSTBORO.\\p\"\n\t.string \"Eu me tornei LÍDER para aplicar\\n\"\n\t.string \"em batalha tudo o que aprendi na\\l\"\n\t.string \"ESCOLA DE TREINADORES.\\p\"\n\t.string \"Você poderia me demonstrar como\\n\"\n\t.string \"batalha e com quais POKéMON?$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity_Gym/scripts.inc",
+    "label": "RustboroCity_Gym_Text_RoxanneDefeat",
+    "block": "RustboroCity_Gym_Text_RoxanneDefeat:\n\t.string \"Puxa… Eu perdi…\\p\"\n\t.string \"Parece que ainda tenho muito\\n\"\n\t.string \"a aprender…\\p\"\n\t.string \"As regras da LIGA POKéMON exigem\\n\"\n\t.string \"que eu entregue isto a quem me\\l\"\n\t.string \"derrotar em batalha oficial.\\p\"\n\t.string \"Por favor, aceite a oficial\\n\"\n\t.string \"INSÍGNIA DE PEDRA!$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity_Gym/scripts.inc",
+    "label": "RustboroCity_Gym_Text_ReceivedStoneBadge",
+    "block": "RustboroCity_Gym_Text_ReceivedStoneBadge:\n\t.string \"{PLAYER} recebeu a INSÍGNIA\\n\"\n\t.string \"DE PEDRA de ROXANNE!$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity_Gym/scripts.inc",
+    "label": "RustboroCity_Gym_Text_StoneBadgeInfoTakeThis",
+    "block": "RustboroCity_Gym_Text_StoneBadgeInfoTakeThis:\n\t.string \"A INSÍGNIA DE PEDRA eleva o ATAQUE\\n\"\n\t.string \"dos seus POKéMON.\\p\"\n\t.string \"Ela também permite usar o golpe de\\n\"\n\t.string \"HM CORTAR fora das batalhas.\\p\"\n\t.string \"Por favor, leve isto também!$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity_Gym/scripts.inc",
+    "label": "RustboroCity_Gym_Text_ExplainRockTomb",
+    "block": "RustboroCity_Gym_Text_ExplainRockTomb:\n\t.string \"Essa MÁQUINA TÉCNICA, TM39,\\n\"\n\t.string \"contém TUMBA DE ROCHAS.\\p\"\n\t.string \"Ela causa dano caindo pedras\\n\"\n\t.string \"e também reduz a VELOCIDADE.\\p\"\n\t.string \"Um TM ensina o golpe na hora.\\p\"\n\t.string \"Lembre-se: use com sabedoria!$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity_Gym/scripts.inc",
+    "label": "RustboroCity_Gym_Text_RoxannePostBattle",
+    "block": "RustboroCity_Gym_Text_RoxannePostBattle:\n\t.string \"Já que você é forte, desafie os\\n\"\n\t.string \"outros LÍDERES DE GINÁSIO.\\p\"\n\t.string \"Batalhando com muitos TREINADORES,\\n\"\n\t.string \"você aprenderá cada vez mais.$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity_CuttersHouse/scripts.inc",
+    "label": "RustboroCity_CuttersHouse_Text_YouCanPutThisHMToGoodUse",
+    "block": "RustboroCity_CuttersHouse_Text_YouCanPutThisHMToGoodUse:\n\t.string \"Essa sua expressão determinada…\\n\"\n\t.string \"O seu jeito ágil de se mover…\\l\"\n\t.string \"E os seus POKéMON bem treinados…\\p\"\n\t.string \"Você é claramente experiente!\\p\"\n\t.string \"Não, espere, não diga nada.\\n\"\n\t.string \"Dá para ver só de olhar.\\p\"\n\t.string \"Tenho certeza de que fará bom\\n\"\n\t.string \"uso desta MÁQUINA OCULTA.\\p\"\n\t.string \"Não precisa ter vergonha.\\n\"\n\t.string \"Vá em frente, pegue!$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity_CuttersHouse/scripts.inc",
+    "label": "RustboroCity_CuttersHouse_Text_ExplainCut",
+    "block": "RustboroCity_CuttersHouse_Text_ExplainCut:\n\t.string \"Essa MÁQUINA OCULTA, ou HM,\\n\"\n\t.string \"é o golpe CORTAR.\\p\"\n\t.string \"Um golpe de HM pode ser usado\\n\"\n\t.string \"por POKéMON fora da batalha.\\p\"\n\t.string \"Quem aprender CORTAR pode derrubar\\n\"\n\t.string \"árvores pequenas se tiver a\\l\"\n\t.string \"INSÍGNIA DE PEDRA.\\p\"\n\t.string \"E, diferente de um TM, um HM pode\\n\"\n\t.string \"ser usado quantas vezes quiser.$\"\n"
+  },
+  {
+    "file": "data/maps/RustboroCity_DevonCorp_3F/scripts.inc",
+    "label": "RustboroCity_DevonCorp_3F_Text_MrStoneIHaveFavor",
+    "block": "RustboroCity_DevonCorp_3F_Text_MrStoneIHaveFavor:\n\t.string \"Sou o SR. STONE, PRESIDENTE da\\n\"\n\t.string \"CORPORAÇÃO DEVON.\\p\"\n\t.string \"Acabei de ouvir falar de você!\\p\"\n\t.string \"Você salvou meu funcionário\\n\"\n\t.string \"não uma, mas duas vezes!\\p\"\n\t.string \"Quero pedir um favor a alguém\\n\"\n\t.string \"tão especial como você.\\p\"\n\t.string \"Sei que vai levar uma encomenda\\n\"\n\t.string \"ao ESTALEIRO de SLATEPORT.\\p\"\n\t.string \"No caminho, poderia passar na\\n\"\n\t.string \"VILA DE DEWFORD?\\p\"\n\t.string \"Gostaria que entregasse uma\\n\"\n\t.string \"CARTA a STEVEN em DEWFORD.$\"\n"
+  },
+  {
+    "file": "data/maps/Route116/scripts.inc",
+    "label": "Route116_Text_WantToDigTunnel",
+    "block": "Route116_Text_WantToDigTunnel:\n\t.string \"Urrgh! Rugido!\\p\"\n\t.string \"Eu quero cavar esse túnel!$\"\n"
+  },
+  {
+    "file": "data/maps/Route116/scripts.inc",
+    "label": "Route116_Text_RouteSignRustboro",
+    "block": "Route116_Text_RouteSignRustboro:\n\t.string \"ROTA 116\\n\"\n\t.string \"{LEFT_ARROW} CIDADE DE RUSTBORO$\"\n"
+  },
+  {
+    "file": "data/maps/Route116/scripts.inc",
+    "label": "Route116_Text_RusturfTunnelSign",
+    "block": "Route116_Text_RusturfTunnelSign:\n\t.string \"TÚNEL DE RUSTURF\\n\"\n\t.string \"“Ligando RUSTBORO e VERDANTURF\\p\"\n\t.string \"“O projeto do túnel foi\\n\"\n\t.string \"cancelado.”$\"\n"
+  },
+  {
+    "file": "data/maps/RusturfTunnel/scripts.inc",
+    "label": "RusturfTunnel_Text_GruntIntro",
+    "block": "RusturfTunnel_Text_GruntIntro:\n\t.string \"Grrr, que droga de situação!\\p\"\n\t.string \"Aquele POKéMON refém não valia\\n\"\n\t.string \"absolutamente nada!\\p\"\n\t.string \"E pensar que vim me esconder…\\n\"\n\t.string \"Num túnel sem saída nenhuma!\\p\"\n\t.string \"Ei! Você!\\n\"\n\t.string \"Veio aqui me desafiar? Então vem!$\"\n"
+  },
+  {
+    "file": "data/maps/RusturfTunnel/scripts.inc",
+    "label": "RusturfTunnel_Text_GruntDefeat",
+    "block": "RusturfTunnel_Text_GruntDefeat:\n\t.string \"Urrrgh! Minha carreira no crime\\n\"\n\t.string \"acaba num beco sem saída!$\"\n"
+  },
+  {
+    "file": "data/maps/RusturfTunnel/scripts.inc",
+    "label": "RusturfTunnel_Text_GruntTakePackage",
+    "block": "RusturfTunnel_Text_GruntTakePackage:\n\t.string \"Isso não é nada justo…\\p\"\n\t.string \"O CHEFE disse que seria um\\n\"\n\t.string \"serviço fácil e rápido.\\p\"\n\t.string \"Só precisava roubar um pacote\\n\"\n\t.string \"da DEVON.\\p\"\n\t.string \"Tsc!\\n\"\n\t.string \"Se quer tanto de volta, tome!$\"\n"
+  },
+  {
+    "file": "data/maps/RusturfTunnel/scripts.inc",
+    "label": "RusturfTunnel_Text_ThankYouLetsGoHomePeeko",
+    "block": "RusturfTunnel_Text_ThankYouLetsGoHomePeeko:\n\t.string \"PEEKO deve a vida a você!\\p\"\n\t.string \"Todos me chamam de SR. BRINEY.\\n\"\n\t.string \"E você, quem é?\\p\"\n\t.string \"… … … … … … … …\\n\"\n\t.string \"… … … … … … … …\\p\"\n\t.string \"Ah, você é {PLAYER}{KUN}!\\n\"\n\t.string \"Meus sinceros agradecimentos!\\p\"\n\t.string \"Se precisar de qualquer coisa,\\n\"\n\t.string \"não hesite em me procurar!\\p\"\n\t.string \"Fico na minha cabana à beira-mar\\n\"\n\t.string \"perto da FLORESTA PETALBURG.\\p\"\n\t.string \"Venha, PEEKO, vamos voltar para\\n\"\n\t.string \"casa.\\p\"\n\t.string \"PEEKO: Pihyoh!$\"\n"
+  },
+  {
+    "file": "data/maps/DewfordTown/scripts.inc",
+    "label": "DewfordTown_Text_TownSign",
+    "block": "DewfordTown_Text_TownSign:\n\t.string \"VILA DE DEWFORD\\n\"\n\t.string \"“Uma linda ilha no mar azul.”$\"\n"
+  },
+  {
+    "file": "data/maps/DewfordTown/scripts.inc",
+    "label": "DewfordTown_Text_GymSign",
+    "block": "DewfordTown_Text_GymSign:\n\t.string \"GINÁSIO POKéMON DE DEWFORD\\n\"\n\t.string \"LÍDER: BRAWLY\\l\"\n\t.string \"“A grande onda das lutas!”$\"\n"
+  },
+  {
+    "file": "data/maps/DewfordTown/scripts.inc",
+    "label": "DewfordTown_Text_HallSign",
+    "block": "DewfordTown_Text_HallSign:\n\t.string \"SALÃO DE DEWFORD\\n\"\n\t.string \"“O ponto de encontro da moda!”$\"\n"
+  },
+  {
+    "file": "data/maps/DewfordTown_Gym/scripts.inc",
+    "label": "DewfordTown_Gym_Text_BrawlyIntro",
+    "block": "DewfordTown_Gym_Text_BrawlyIntro:\n\t.string \"Eu sou BRAWLY!\\n\"\n\t.string \"O LÍDER DO GINÁSIO DE DEWFORD!\\p\"\n\t.string \"Fui forjado nas ondas violentas\\n\"\n\t.string \"destes mares e treinei duro\\l\"\n\t.string \"na caverna escura!\\p\"\n\t.string \"Você veio me desafiar?\\n\"\n\t.string \"Mostre-me do que é capaz!$\"\n"
+  },
+  {
+    "file": "data/maps/DewfordTown_Gym/scripts.inc",
+    "label": "DewfordTown_Gym_Text_BrawlyDefeat",
+    "block": "DewfordTown_Gym_Text_BrawlyDefeat:\n\t.string \"Uau! Você causou uma onda bem\\n\"\n\t.string \"maior do que eu esperava!\\p\"\n\t.string \"Me pegou de jeito!\\p\"\n\t.string \"Muito bem, você me venceu.\\n\"\n\t.string \"Fique com esta INSÍGNIA!$\"\n"
+  },
+  {
+    "file": "data/maps/DewfordTown_Gym/scripts.inc",
+    "label": "DewfordTown_Gym_Text_ReceivedKnuckleBadge",
+    "block": "DewfordTown_Gym_Text_ReceivedKnuckleBadge:\n\t.string \"{PLAYER} recebeu a INSÍGNIA\\n\"\n\t.string \"DO PUNHO de BRAWLY!$\"\n"
+  },
+  {
+    "file": "data/maps/GraniteCave_1F/scripts.inc",
+    "label": "GraniteCave_1F_Text_GetsDarkAheadHereYouGo",
+    "block": "GraniteCave_1F_Text_GetsDarkAheadHereYouGo:\n\t.string \"Ei, você.\\n\"\n\t.string \"Fica um breu total lá na frente.\\l\"\n\t.string \"Não será nada fácil explorar.\\p\"\n\t.string \"Aquele rapaz que passou mais cedo…\\n\"\n\t.string \"STEVEN, acho que era o nome dele.\\p\"\n\t.string \"Ele sabia usar FLASH, então deve\\n\"\n\t.string \"ficar bem, mas você…\\p\"\n\t.string \"Nós, MONTANHISTAS, ajudamos todos!\\p\"\n\t.string \"Tome este HM FLASH.$\"\n"
+  },
+  {
+    "file": "data/maps/GraniteCave_1F/scripts.inc",
+    "label": "GraniteCave_1F_Text_ExplainFlash",
+    "block": "GraniteCave_1F_Text_ExplainFlash:\n\t.string \"Ensine o golpe FLASH a um\\n\"\n\t.string \"POKéMON e use-o.\\p\"\n\t.string \"Ele ilumina até a mais escura\\n\"\n\t.string \"das cavernas.\\p\"\n\t.string \"Mas precisa da INSÍGNIA DO GINÁSIO\\n\"\n\t.string \"DE DEWFORD para usá-lo fora.$\"\n"
+  },
+  {
+    "file": "data/maps/GraniteCave_StevensRoom/scripts.inc",
+    "label": "GraniteCave_StevensRoom_Text_ImStevenLetterForMe",
+    "block": "GraniteCave_StevensRoom_Text_ImStevenLetterForMe:\n\t.string \"Meu nome é STEVEN.\\p\"\n\t.string \"Tenho interesse em pedras raras,\\n\"\n\t.string \"por isso viajo para todo lado.\\p\"\n\t.string \"Oh?\\n\"\n\t.string \"Uma CARTA para mim?$\"\n"
+  },
+  {
+    "file": "data/maps/GraniteCave_StevensRoom/scripts.inc",
+    "label": "GraniteCave_StevensRoom_Text_ThankYouTakeThis",
+    "block": "GraniteCave_StevensRoom_Text_ThankYouTakeThis:\n\t.string \"STEVEN: Muito obrigado.\\p\"\n\t.string \"Você viajou até aqui para entregar\\n\"\n\t.string \"isto. Devo te retribuir.\\p\"\n\t.string \"Deixe-me ver…\\n\"\n\t.string \"Tome este TM.\\p\"\n\t.string \"Ele contém o meu golpe favorito,\\n\"\n\t.string \"ASA DE AÇO!$\"\n"
+  },
+  {
+    "file": "data/maps/SlateportCity/scripts.inc",
+    "label": "SlateportCity_Text_CitySign",
+    "block": "SlateportCity_Text_CitySign:\n\t.string \"CIDADE DE SLATEPORT\\p\"\n\t.string \"“O porto onde pessoas e POKéMON\\n\"\n\t.string \"se encontram.”$\"\n"
+  },
+  {
+    "file": "data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc",
+    "label": "SlateportCity_OceanicMuseum_2F_Text_SternThankYouForSavingUs",
+    "block": "SlateportCity_OceanicMuseum_2F_Text_SternThankYouForSavingUs:\n\t.string \"CAP. STERN: Você é…\\n\"\n\t.string \"Ah, sim, você é {PLAYER}{KUN}…\\p\"\n\t.string \"Que situação tensa aquela!\\n\"\n\t.string \"Muito obrigado por nos salvar!\\p\"\n\t.string \"Ah, sim! Quase esqueci que você\\n\"\n\t.string \"trouxe as peças da DEVON!$\"\n"
+  },
+  {
+    "file": "data/maps/Route110/scripts.inc",
+    "label": "Route110_Text_TrickHouseSign",
+    "block": "Route110_Text_TrickHouseSign:\n\t.string \"“Três passos à direita e dois acima\\n\"\n\t.string \"para explorar um novo caminho!”\\p\"\n\t.string \"A CASA DOS TRUQUES$\"\n"
+  },
+  {
+    "file": "data/maps/MauvilleCity/scripts.inc",
+    "label": "MauvilleCity_Text_CitySign",
+    "block": "MauvilleCity_Text_CitySign:\n\t.string \"CIDADE DE MAUVILLE\\n\"\n\t.string \"“A brilhante e animada cidade\\n\"\n\t.string \"dos jogos e diversão!”$\"\n"
+  },
+  {
+    "file": "data/maps/MauvilleCity/scripts.inc",
+    "label": "MauvilleCity_Text_GymSign",
+    "block": "MauvilleCity_Text_GymSign:\n\t.string \"GINÁSIO POKéMON DE MAUVILLE\\n\"\n\t.string \"LÍDER: WATTSON\\l\"\n\t.string \"“O homem alegremente eletrizante!”$\"\n"
+  },
+  {
+    "file": "data/maps/MauvilleCity/scripts.inc",
+    "label": "MauvilleCity_Text_BikeShopSign",
+    "block": "MauvilleCity_Text_BikeShopSign:\n\t.string \"“Pedale na lama ou na brita!”\\n\"\n\t.string \"BICICLETAS RYDEL$\"\n"
+  },
+  {
+    "file": "data/maps/MauvilleCity/scripts.inc",
+    "label": "MauvilleCity_Text_GameCornerSign",
+    "block": "MauvilleCity_Text_GameCornerSign:\n\t.string \"“Prêmios incríveis para todos!”\\n\"\n\t.string \"CASSINO DE MAUVILLE$\"\n"
+  },
+  {
+    "file": "data/maps/MauvilleCity_BikeShop/scripts.inc",
+    "label": "MauvilleCity_BikeShop_Text_RydelGreeting",
+    "block": "MauvilleCity_BikeShop_Text_RydelGreeting:\n\t.string \"Ora, ora, o que temos aqui?\\n\"\n\t.string \"Um cliente cheio de energia!\\p\"\n\t.string \"Eu? Pode me chamar de RYDEL.\\n\"\n\t.string \"Sou o dono desta bicicletaria.$\"\n"
+  },
+  {
+    "file": "data/maps/MauvilleCity_BikeShop/scripts.inc",
+    "label": "MauvilleCity_BikeShop_Text_ExplainBikesChooseWhichOne",
+    "block": "MauvilleCity_BikeShop_Text_ExplainBikesChooseWhichOne:\n\t.string \"RYDEL: Hum, hum… … … … …\\p\"\n\t.string \"Você veio pedalando lá de\\n\"\n\t.string \"VILA RAIZ até aqui?\\p\"\n\t.string \"Nossa vida!\\n\"\n\t.string \"Isso é longe demais!\\p\"\n\t.string \"Com uma das minhas BICICLETAS,\\n\"\n\t.string \"você viaja sentindo o vento!\\p\"\n\t.string \"Sabe de uma coisa?\\n\"\n\t.string \"Vou te dar uma BICICLETA!\\p\"\n\t.string \"Mas espere um instante!\\p\"\n\t.string \"Existem dois modelos diferentes!\\p\"\n\t.string \"A BICICLETA MACH e a\\n\"\n\t.string \"BICICLETA ACRO!\\p\"\n\t.string \"A MACH é para quem quer velocidade!\\p\"\n\t.string \"E a ACRO é para manobras técnicas!\\p\"\n\t.string \"Como sou bondoso, escolha a que\\n\"\n\t.string \"você mais gostar!\\p\"\n\t.string \"Qual você prefere levar?$\"\n"
+  },
+  {
+    "file": "data/maps/MauvilleCity_Gym/scripts.inc",
+    "label": "MauvilleCity_Gym_Text_WattsonIntro",
+    "block": "MauvilleCity_Gym_Text_WattsonIntro:\n\t.string \"Eu desisti dos planos de reformar\\n\"\n\t.string \"a cidade inteira, desisti sim!\\p\"\n\t.string \"Em vez disso, criei armadilhas\\n\"\n\t.string \"elétricas no meu GINÁSIO!\\p\"\n\t.string \"Opa? O que faz por aqui?\\p\"\n\t.string \"Passou por todas as minhas portas?\\p\"\n\t.string \"Wahahahah! Muito divertido!\\p\"\n\t.string \"Então eu, WATTSON, o LÍDER DE\\n\"\n\t.string \"MAUVILLE, vou te eletrizar!$\"\n"
+  },
+  {
+    "file": "data/maps/MauvilleCity_Gym/scripts.inc",
+    "label": "MauvilleCity_Gym_Text_WattsonDefeat",
+    "block": "MauvilleCity_Gym_Text_WattsonDefeat:\n\t.string \"Wahahahah!\\n\"\n\t.string \"Tudo bem, eu perdi!\\p\"\n\t.string \"Você me deu um belo choque!\\n\"\n\t.string \"Fique com esta INSÍGNIA!$\"\n"
+  },
+  {
+    "file": "data/maps/MauvilleCity_Gym/scripts.inc",
+    "label": "MauvilleCity_Gym_Text_ReceivedDynamoBadge",
+    "block": "MauvilleCity_Gym_Text_ReceivedDynamoBadge:\n\t.string \"{PLAYER} recebeu a INSÍGNIA\\n\"\n\t.string \"DÍNAMO de WATTSON!$\"\n"
+  }
+]
