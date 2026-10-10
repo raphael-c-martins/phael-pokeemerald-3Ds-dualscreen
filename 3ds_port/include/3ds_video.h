@@ -134,6 +134,12 @@ enum
      */
     CTR_CENTRED_PARTY,
     CTR_CENTRED_PARTY_WHOLE,
+    /*
+     * The shop's BUY screen, over the whole bottom screen on its light green
+     * as the bag from a shop is, without the GBA screen's copy of the map
+     * and of the people in it (shop.c): the top screen keeps the world.
+     */
+    CTR_CENTRED_SHOP,
     CTR_CENTRED_SCREENS
 };
 void CtrVideo_SetCentred(unsigned screen);

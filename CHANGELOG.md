@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.3.1 — 2026-10-10
+
+New and improved:
+
+- A new icon and banner on the HOME Menu, for the forwarder CIA and the
+  3DSX.
+
+Fixed:
+
+- Taking a fossil in the Mirage Tower crashed the game when the tower
+  started to shake (the tower's graphics overran their buffer).
+- Hyper Beam could crash a battle (an original game bug that picks an orb
+  animation that does not exist; harmless on the GBA, a crash on the 3DS).
+- Shops: the BUY screen showed a black background and sat in the top-left
+  corner of the screen. It is on the bottom screen now, on the same green as
+  the bag you sell from, and works by touch: tap an item to pick it and again
+  to buy it, drag the list to scroll it, drag to change how many, tap YES or
+  NO. The top screen keeps the world, in 2D and in voxel mode.
+- Battles: the stats box shown on a level up was hidden behind the text box
+  and ran off the bottom of the screen; it is drawn over the text box again,
+  whole.
+- Graphics and data the 3DS read from the wrong place (the same cause as the
+  Mirage Tower crash): Sootopolis's drought weather no longer fades the
+  screen to black; Trainer Hill floors have their maps and walls (by
+  @Trukitro, pull request #25); Spinda has
+  its spots; the evolution background, the Pokéball, mugshot, Rayquaza and
+  grid battle transitions, the PP colours, Pokédex footprints and area glow,
+  the contest applause meter, turn numbers and results window, the Secret
+  Base decoration preview, the Match Call frame, the underwater map name
+  frame, the Pokénav condition cancel icon, the Battle Factory screens, the
+  Trainer Hill records, the Battle Pyramid floor colours and the slots' Reel
+  Time window are drawn as on the GBA.
+
 ## 0.3.0 — 2026-10-08
 
 New and improved:

@@ -146,6 +146,10 @@ bool8 CtrBag_Close(void);
 bool8 CtrPokedex_IsOpen(void);
 void CtrPokedex_Touch(u8 phase, s16 x, s16 y);
 bool8 CtrPokedex_Close(bool8 leave);
+/* shop.c: the BUY screen's touches, in pixels of its picture, as the bag's.
+ * It has the whole screen (CTR_CENTRED_SHOP), so it runs as MODE_STORAGE. */
+bool8 CtrShop_IsOpen(void);
+void CtrShop_Touch(u8 phase, s16 x, s16 y);
 void SetPokemonCryStereo(u32 val);
 extern const struct PokedexEntry gPokedexEntries[];
 
@@ -2466,6 +2470,12 @@ static bool8 BagShown(u8 mode)
     return mode == MODE_BAG_MENU;
 }
 
+/* Whether the shop's BUY screen is what the whole screen shows. */
+static bool8 ShopShown(u8 mode)
+{
+    return mode == MODE_STORAGE && CtrShop_IsOpen();
+}
+
 /* Whether the game's own Pokédex is what the area shows. */
 static bool8 DexShown(u8 mode)
 {
@@ -2817,6 +2827,8 @@ static u8 CurrentMode(void)
 static struct
 {
     bool8 active, entered, battle;
+    /* Opened by CtrBottom_KeepWorld: a game screen is on its way. */
+    bool8 awaitMenu;
     u16 frames, away;
 } sSession;
 
@@ -2826,6 +2838,7 @@ static void BeginSession(bool8 battle)
         CtrLog_Write(CTR_LOG_VIDEO, "bottom screen: hidden menu session (%s)", battle ? "battle" : "field");
     sSession.active = TRUE;
     sSession.entered = FALSE;
+    sSession.awaitMenu = FALSE;
     sSession.battle = battle;
     sSession.frames = sSession.away = 0;
 }
@@ -2856,6 +2869,10 @@ static bool8 UpdateSession(u8 mode, bool8 planRunning)
     if (home)
     {
         sSession.away = 0;
+        /* A screen asked for by the game (the shop's BUY, the bag to sell
+         * from) starts a frame after the fade out: not the session's end. */
+        if (sSession.awaitMenu && !sSession.entered && sSession.frames < 180)
+            return TRUE;
         if ((sSession.entered || (!planRunning && sSession.frames > 30)) && !gPaletteFade.active)
         {
             sSession.active = FALSE;
@@ -6481,9 +6498,30 @@ static u8 ProcessTouch(u8 mode)
         {
             CtrBag_Touch(BAG_TOUCH_CANCEL, 0, 0);
             CtrPokedex_Touch(BAG_TOUCH_CANCEL, 0, 0);
+            CtrShop_Touch(BAG_TOUCH_CANCEL, 0, 0);
         }
         sTouch.active = FALSE;
         sTouch.bag = FALSE;
+        return HIT_NONE;
+    }
+    /* The shop's BUY screen: its picture in the middle of the whole screen,
+     * the touch in pixels of it, as it goes (drags scroll its list). */
+    if ((in->touchDown && ShopShown(mode)) || (sTouch.bag && sTouch.active && ShopShown(mode)))
+    {
+        int ox = (W - 240) / 2, oy = (H - 160) / 2;
+
+        if (in->touchDown)
+        {
+            sTouch.active = sTouch.bag = TRUE;
+            CtrShop_Touch(BAG_TOUCH_DOWN, in->touchX - ox, in->touchY - oy);
+        }
+        else if (in->touchActive)
+            CtrShop_Touch(BAG_TOUCH_MOVE, in->touchX - ox, in->touchY - oy);
+        else
+        {
+            sTouch.active = sTouch.bag = FALSE;
+            CtrShop_Touch(BAG_TOUCH_UP, 0, 0);
+        }
         return HIT_NONE;
     }
     /* The game's bag: its picture in the middle of its area, the touch in
@@ -6876,11 +6914,12 @@ void CtrBottom_Init(void)
                  CtrPlatform_TickMs(CtrPlatform_Ticks() - start));
 }
 
-/* The PC's boxes are about to open (pokemon_storage_system.c): the top keeps
- * the world, fade included, until the field is back. */
+/* The PC's boxes, the shop's BUY screen or the bag to sell from are about to
+ * open: the top keeps the world, fade included, until the field is back. */
 void CtrBottom_KeepWorld(void)
 {
     BeginSession(FALSE);
+    sSession.awaitMenu = TRUE;
     CtrVideo_HoldTop(TRUE);
 }
 
