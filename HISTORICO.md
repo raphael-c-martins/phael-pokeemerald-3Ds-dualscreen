@@ -108,9 +108,30 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 
 ---
 
-## 🎯 Próximo Passo: Validação da Milestone v3 no Console Físico
-1. Copiar `dist_3ds/emerald3ds_v3.3dsx` (ou renomeado para `emerald3ds.3dsx`) para o cartão SD do Nintendo 3DS na pasta `/3ds/emerald3ds/`.
-2. Abrir o Homebrew Launcher no 3DS e rodar o jogo.
-3. Testar a navegação na casa, fala com a mãe, menu de salvar, interação com a rival e início do salvamento do Birch na Rota 101.
+## 🏆 Resultado da Validação no Hardware Real (Old 3DS) - Milestone v3: SUCESSO E ESTABILIDADE ABSOLUTA!
+- **Data da Validação:** 10/10/2026
+- **Status:** **APROVADO NO CONSOLE FÍSICO COM ALTA PERFORMANCE!**
+- **Evidências Arquivadas:** `# TEMPORARIO/Tentativa-v3/` (24 fotografias em alta resolução + `port.log` com 34.278 frames + `port-prev.log` + `settings.txt`).
+
+### 🔍 Diagnóstico Técnico das Evidências da v3:
+1. **Performance e Resiliência Excepcionais:**
+   - O jogo executou por mais de 9,5 minutos ininterruptos (**34.278 frames**) a sólidos **59.8 ~ 59.9 FPS**.
+   - Consumo de CPU médio entre **2.8 ms e 3.5 ms** (muito abaixo do teto de 16.6 ms).
+   - O sistema de diagnóstico com sentinela (`debug.txt` -> `port.log`) operou perfeitamente, registrando taps na tela touch, swap de buffers e um encerramento 100% limpo (`[BOOT] clean shutdown`).
+2. **Validações de Conteúdo Aprovadas:**
+   - Telas de Save e confirmação de sobrescrita 100% em português.
+   - Interface touch screen inferior com abas `OPÇÕES`, `MELHORIAS` e `TRAPAÇAS` e botões de decisão funcionando fluidamente.
+   - Evento do Zigzagoon na Rota 101, grito de socorro do Birch e seleção do Pokémon inicial na bolsa perfeitamente funcionais.
+3. **Anomalias Reportadas e Diagnóstico de Causa Raiz:**
+   - **Estouro de Texto na Caixa de Diálogo:** Frases com mais de 34 caracteres por linha vazaram para fora da borda direita da caixa de diálogo clássica do GBA.
+   - **Transição de Idioma no Prof. Birch:** Diálogos do Birch no laboratório pós-resgate (`MightBeGoodIdeaToGoSeeRival` e `GetRivalToTeachYou`) ainda estavam no texto original em inglês.
+   - **Falas de TV:** Falas da reportagem do pai na TV (`ReportFromPetalburgGym` e `TheresAMovieOnTV`) pendentes de localização.
+   - **Rival e Batalha na Rota 103:** Encontro com a May/Brendan na Rota 103 e batalha ainda em inglês.
+
+---
+
+## 🚀 10/10/2026 - Milestone v4: Ajuste Fino de Layout, Rota 103, Oldale Town e Pokédex
+- **Branch Ativa:** `tentativa4`
+- **Foco:** Ajuste métrico estrito de caracteres (máx. 33 por linha com `\n`, `\l`, `\p`), localização completa de Oldale Town, batalha contra May na Rota 103 e entrega da Pokédex oficial no laboratório.
 
 
