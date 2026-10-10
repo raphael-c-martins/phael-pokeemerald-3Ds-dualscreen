@@ -130,8 +130,32 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 
 ---
 
-## 🚀 10/10/2026 - Milestone v4: Ajuste Fino de Layout, Rota 103, Oldale Town e Pokédex
+## 🚀 10/10/2026 - Milestone v4: Ajuste Fino de Layout, Rota 103, Oldale Town, Petalburg Gym e Citra QA
 - **Branch Ativa:** `tentativa4`
-- **Foco:** Ajuste métrico estrito de caracteres (máx. 33 por linha com `\n`, `\l`, `\p`), localização completa de Oldale Town, batalha contra May na Rota 103 e entrega da Pokédex oficial no laboratório.
+- **Binário Gerado:** `dist_3ds/emerald3ds_v4.3dsx` (33.540.476 bytes) e `dist_3ds/emerald3ds.3dsx`.
+- **Status da Compilação:** **SUCESSO ABSOLUTO** (Código de saída 0, ABI `b9c6e212`, 6.423/6.423 assets empacotados e validados).
+
+### 🛠️ Modificações Realizadas na v4:
+1. **Eliminação do Estouro de Texto (Auditoria Métrica Estrita):**
+   - Desenvolvida verificação com limites em tempo de execução garantindo que todas as falas respeitem o limite de **<= 32 a 33 caracteres por linha**.
+   - Ajustadas todas as quebras de linha com caracteres de controle nativos do GBA (`\n`, `\l`, `\p`), impedindo que textos vazem da moldura do balão na tela real do console.
+   - 219 de 219 blocos validados com 100% de match contra a árvore original do pokeemerald.
+2. **Localização em Massa de Áreas Iniciais:**
+   - **Littleroot Town Completa:** Falas da Mãe (chegada e descanso), quarto de Brendan/May (relógio, GameCube, caderno), TV da sala (notícia de Petalburg Gym e filme), Laboratório do Prof. Birch (falas pós-resgate, conselho de encontrar o rival e entrega da Pokédex oficial).
+   - **Rota 101:** Resgate do Prof. Birch, perseguição do Zigzagoon e NPCs de dicas.
+   - **Oldale Town Completa:** Todas as casas, Centro Pokémon (Enfermeira Joy), Poké Mart (balconista, mensagens de compra/venda, clientes no balcão) e placas informativas.
+   - **Rota 103:** Diálogo com a rival May/Brendan, desafio pré-batalha, derrota e convite para voltar ao laboratório.
+   - **Rota 102:** Todos os NPCs do caminho e treinadores de rota (Calvin, Allen, Rick, Tiana).
+   - **Petalburg City & Ginásio:** Casas 1 e 2, Centro Pokémon, Poké Mart (3 NPCs), primeiro encontro com o pai Norman no Ginásio de Petalburg e evento completo do Wally pedindo ajuda para capturar o Zigzagoon.
+3. **Módulo de Automação e QA com Citra (`tools/citra_runner.py`):**
+   - Criação da ferramenta de automação CLI que localiza e lança o emulador Citra (`citra-qt.exe` / `citra.exe`) apontando direto para o `.3dsx` compilado.
+   - Suporte a injeção automática de saves (`--save`) no SDMC virtual para testes instantâneos de rotas avançadas.
+   - Ativação do modo sentinela (`debug.txt`) para capturar e auditar telemetria de `port.log` e `citra_log.txt` sem necessidade de hardware físico.
+   - Criação da skill do agente em `.agents/skills/citra-qa-agent/SKILL.md` e workflow `/citra-debug`.
+
+### 🔍 Descobertas Técnicas para a Milestone v5:
+- **Introdução do Prof. Birch:** As falas de abertura do jogo ("*Welcome to the world of POKéMON!*", escolha de gênero e nome) residem em `data/text/birch_speech.inc`. As traduções já foram mapeadas metricamente e serão integradas no próximo ciclo para que o jogo esteja em português desde o primeiro frame.
+- **Ativação da Dual-Screen:** Confirmado que a tela inferior permanece em standby durante a introdução do Birch por projeto da engine (o touch e o mapa só inicializam quando a camada de Overworld entra em ação ao abrir o caminhão de mudança).
+
 
 
