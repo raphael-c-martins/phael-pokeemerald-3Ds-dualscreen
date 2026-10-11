@@ -292,3 +292,10 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 ### 🛡️ 3. Preservação de Dados e Integridade:
 - Todos os saves (`.sav`), logs persistentes e conteúdos em `# TEMPORARIO` foram rigorosamente preservados.
 
+---
+
+## 📌 Próximos Passos Prioritários (Amanhã / Próxima Sessão)
+- [ ] **Mapeamento Exaustivo de Diálogos em Inglês:** Primeira tarefa obrigatória da próxima sessão: realizar uma varredura completa em todos os arquivos de scripts de eventos (`data/maps/**/*.inc`, `data/event_scripts.s`, `data/scripts/*.inc` e treinadores) para identificar todos os textos que ainda estão em inglês e gerar o catálogo de tradução massivo PT-BR.
+- [ ] **Validação do Teste do Usuário na v7:** Acompanhar as impressões dos testes no hardware real 3DS referentes ao respiro de 10px das healthboxes e mensagem do SELECT.
+
+
