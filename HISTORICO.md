@@ -261,3 +261,34 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 ### 🛡️ 4. Preservação Absoluta:
 - Mantida a blindagem do processador ARM11 contra buffer overrun em `3ds_bottom_ui.c`.
 - Preservados saves existentes, pastas de logs e insumos de `# TEMPORARIO`.
+
+---
+
+## 🚀 10/10/2026 - Milestone v7: Ajuste Fino das Healthboxes Widescreen (Margem de 10px / Elevação) e Tradução de Mensagens Globais do Sistema (event_scripts.s)
+- **Branch Ativa:** `tentativa7`
+- **Binário Gerado:** `dist_3ds/emerald3ds_v7.3dsx` e `dist_3ds/emerald3ds.3dsx` (33.531.216 bytes).
+- **Status da Compilação:** **SUCESSO ABSOLUTO (Exit code 0)** via MSYS2 MinGW64.
+- **Validação no Citra QA:** 59.9 FPS constantes, CPU 1.57 ms, mixagem de áudio 1.45 ms, zero erros de renderização (`errors=0`).
+
+### 📐 1. Ajuste Fino de Layout Widescreen das Healthboxes de Batalha (Patch 0051 Refinado):
+- **Feedback do Usuário:** O posicionamento nos cantos widescreen foi aprovado com entusiasmo na v6, solicitando um respiro de ~10px em relação às bordas laterais/superiores e que a healthbox do atacante (jogador) subisse na vertical para não encostar na caixa de diálogo de ação inferior.
+- **Geometria no Compositor 3DS:** O motor do 3DS aplica escala `sZoom = 1.4f` e deslocamento horizontal `sOffX = 32.0f` no viewport de batalha (`3ds_video.c:3095`):
+  - **Batalha Individual:**
+    - Oponente: `x = 16, y = 26` (gera coordenada renderizada de `16 * 1.4 + 32 = 54.4px`, proporcionando ~12.4px de folga na margem esquerda da tela superior de 400px e respiro superior ideal).
+    - Jogador (atacante): `x = 186, y = 74` (elevado de `y = 88` para `74`, descolando ~20px da caixa de texto de seleção de golpes, e terminando com sprite de 96px em `388.4px`, garantindo ~11.6px de margem em relação à borda direita).
+  - **Batalha em Duplas:**
+    - Jogador: `x = 176, y = 62` e `x = 186, y = 84`.
+    - Oponente: `x = 16, y = 18` e `x = 12, y = 42`.
+- **Implementação:** Arquivo `patches/pokeemerald/0051-widescreen-battle-healthbox-coords.patch` atualizado canonicamente com quebras LF puras e integrado ao pipeline.
+
+### 📜 2. Tradução de Mensagens Globais de Sistema (`data/event_scripts.s`):
+- **Diagnóstico da Mensagem do SELECT (Foto 20261010_223222.jpg):** Ao apertar SELECT ou interagir com utilidades, o jogo exibia *"An item in the BAG can be registered to SELECT for easy use."*.
+- **Causa Raiz:** O motor do Pokémon Emerald armazena textos globais do sistema em assembly puro (`data/event_scripts.s`), enquanto o script de localização filtrava unicamente arquivos com extensão `.inc`.
+- **Solução Arquitetural:**
+  - Script `tools/localize_portuguese.py` atualizado para processar também arquivos `.s`: `is_inc = relative.endswith(".inc") or relative.endswith(".s")`.
+  - Criado catálogo auditado `tools/locales/pt_br/data/event_scripts.s.txt` com todas as 25 mensagens globais em PT-BR (aviso do botão SELECT, mensagens de PC desligado, armários, pias, desmaio/blackout da equipe e cansaço).
+  - Todas as 25 mensagens validadas contra o limite métrico estrito de `MESSAGE_BOX_WIDTH = 208px`.
+
+### 🛡️ 3. Preservação de Dados e Integridade:
+- Todos os saves (`.sav`), logs persistentes e conteúdos em `# TEMPORARIO` foram rigorosamente preservados.
+

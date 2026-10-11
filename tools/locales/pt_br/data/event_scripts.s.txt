@@ -1,0 +1,74 @@
+[gText_PokemartSign] 505113cfca
+“Itens selecionados para sua\nconveniência!” POKéMON MART$
+
+[gText_PokemonCenterSign] 8c51d5ca41
+“Revigore seus parceiros cansados!”\nCENTRO POKéMON$
+
+[gText_MomOrDadMightLikeThisProgram] c972c0dc7b
+{STR_VAR_1} pode gostar deste\nprograma.\n… … … … … … … … … … … … … … … …\pÉ melhor ir andando!$
+
+[gText_WhichFloorWouldYouLike] 3521c6ed75
+Bem-vindo à LOJA DE LILYCOVE.\pQual andar você gostaria de visitar?$
+
+[gText_SandstormIsVicious] 2457eab70f
+A tempestade de areia é implacável.\nÉ impossível continuar em frente.$
+
+[gText_SelectWithoutRegisteredItem] 0d286bda8d
+Um item na MOCHILA pode ser\nregistrado no SELECT para fácil uso.$
+
+[gText_PokemonTrainerSchoolEmail] e514ab540c
+Há um e-mail da ESCOLA DE\nTREINADORES POKéMON.\p… … … … … …\pUm POKéMON pode aprender\naté quatro golpes.\pA perícia do TREINADOR é testada na\nescolha dos golpes dos seus POKéMON.\p… … … … … …$
+
+[gText_PlayerHouseBootPC] 65e0936607
+{PLAYER} ligou o PC.$
+
+[gText_PokeblockLinkCanceled] 2e60f250e7
+A conexão foi cancelada.$
+
+[gText_UnusedNicknameReceivedPokemon] 40cb85ccbe
+Deseja dar um apelido ao\n{STR_VAR_2} que recebeu?$
+
+[gText_PlayerWhitedOut] fb2fabb2b9
+{PLAYER} está sem POKéMON aptos\npara a batalha!\p{PLAYER} desmaiou!$
+
+[gText_RegisteredTrainerinPokeNav] 28d3a6075d
+Registrou {STR_VAR_1} {STR_VAR_2}\nno POKéNAV.$
+
+[gText_ComeBackWithSecretPower] 69d3dcb5f1
+Você conhece o TM PODER SECRETO?\pNosso grupo adora esse golpe.\pTem a ver com fazer\nBASES SECRETAS.\pVocê deveria procurá-lo.\pQuando tiver o golpe, fale comigo\nnovamente. Vou lhe ensinar algo legal.$
+
+[gText_PokerusExplanation] ef21dda05f
+Seus POKéMON podem estar infectados\ncom POKéRUS.\pPouco se sabe sobre o POKéRUS,\nexceto que são micro-organismos\lque se prendem aos POKéMON.\pEnquanto infectados, dizem que os\nPOKéMON crescem muito bem.$
+
+[gText_DoorOpenedFarAway] 883d8e0f5b
+Pareceu como se uma porta tivesse sido\naberta em algum lugar distante.$
+
+[gText_BigHoleInTheWall] 0be310613c
+Há um grande buraco na parede.$
+
+[gText_SorryWirelessClubAdjustments] 68708d0cdc
+Sinto muitíssimo.\nO CLUBE SEM FIO está em manutenção.$
+
+[gText_UndergoingAdjustments] 8d7dea7bd4
+Parece estar em manutenção.$
+
+[gText_SorryTradeCenterInspections] 1181d22376
+Sinto muitíssimo. O CENTRO DE TROCAS\nestá passando por manutenções.$
+
+[gText_SorryRecordCornerPreparation] 52fd5801a4
+Sinto muitíssimo. O CENTRO DE RECORDES\nestá em preparação.$
+
+[gText_PlayerHandedOverTheItem] b1004dd743
+{PLAYER} entregou o\n{STR_VAR_1}.$
+
+[gText_ThankYouForAccessingMysteryGift] 06566e3077
+Obrigado por acessar o\nsistema do MYSTERY GIFT.$
+
+[gText_PlayerFoundOneTMHM] 1d04945bb6
+{PLAYER} encontrou um\n{STR_VAR_1} {STR_VAR_2}!$
+
+[gText_Sudowoodo_Attacked] 75240706d4
+A árvore estranha não parece\nter gostado do regador!\pA árvore estranha atacou!$
+
+[gText_LegendaryFlewAway] 30cf7e7f11
+O {STR_VAR_1} voou para longe!$

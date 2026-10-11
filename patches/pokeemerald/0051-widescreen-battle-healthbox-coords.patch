@@ -9,10 +9,10 @@ diff --git a/src/battle_interface.c b/src/battle_interface.c
      {
          if (GetBattlerSide(battler) != B_SIDE_PLAYER)
 -            x = 44, y = 30;
-+            x = 8, y = 24;
++            x = 16, y = 26;
          else
 -            x = 158, y = 88;
-+            x = 194, y = 88;
++            x = 186, y = 74;
      }
      else
      {
@@ -20,19 +20,19 @@ diff --git a/src/battle_interface.c b/src/battle_interface.c
          {
          case B_POSITION_PLAYER_LEFT:
 -            x = 159, y = 76;
-+            x = 184, y = 74;
++            x = 176, y = 62;
              break;
          case B_POSITION_PLAYER_RIGHT:
 -            x = 171, y = 101;
-+            x = 196, y = 98;
++            x = 186, y = 84;
              break;
          case B_POSITION_OPPONENT_LEFT:
 -            x = 44, y = 19;
-+            x = 8, y = 18;
++            x = 16, y = 18;
              break;
          case B_POSITION_OPPONENT_RIGHT:
 -            x = 32, y = 44;
-+            x = 4, y = 42;
++            x = 12, y = 42;
              break;
          }
      }

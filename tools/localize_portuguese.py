@@ -309,7 +309,7 @@ def localize(tree: Path, relative: str, charset: Charset, write: bool) -> Result
     entries = read_catalog(catalog)
     path = tree / relative
     source = path.read_text(encoding="utf-8")
-    is_inc = relative.endswith(".inc")
+    is_inc = relative.endswith(".inc") or relative.endswith(".s")
     texts = inc_texts(source) if is_inc else c_texts(source)
     problems, edits = [], []
     seen = set()
