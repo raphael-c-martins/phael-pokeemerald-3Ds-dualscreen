@@ -1,0 +1,44 @@
+Pokémon Emerald 3Ds Dual Screen changes to pret/pokeemerald 76463dac15cad36aca5e2b3f6366abf9e53f814f: the POKéDEX in meters and kilograms for Portuguese
+Applies after 0045-portuguese-option-menu-columns.patch; apply with tools/bootstrap.py.
+
+diff --git a/src/pokedex.c b/src/pokedex.c
+--- a/src/pokedex.c
++++ b/src/pokedex.c
+@@ -4245,13 +4245,21 @@
+     PrintInfoScreenText(description, GetStringCenterAlignXOffset(FONT_NORMAL, description, DISPLAY_WIDTH), 95);
+ }
+ 
++// Metric units, as the Spanish and Portuguese games show them; Brazil writes
++// the decimal comma (0,7 m, 6,9 kg).
++#if defined(CTR_LANG_PT_BR)
++#define DEX_DECIMAL_MARK CHAR_COMMA
++#else
++#define DEX_DECIMAL_MARK CHAR_PERIOD
++#endif
++
+ static void PrintMonHeight(u16 height, u8 left, u8 top)
+ {
+-#if defined(PORT_BRIDGE) && GAME_LANGUAGE == LANGUAGE_SPANISH
++#if defined(PORT_BRIDGE) && (GAME_LANGUAGE == LANGUAGE_SPANISH || defined(CTR_LANG_PT_BR))
+     u8 buffer[16];
+     u8 *end = ConvertIntToDecimalStringN(buffer, height / 10, STR_CONV_MODE_LEFT_ALIGN, 4);
+ 
+-    *end++ = CHAR_PERIOD;
++    *end++ = DEX_DECIMAL_MARK;
+     *end++ = CHAR_0 + height % 10;
+     *end++ = CHAR_SPACE;
+     *end++ = CHAR_m;
+@@ -4292,11 +4300,11 @@
+ 
+ static void PrintMonWeight(u16 weight, u8 left, u8 top)
+ {
+-#if defined(PORT_BRIDGE) && GAME_LANGUAGE == LANGUAGE_SPANISH
++#if defined(PORT_BRIDGE) && (GAME_LANGUAGE == LANGUAGE_SPANISH || defined(CTR_LANG_PT_BR))
+     u8 buffer[16];
+     u8 *end = ConvertIntToDecimalStringN(buffer, weight / 10, STR_CONV_MODE_LEFT_ALIGN, 4);
+ 
+-    *end++ = CHAR_PERIOD;
++    *end++ = DEX_DECIMAL_MARK;
+     *end++ = CHAR_0 + weight % 10;
+     *end++ = CHAR_SPACE;
+     *end++ = CHAR_k;

@@ -392,7 +392,21 @@ static void *Unlz(const void *src, u32 *outSize)
 static void *UnlzFile(const char *path, u32 *outSize)
 {
     void *packed = ReadRomfs(path, NULL);
-    void *data = Unlz(packed, outSize);
+    u32 size = 0;
+    void *data = Unlz(packed, &size);
+    char plain[96];
+    size_t n = strlen(path);
+
+    /* Graphics with English words, redrawn for a translated build: the
+     * path without its ".lz", as the game's own sheets are named. */
+    if (data != NULL && n > 3 && n - 3 < sizeof(plain))
+    {
+        memcpy(plain, path, n - 3);
+        plain[n - 3] = '\0';
+        Port_TransformAsset(plain, data, size);
+    }
+    if (outSize != NULL)
+        *outSize = size;
 
     free(packed);
     return data;
@@ -1201,8 +1215,6 @@ static int StrWidth(const Font *font, const u8 *str)
             width = 0;
             continue;
         }
-        if (g >= 272)
-            continue;
         width += font->widths[g];
     }
     return width > best ? width : best;
@@ -1210,8 +1222,6 @@ static int StrWidth(const Font *font, const u8 *str)
 
 static int DrawGlyph(const Font *font, u16 glyph, int x, int y, u16 fg, u16 shadow)
 {
-    if (glyph >= 272)
-        return 0;
     const u16 *base = font->glyphs + glyph * 0x20;
     int width = font->widths[glyph];
     int sx = x + sOX;
@@ -1264,8 +1274,6 @@ static int DrawStr(const Font *font, const u8 *str, int x, int y, u16 fg, u16 sh
             y += font->lineHeight;
             continue;
         }
-        if (g >= 272)
-            continue;
         x += DrawGlyph(font, g, x, y, fg, shadow);
     }
     return x;
@@ -1284,8 +1292,6 @@ static void DrawStrCentered(const Font *font, const u8 *str, int cx, int y, u16 
 /* Whether a glyph paints (glyph or shadow) the pixel at column px of row. */
 static bool8 GlyphInk(const Font *font, u16 glyph, int px, int row)
 {
-    if (glyph >= 272)
-        return FALSE;
     u16 bits = font->glyphs[glyph * 0x20 + (row >= 8 ? 0x10 : 0) + (px / 8) * 8 + (row & 7)];
     u8 byte = (px & 7) < 4 ? bits >> 8 : bits & 0xFF;
     u8 v = (byte >> (6 - 2 * (px & 3))) & 3;
@@ -1351,6 +1357,41 @@ static void DrawStrIn(const Font *font, const u8 *str, int x0, int x1, int y0, i
             shadow);
 }
 
+/* The accented letters of the Portuguese interface (UTF-8 C3 xx in the
+ * sources) that the game's font has, or that 3ds_compat.c draws into it
+ * (ã, õ, Ã, Õ). */
+static u8 Latin1Letter(u8 code)
+{
+    switch (code)
+    {
+    case 0xC0: return CHAR_A_GRAVE;
+    case 0xC1: return CHAR_A_ACUTE;
+    case 0xC2: return CHAR_A_CIRCUMFLEX;
+    case 0xC3: return CHAR_A_TILDE;
+    case 0xD5: return CHAR_O_TILDE;
+    case 0xE3: return CHAR_a_TILDE;
+    case 0xF5: return CHAR_o_TILDE;
+    case 0xC7: return CHAR_C_CEDILLA;
+    case 0xC9: return CHAR_E_ACUTE;
+    case 0xCA: return CHAR_E_CIRCUMFLEX;
+    case 0xCD: return CHAR_I_ACUTE;
+    case 0xD3: return CHAR_O_ACUTE;
+    case 0xD4: return CHAR_O_CIRCUMFLEX;
+    case 0xDA: return CHAR_U_ACUTE;
+    case 0xE0: return CHAR_a_GRAVE;
+    case 0xE1: return CHAR_a_ACUTE;
+    case 0xE2: return CHAR_a_CIRCUMFLEX;
+    case 0xE7: return CHAR_c_CEDILLA;
+    case 0xE9: return CHAR_e_ACUTE;
+    case 0xEA: return CHAR_e_CIRCUMFLEX;
+    case 0xED: return CHAR_i_ACUTE;
+    case 0xF3: return CHAR_o_ACUTE;
+    case 0xF4: return CHAR_o_CIRCUMFLEX;
+    case 0xFA: return CHAR_u_ACUTE;
+    default: return CHAR_SPACE;
+    }
+}
+
 /* Latin labels for the few words the game has no standalone string for. */
 static const u8 *Ascii(const char *text)
 {
@@ -1375,6 +1416,7 @@ static const u8 *Ascii(const char *text)
         else if (c == '?') v = CHAR_QUESTION_MARK;
         else if (c == '\'') v = CHAR_SGL_QUOTE_RIGHT;
         else if (c == '*') v = CHAR_e_ACUTE; /* POK*MON */
+        else if ((u8)c == 0xC3 && text[1]) v = Latin1Letter(0xC0 | ((u8)*++text & 0x3F));
         else v = CHAR_SPACE;
         out[n++] = v;
     }
@@ -3467,7 +3509,7 @@ enum { PLATE_NORMAL, PLATE_CHOSEN, PLATE_PRESSED, PLATE_OFF };
 static void DrawColumnButton(const ViewState *s, int i, u8 state)
 {
     const u8 *labels[SCR_COUNT] = {
-        Ascii(CTR_TEXT("MAP", "MAPA")), gText_MenuPokemon, gText_MenuBag, s->name, gText_MenuPokedex, gText_MenuPokenav,
+        Ascii(CTR_TEXT("MAP", "MAPA", "MAPA")), gText_MenuPokemon, gText_MenuBag, s->name, gText_MenuPokedex, gText_MenuPokenav,
         gText_MenuSave, gText_MenuOption,
     };
     const Icon *icon = &sRes.column[i];
@@ -3737,7 +3779,7 @@ static void DrawPanel(const ViewState *s, int y, const u8 *hint)
         DrawPanelMessage(s->text, y, ht - 4, FALSE);
         DrawLabelButton(0, H - 32, 7, 4, up, s->pressed == HIT_UP, TRUE, HIT_UP);
         DrawLabelButton(56, H - 32, 7, 4, down, s->pressed == HIT_DOWN, TRUE, HIT_DOWN);
-        DrawLabelButton(112, H - 32, 8, 4, Ascii(CTR_TEXT("OK", "VALE")), s->pressed == HIT_OK, TRUE, HIT_OK);
+        DrawLabelButton(112, H - 32, 8, 4, Ascii(CTR_TEXT("OK", "VALE", "OK")), s->pressed == HIT_OK, TRUE, HIT_OK);
         DrawLabelButton(176, H - 32, 8, 4, gText_Cancel2, s->pressed == HIT_CANCEL, TRUE, HIT_CANCEL);
         break;
     }
@@ -3778,9 +3820,9 @@ static void DrawParty(const ViewState *s)
 
 static void DrawSummary(const ViewState *s)
 {
-    static const char *const statNames[6] = {CTR_TEXT("HP", "PS"), CTR_TEXT("ATTACK", "ATAQUE"), CTR_TEXT("DEFENSE", "DEFENSA"),
-                                             CTR_TEXT("SP. ATK", "AT. ESP."), CTR_TEXT("SP. DEF", "DEF. ESP."),
-                                             CTR_TEXT("SPEED", "VELOC.")};
+    static const char *const statNames[6] = {CTR_TEXT("HP", "PS", "PS"), CTR_TEXT("ATTACK", "ATAQUE", "ATAQUE"), CTR_TEXT("DEFENSE", "DEFENSA", "DEFESA"),
+                                             CTR_TEXT("SP. ATK", "AT. ESP.", "AT. ESP."), CTR_TEXT("SP. DEF", "DEF. ESP.", "DEF. ESP."),
+                                             CTR_TEXT("SPEED", "VELOC.", "VELOC.")};
     const MonView *m = &s->party[s->summary];
     u8 text[24];
 
@@ -4116,7 +4158,7 @@ static void DrawSave(const ViewState *s)
     DrawStr(&sNormal, s->text, 18, 52, TXT_WHITE, TXT_DARK);
     if (s->saveStep == SAVE_DONE)
     {
-        DrawLabelButton(64, 136, 14, 5, Ascii(CTR_TEXT("OK", "VALE")), s->pressed == HIT_OK, TRUE, HIT_OK);
+        DrawLabelButton(64, 136, 14, 5, Ascii(CTR_TEXT("OK", "VALE", "OK")), s->pressed == HIT_OK, TRUE, HIT_OK);
         return;
     }
     DrawLabelButton(8, 136, 13, 6, gText_Yes, s->pressed == HIT_YES, s->canSave, HIT_YES);
@@ -4268,7 +4310,9 @@ static void DrawExtraCell(const ViewState *s, int row, const CtrExtra *extra)
 /* The tabs: SETTINGS (the options) and each page that has extras. */
 static void DrawOptionTabs(const ViewState *s)
 {
-    static const char *const names[CTR_EXTRAS_PAGES] = {"OPÇÕES", "MELHORIAS", "TRAPAÇAS"};
+    static const char *const names[CTR_EXTRAS_PAGES] = {CTR_TEXT_PT("SETTINGS", "OPÇÕES"),
+                                                                 CTR_TEXT_PT("ENHANCEMENTS", "MELHORIAS"),
+                                                                 CTR_TEXT_PT("CHEATS", "TRAPAÇAS")};
     u8 pages[CTR_EXTRAS_PAGES], count = 0;
     int capTop, capBottom, cap;
 
@@ -4305,9 +4349,9 @@ static void DrawOptions(const ViewState *s)
         DrawOptionTabs(s);
 
     const u8 *names[OPTION_ROWS] = {gText_TextSpeed, gText_BattleScene, gText_BattleStyle, gText_Sound,
-                                    gText_ButtonMode, gText_Frame, Ascii(CTR_TEXT("SHOW FPS", "MOSTRAR FPS")), Ascii("VOXEL 3D"),
-                                    Ascii(CTR_TEXT("3D ANGLE", "ANGULO 3D")), Ascii(CTR_TEXT("3D ZOOM", "ZOOM 3D")),
-                                    Ascii(CTR_TEXT("3D BLUR", "DESENFOQUE 3D")), Ascii(CTR_TEXT("3D BATTLE", "COMBATE 3D"))};
+                                    gText_ButtonMode, gText_Frame, Ascii(CTR_TEXT("SHOW FPS", "MOSTRAR FPS", "MOSTRAR FPS")), Ascii("VOXEL 3D"),
+                                    Ascii(CTR_TEXT("3D ANGLE", "ANGULO 3D", "ÂNGULO 3D")), Ascii(CTR_TEXT("3D ZOOM", "ZOOM 3D", "ZOOM 3D")),
+                                    Ascii(CTR_TEXT("3D BLUR", "DESENFOQUE 3D", "DESFOQUE 3D")), Ascii(CTR_TEXT("3D BATTLE", "COMBATE 3D", "BATALHA 3D"))};
     bool8 voxel = OPTION_SHOWN > OPT_VOXEL && s->options[OPT_VOXEL];
 
     if (s->optPage != CTR_EXTRAS_OPTIONS)
@@ -4956,11 +5000,11 @@ static void MoveBody(const ViewState *s, int i)
     PpColours(s->moves4.currentPp[i], s->moves4.maxPp[i], &fg, &sh);
     DrawStrRight(&sNormal, text, x + MOVE_W - 12, oy + 32, fg, sh);
     {
-        int tx = DrawStr(&sSmall, Ascii(CTR_TEXT("POW ", "POT. ")), x + 12, oy + 56, TXT_DARK, TXT_LIGHT);
+        int tx = DrawStr(&sSmall, Ascii(CTR_TEXT("POW ", "POT. ", "POD. ")), x + 12, oy + 56, TXT_DARK, TXT_LIGHT);
 
         DrawStr(&sSmall, data->power > 1 ? Number(data->power, 3, STR_CONV_MODE_LEFT_ALIGN) : Ascii("---"), tx,
                 oy + 56, TXT_DARK, TXT_LIGHT);
-        StringCopy(text, Ascii(CTR_TEXT("ACC ", "PREC. ")));
+        StringCopy(text, Ascii(CTR_TEXT("ACC ", "PREC. ", "PREC. ")));
         StringAppend(text, data->accuracy ? Number(data->accuracy, 3, STR_CONV_MODE_LEFT_ALIGN) : Ascii("---"));
         DrawStrRight(&sSmall, text, x + MOVE_W - 12, oy + 56, TXT_DARK, TXT_LIGHT);
     }

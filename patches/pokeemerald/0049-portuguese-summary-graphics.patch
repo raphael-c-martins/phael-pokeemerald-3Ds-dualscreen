@@ -1,0 +1,71 @@
+Pokémon Emerald 3Ds Dual Screen changes to pret/pokeemerald 76463dac15cad36aca5e2b3f6366abf9e53f814f: the summary page titles, type icons and status icons in Portuguese
+Applies after 0048-portuguese-credits-page.patch; apply with tools/bootstrap.py.
+
+diff --git a/src/pokemon_summary_screen.c b/src/pokemon_summary_screen.c
+--- a/src/pokemon_summary_screen.c
++++ b/src/pokemon_summary_screen.c
+@@ -1307,7 +1307,18 @@
+     {
+     case 0:
+         ResetTempTileDataBuffers();
++#ifdef CTR_LANG_PT_BR
++    {
++        /* The page titles in Portuguese, redrawn by the port in the buffer
++         * the copy to VRAM still reads from (3ds_icons_ptbr.c). */
++        void *tiles = DecompressAndCopyTileDataToVram(1, &gSummaryScreen_Gfx, 0, 0, 0);
++
++        if (tiles != NULL)
++            Port_TransformAsset("summary_screen/tiles.4bpp", tiles, 128 * 120 / 2);
++    }
++#else
+         DecompressAndCopyTileDataToVram(1, &gSummaryScreen_Gfx, 0, 0, 0);
++#endif
+         sMonSummaryScreen->switchCounter++;
+         break;
+     case 1:
+@@ -1339,7 +1350,22 @@
+         sMonSummaryScreen->switchCounter++;
+         break;
+     case 7:
++#ifdef CTR_LANG_PT_BR
++    {
++        /* The type icons with the Portuguese names, redrawn by the port
++         * once the sheet is decompressed (3ds_icons_ptbr.c). */
++        struct SpriteSheet sheet;
++
++        LZ77UnCompWram(sSpriteSheet_MoveTypes.data, gDecompressionBuffer);
++        Port_TransformAsset("types/move_types.4bpp", gDecompressionBuffer, sSpriteSheet_MoveTypes.size);
++        sheet.data = gDecompressionBuffer;
++        sheet.size = sSpriteSheet_MoveTypes.size;
++        sheet.tag = sSpriteSheet_MoveTypes.tag;
++        LoadSpriteSheet(&sheet);
++    }
++#else
+         LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);
++#endif
+         sMonSummaryScreen->switchCounter++;
+         break;
+     case 8:
+@@ -1347,7 +1373,22 @@
+         sMonSummaryScreen->switchCounter++;
+         break;
+     case 9:
++#ifdef CTR_LANG_PT_BR
++    {
++        /* The status icons in Portuguese (ENV, PAR, DOR...), redrawn by the
++         * port once the sheet is decompressed (3ds_icons_ptbr.c). */
++        struct SpriteSheet sheet;
++
++        LZ77UnCompWram(sStatusIconsSpriteSheet.data, gDecompressionBuffer);
++        Port_TransformAsset("interface/status_icons.4bpp", gDecompressionBuffer, sStatusIconsSpriteSheet.size);
++        sheet.data = gDecompressionBuffer;
++        sheet.size = sStatusIconsSpriteSheet.size;
++        sheet.tag = sStatusIconsSpriteSheet.tag;
++        LoadSpriteSheet(&sheet);
++    }
++#else
+         LoadCompressedSpriteSheet(&sStatusIconsSpriteSheet);
++#endif
+         sMonSummaryScreen->switchCounter++;
+         break;
+     case 10:

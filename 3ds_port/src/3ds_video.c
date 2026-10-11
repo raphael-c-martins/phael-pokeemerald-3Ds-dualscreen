@@ -1232,7 +1232,10 @@ static void DrawTextSpanAt(unsigned bg, int left, int right, int top, int bottom
 
                 if (mirrorX2 >= 0) { dx = mirrorX2 - px - 8; flipX = !flipX; }
                 if (mirrorY2 >= 0) { dy = mirrorY2 - py - 8; flipY = !flipY; }
-                DrawSlot(slot, dx + sSpanShiftX + CTR_VIEW_X + sLayerShift, dy + sSpanShiftY + CTR_VIEW_Y,
+                float shift = sLayerShift;
+                if (bg == 0 && !sFieldBanner && px < 104 && py < 48)
+                    shift = 0.0f;
+                DrawSlot(slot, dx + sSpanShiftX + CTR_VIEW_X + shift, dy + sSpanShiftY + CTR_VIEW_Y,
                          flipX, flipY);
             }
         }
@@ -2866,6 +2869,48 @@ static bool DrawFieldBgTex(unsigned bg)
     sx = Reg(0x10 + bg * 4) & 511;
     sy = Reg(0x12 + bg * 4) & 511;
     ViewBase();
+    if (bg == 0 && !sFieldBanner && sFieldUi && sLayerShift > 0.0f)
+    {
+        int splitX = 104;
+        int splitY = 48;
+
+        // 1. Região da plaquinha de cidade/rota (canto superior esquerdo sem shift horizontal)
+        if (x0 < splitX && y0 < splitY)
+        {
+            int rx1 = x1 < splitX ? x1 : splitX;
+            int ry1 = y1 < splitY ? y1 : splitY;
+            const Tex3DS_SubTexture run = {(u16)(rx1 - x0), (u16)(ry1 - y0),
+                (sx + x0) / width, 1.0f - (sy + y0) / height,
+                (sx + rx1) / width, 1.0f - (sy + ry1) / height};
+            ++sStats.tiles;
+            C2D_DrawImageAt((C2D_Image){&layer->tex, &run}, x0 + CTR_VIEW_X,
+                            y0 + CTR_VIEW_Y, 0, &sTint, 1, 1);
+        }
+        // 2. Região superior direita (menus à direita se abertos no topo)
+        if (x1 > splitX && y0 < splitY)
+        {
+            int rx0 = x0 > splitX ? x0 : splitX;
+            int ry1 = y1 < splitY ? y1 : splitY;
+            const Tex3DS_SubTexture run = {(u16)(x1 - rx0), (u16)(ry1 - y0),
+                (sx + rx0) / width, 1.0f - (sy + y0) / height,
+                (sx + x1) / width, 1.0f - (sy + ry1) / height};
+            ++sStats.tiles;
+            C2D_DrawImageAt((C2D_Image){&layer->tex, &run}, rx0 + CTR_VIEW_X + sLayerShift,
+                            y0 + CTR_VIEW_Y, 0, &sTint, 1, 1);
+        }
+        // 3. Região inferior (diálogos e caixas de texto mantêm sLayerShift para centralização)
+        if (y1 > splitY)
+        {
+            int ry0 = y0 > splitY ? y0 : splitY;
+            const Tex3DS_SubTexture run = {(u16)(x1 - x0), (u16)(y1 - ry0),
+                (sx + x0) / width, 1.0f - (sy + ry0) / height,
+                (sx + x1) / width, 1.0f - (sy + y1) / height};
+            ++sStats.tiles;
+            C2D_DrawImageAt((C2D_Image){&layer->tex, &run}, x0 + CTR_VIEW_X + sLayerShift,
+                            ry0 + CTR_VIEW_Y, 0, &sTint, 1, 1);
+        }
+        return true;
+    }
     {
         const Tex3DS_SubTexture run = {(u16)(x1 - x0), (u16)(y1 - y0),
             (sx + x0) / width, 1.0f - (sy + y0) / height,

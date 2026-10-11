@@ -1,0 +1,39 @@
+Pokémon Emerald 3Ds Dual Screen changes to pret/pokeemerald 76463dac15cad36aca5e2b3f6366abf9e53f814f: APERTE START on the title screen
+Applies after 0049-portuguese-summary-graphics.patch; apply with tools/bootstrap.py.
+
+diff --git a/src/title_screen.c b/src/title_screen.c
+--- a/src/title_screen.c
++++ b/src/title_screen.c
+@@ -5,6 +5,9 @@
+ #include "gba/m4a_internal.h"
+ #include "clear_save_data_menu.h"
+ #include "decompress.h"
++#ifdef CTR_LANG_PT_BR
++#include "port_platform.h"
++#endif
+ #include "event_data.h"
+ #include "intro.h"
+ #include "m4a.h"
+@@ -665,7 +668,22 @@
+         FreeAllSpritePalettes();
+         gReservedSpritePaletteCount = 9;
+         LoadCompressedSpriteSheet(&sSpriteSheet_EmeraldVersion[0]);
++#ifdef CTR_LANG_PT_BR
++    {
++        /* APERTE START, put together by the port from the sheet's own
++         * letters once it is decompressed (3ds_icons_ptbr.c). */
++        struct SpriteSheet sheet;
++
++        LZ77UnCompWram(sSpriteSheet_PressStart[0].data, gDecompressionBuffer);
++        Port_TransformAsset("title_screen/press_start.4bpp", gDecompressionBuffer, sSpriteSheet_PressStart[0].size);
++        sheet.data = gDecompressionBuffer;
++        sheet.size = sSpriteSheet_PressStart[0].size;
++        sheet.tag = sSpriteSheet_PressStart[0].tag;
++        LoadSpriteSheet(&sheet);
++    }
++#else
+         LoadCompressedSpriteSheet(&sSpriteSheet_PressStart[0]);
++#endif
+         LoadCompressedSpriteSheet(&sPokemonLogoShineSpriteSheet[0]);
+         LoadPalette(gTitleScreenEmeraldVersionPal, OBJ_PLTT_ID(0), PLTT_SIZE_4BPP);
+         LoadSpritePalette(&sSpritePalette_PressStart[0]);

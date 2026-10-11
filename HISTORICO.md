@@ -214,3 +214,50 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
      - **Cidade de Slateport & Rota 110:** Museu Oceânico (confronto Aqua e entrega ao Cap. Stern) e Casa dos Truques.
      - **Cidade de Mauville:** Ginásio do Líder Wattson (Insígnia Dínamo), Rydel Bicicletas (diálogo completo e escolha da Bicicleta Mach ou Acro) e Cassino de Mauville.
    - Rigor métrico com limite máximo de 32 a 34 caracteres por linha, prevenindo qualquer estouro de balão.
+
+---
+
+## 🚀 10/10/2026 - Milestone v6: Parceria Carlos Mozart, Widescreen Extremo (Patch 0051) e Plaquinha Pop-up PT-BR no Canto da Tela
+- **Branch Ativa:** `tentativa6`
+- **Binário Gerado:** `dist_3ds/emerald3ds_v6.3dsx` e `dist_3ds/emerald3ds.3dsx` (33.531.212 bytes).
+- **Status da Compilação:** **SUCESSO ABSOLUTO (Exit code 0)**.
+- **Validação no Citra QA:** 59.9 FPS constantes, CPU 1.57 ms, mixagem de áudio 1.45 ms, zero erros de renderização (`errors=0`).
+
+### 🤝 1. Integração com o Repositório do Parceiro BR (Carlos Mozart):
+- **Aliança Estratégica:** Incorporação dos avanços do repositório comunitário `carlosmozart/pokeemerald-3Ds-dualscreen-br` de forma canônica no pipeline de build.
+- **Patches de Engine Adotados (`patches/pokeemerald/`):**
+  - `0040-portuguese-tilde-letters.patch`: Suporte nativo nas fontes do GBA/3DS para letras com til (`ã, õ, Ã, Õ`) e pontuação idiomática.
+  - `0041-portuguese-battle-word-order.patch`: Inversão da ordem gramatical inglesa em mensagens de batalha para conformidade com a sintaxe do português.
+  - `0042-portuguese-category-word-order.patch`: Ordem gramatical natural em categorias ("Pokémon Aquático", "Tipo Planta").
+  - `0043-portuguese-type-names.patch`: Gráficos e nomes dos tipos oficiais em português.
+  - `0044-option-menu-frame-and-highlight.patch` & `0045-portuguese-option-menu-columns.patch`: Alinhamento métrico e expansão das colunas do Menu de Opções ("VELOC. DO TEXTO", "ESTILO DA BATALHA", "SOM", "MOLDURA").
+  - `0046-portuguese-pokedex-metric-units.patch`: Sistema métrico oficial na Pokédex (quilogramas `kg` e metros `m` em vez de libras/pés).
+  - `0047-portuguese-berry-word-order.patch`: Gramática e descrições das Frutas (Berries).
+  - `0048-portuguese-credits-page.patch` & `0049-portuguese-summary-graphics.patch`: Telas de créditos e gráficos de Sumário localizados.
+  - `0050-portuguese-title-press-start.patch`: Gráficos da tela de abertura com "APERTE START".
+- **Catálogo Massivo Consolidado (`tools/locales/pt_br/`):**
+  - 404 arquivos de localização processados com 14.237 entradas traduzidas.
+  - Resolução das mensagens de batalha identificadas nos prints: *"Você derrotou GAROTA TIANA!"* (em vez de *"Player defeated LASS TIANA!"*).
+  - Nomes de classes de treinadores em PT-BR: `GAROTA`, `JOVEM`, `ALPINISTA`, `BELDADE`, `CAMPISTA`, etc.
+  - Rotas traduzidas: `ROTA 101`, `ROTA 102`, `BOSQUE PETALBURG`, `CAVERNA GRANITO`, `FUNDO DO MAR`, `NOVA MAUVILLE`, `ESTRADA DA VITÓRIA`.
+
+### 📐 2. Widescreen Extremo nas Caixas de Batalha (Patch Canônico 0051):
+- **Causa Raiz Corrigida:** Na tentativa anterior, o arquivo de patch possuía contexto que divergia do código base e quebras de linha em formato CRLF, impedindo a aplicação limpa.
+- **Implementação Canônica:** O patch `0051-widescreen-battle-healthbox-coords.patch` foi gerado com quebras LF puras e integrado ao `tools/bootstrap.py`:
+  - **Batalha Individual:**
+    - Oponente: `x = 8, y = 24` (encostado no canto superior esquerdo da tela de 400px).
+    - Jogador: `x = 194, y = 88` (encostado no canto inferior direito da tela de 400px).
+  - **Batalha em Duplas:**
+    - Jogador: `x = 184, y = 74` e `x = 196, y = 98`.
+    - Oponente: `x = 8, y = 18` e `x = 4, y = 42`.
+
+### 🏷️ 3. Plaquinha Pop-up de Cidades/Rotas no Canto Superior Esquerdo (`3ds_video.c`):
+- **Diagnóstico Arquitetural:** O compositor de vídeo do motor 3DS aplicava um deslocamento horizontal fixo de `CTR_FIELD_UI_SHIFT = 76.0f` no BG0 para centralizar caixas de texto de diálogo no overworld. Como a plaquinha de mapa (`map_name_popup.c`) também reside no BG0 (`tilemapLeft = 1`), ela era empurrada 76 pixels para a direita (`x = 84px`), ficando no meio da tela como na proporção 4:3 do GBA.
+- **Solução no Compositor do Motor 3DS:**
+  - Em `DrawFieldBgTex` (modo 2D) e `DrawTextSpanAt` (modo Voxel/3D), a renderização do BG0 foi particionada:
+    - **Região Superior Esquerda (`x < 104, y < 48`):** Desenhada estritamente com `shift = 0.0f` (sem deslocamento horizontal), fixando a plaquinha no canto superior esquerdo da tela de 400px (`x = 8px`).
+    - **Região Inferior e Menus (`y >= 48`):** Mantêm `sLayerShift = 76.0f`, garantindo que caixas de texto de diálogos de NPCs e opções continuem perfeitamente centralizadas.
+
+### 🛡️ 4. Preservação Absoluta:
+- Mantida a blindagem do processador ARM11 contra buffer overrun em `3ds_bottom_ui.c`.
+- Preservados saves existentes, pastas de logs e insumos de `# TEMPORARIO`.

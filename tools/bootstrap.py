@@ -5,6 +5,7 @@
     python tools/bootstrap.py --make -j8      # and build the 3DSX there
     python tools/bootstrap.py --clean         # start again from the pinned commit
     python tools/bootstrap.py --make --spanish-rom esmeralda.gba   # Spanish (BPES) build
+    python tools/bootstrap.py --make --port-lang pt_br   # the port's interface in Portuguese
 
 1. Reads upstream.lock and fetches exactly that commit of pret/pokeemerald into
    build/upstream (a shallow fetch of one commit).
@@ -19,6 +20,9 @@
 5. With --spanish-rom: after the generated includes, tools/localize_spanish.py
    stages the Spanish texts and graphics from the player's clean BPES ROM
    (docs/SPANISH.md). Switching language back and forth resets the tree.
+6. With --port-lang pt_br: the port's own interface (bottom screen labels,
+   extras, data pack errors) in Brazilian Portuguese, and the game's texts
+   translated so far (tools/localize_portuguese.py, docs/PORTUGUESE.md).
 """
 
 from __future__ import annotations
@@ -62,16 +66,21 @@ def main() -> int:
     ap.add_argument("--dir", type=Path, default=ROOT / "build" / "upstream")
     ap.add_argument("--clean", action="store_true", help="reset the tree to the pinned commit first")
     ap.add_argument("--spanish-rom", type=Path, help="stage the Spanish data from a clean BPES ROM")
-    ap.add_argument("--ptbr-rom", type=Path, help="stage the PT-BR data from a clean PT-BR ROM")
+    ap.add_argument("--port-lang", choices=["en", "pt_br"], default="en",
+                    help="language of the port's own interface (PORT_LANG=)")
     ap.add_argument("--make", action="store_true", help="build the tools and the 3DSX afterwards")
     ap.add_argument("-j", "--jobs", type=int, default=4)
     ap.add_argument("--python", default=sys.executable, help="Python the build calls (PYTHON=)")
     args = ap.parse_args()
+    if args.port_lang == "pt_br" and args.spanish_rom:
+        ap.error("--port-lang pt_br goes over the English game, not the Spanish one")
 
     lock = tomllib.loads((ROOT / "upstream.lock").read_text(encoding="utf-8"))
     repo, commit = lock["pokeemerald"]["repository"], lock["pokeemerald"]["commit"]
     tree = args.dir.resolve()
-    previous_locale = (tree / ".emerald3ds-locale").exists()
+    locale_marker = tree / ".emerald3ds-locale"
+    previous_locale = locale_marker.read_text().strip() if locale_marker.exists() else ""
+    portuguese = args.port_lang == "pt_br"
     patches = sorted((ROOT / "patches" / "pokeemerald").glob("*.patch"))
     marker = tree / ".emerald3ds-patches"
     digest = patch_digest(patches)
@@ -81,18 +90,18 @@ def main() -> int:
         head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=tree, capture_output=True,
                               text=True).stdout.strip()
     stale = not marker.exists() or marker.read_text().strip() != digest
-    if args.clean or args.spanish_rom or args.ptbr_rom or previous_locale or head != commit or stale:
+    if args.clean or args.spanish_rom or portuguese or previous_locale or head != commit or stale:
         if head != commit:
             fetch(tree, repo, commit)
         run(["git", "reset", "-q", "--hard", commit], cwd=tree)
         (tree / ".emerald3ds-locale").unlink(missing_ok=True)
-        if args.spanish_rom or args.ptbr_rom or previous_locale:
+        if args.spanish_rom or portuguese or previous_locale:
             # Objects and staged data of the other language must not be
             # reused: rebuild every native object when the language changes.
             shutil.rmtree(tree / "3ds_port/build", ignore_errors=True)
             shutil.rmtree(tree / "3ds_port/romfs", ignore_errors=True)
             (tree / "src/data/region_map/region_map_entries.h").unlink(missing_ok=True)
-        if previous_locale:
+        if previous_locale.startswith("BPES"):
             import gzip
             import json
             manifest = json.loads(gzip.decompress((ROOT / "tools/locales/spanish.json.gz").read_bytes()))
@@ -130,17 +139,17 @@ def main() -> int:
     shutil.copy2(ROOT / "upstream.lock", tree / "upstream.lock")
     print("bootstrap: tree ready at %s" % tree)
 
-    if args.make or args.spanish_rom or args.ptbr_rom:
+    if args.make or args.spanish_rom:
         run(["make", "tools", "-j%d" % args.jobs], cwd=tree)
         run(["make", "generated", "-j%d" % args.jobs], cwd=tree)
     if args.spanish_rom:
         run([args.python, ROOT / "tools/localize_spanish.py", "--tree", tree,
              "--rom", args.spanish_rom.resolve()])
-    if args.ptbr_rom:
-        run([args.python, ROOT / "tools/localize_ptbr.py", "--tree", tree,
-             "--rom", args.ptbr_rom.resolve()])
+    if portuguese:
+        run([args.python, ROOT / "tools/localize_portuguese.py", "--tree", tree])
     if args.make:
-        run(["make", "-C", "3ds_port", "-j%d" % args.jobs, "PYTHON=%s" % args.python], cwd=tree)
+        run(["make", "-C", "3ds_port", "-j%d" % args.jobs, "PYTHON=%s" % args.python,
+             "PORT_LANG=%s" % args.port_lang], cwd=tree)
     return 0
 
 
