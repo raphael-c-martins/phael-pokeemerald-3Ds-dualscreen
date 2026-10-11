@@ -37,8 +37,17 @@ __pycache__/
 *.log
 .vscode/
 .idea/
-.claude/*
-!.claude/settings.json
+.claude/
 .agents/
 session-*.md
 .public-denylist
+
+# Temporarios e insumos locais
+\# TEMPORARIO/
+TEMPORARIO/
+scratch/
+/logs/
+*.log
+.venv/
+dist_3ds/
+*.lnk

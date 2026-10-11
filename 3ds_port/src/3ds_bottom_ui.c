@@ -1309,6 +1309,8 @@ static void InkColumns(const Font *font, const u8 *str, int *x0, int *x1)
     *x1 = 0;
     for (u16 g; (g = NextGlyph(&str)) != 0xFFFF && g != 0xFFFE;)
     {
+        if (g >= 272)
+            continue;
         int width = font->widths[g] > 16 ? 16 : font->widths[g];
 
         for (int px = 0; px < width; ++px)
@@ -1703,6 +1705,8 @@ static void StepSmoothJob(void)
 
             if (g == 0xFFFF || g == 0xFFFE)
                 break;
+            if (g >= 272)
+                continue;
             if (n == SJ_GLYPHS_A_STEP)
             {
                 /* The rest next step, from this glyph on. */
@@ -1905,6 +1909,8 @@ static void DrawFlatStr(const Font *font, const u8 *str, int x, int y, int k, Rg
 
         for (u16 g; (g = NextGlyph(&s)) != 0xFFFF && g != 0xFFFE;)
         {
+            if (g >= 272)
+                continue;
             const u16 *base = font->glyphs + g * 0x20;
             int width = font->widths[g] > 16 ? 16 : font->widths[g];
 
