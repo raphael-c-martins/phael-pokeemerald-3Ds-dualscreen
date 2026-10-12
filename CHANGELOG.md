@@ -2,18 +2,40 @@
 
 ## Unreleased
 
+- Portuguese: the POKéNAV's graphics: the menu options (MAPA DE HOENN,
+  CONDIÇÃO, CHAMADAS, FITAS, DESLIGAR, EQUIPE, BUSCAR, the five conditions,
+  VOLTAR), the headers (MENU PRINCIPAL, MAPA, VISÃO GERAL, AMPLIADO…), the
+  zoomed map's key (CENTRO POKéMON, GINÁSIO POKéMON, TENDA DE BATALHA,
+  CONCURSO POKéMON) and the condition screen's SAIR. The labels can be
+  drawn without a shadow, and an accent above a short box goes on its top
+  row.
+- Portuguese: the POKéDEX list's sprites: BUSCAR, NACIONAL (the T of
+  NATIONAL redrawn as a C, keeping its hand-kerned letters), VISTOS and
+  CAPTURADOS. The labels draw every shadow before the ink, and a text still
+  too wide in the narrow font is set a pixel tighter.
+- Portuguese: the POKéDEX search buttons (MODO, ORDEM, NOME, COR, TIPO,
+  VOLTAR, OK, TROCAR, BUSCAR), in the game's short font. The English letters
+  now take the nearest background pixel of their row.
+- Portuguese: the POKéDEX menu sheet in Portuguese (ÁREA, GRITO, TAMANHO,
+  VOLTAR and the START menu), written with the game's own fonts from the
+  player's ROM (Port_LatinGlyph). Every graphic the game decompresses now
+  passes through Port_TransformDecompressed (bios.c, patch 0049), which
+  replaces the per-screen patches 0049 and 0050 of the summary and the title
+  screen.
+- Portuguese: the contest category icons read ESTILO, BELEZA, FOFURA,
+  ESPERT. and FORÇA (3ds_icons_ptbr.c, same sheet as the type icons).
 - Portuguese: the status icons read ENV, PAR, DOR, CON, QUE and DES (PKRS
-  stays), in the summary (patch 0049) and on the bottom screen, whose
+  stays), in the summary and on the bottom screen, whose
   decompressed sheets now pass through Port_TransformAsset too (the bottom
   screen's type icons are Portuguese as well).
 - Portuguese: APERTE START on the title screen, put together by
-  3ds_icons_ptbr.c from the sheet's own letters (patch 0050). The logo
+  3ds_icons_ptbr.c from the sheet's own letters. The logo
   (EMERALD VERSION) stays.
 - Portuguese: the summary's page titles (PERFIL, HABILIDADE, GOLPES,
   DESCRIÇÃO, MEMO TREINADOR, ATRIBUTOS…), redrawn in the decompressed tiles
-  before they reach VRAM (patch 0049).
+  before they reach VRAM.
 - Portuguese: the summary's type icons too (FOGO, ÁGUA, PLANTA…), redrawn
-  by 3ds_icons_ptbr.c once the summary decompresses the sheet (patch 0049).
+  by 3ds_icons_ptbr.c once the summary decompresses the sheet.
   The contest categories (COOL, BEAUTY…) stay for now.
 - Portuguese: the type icons in Portuguese (NORMAL, LUTADOR, ÁGUA, ELÉTR.,
   DRAGÃO…). 3ds_icons_ptbr.c redraws the player's own menu_info sheet as it

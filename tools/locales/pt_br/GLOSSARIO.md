@@ -103,7 +103,7 @@ Os nomes dos POKéMON não se traduzem.
 | Trainer Card (Gold/Silver) | CARTÃO DE OURO / DE PRATA | |
 | Key Items | ITENS CHAVE | só "Objeto Chave", num manual; sem hífen para caber no bolso da BOLSA |
 | Dad | PAPAI | par de MAMÃE |
-| Contest conditions (Cool, Beauty, Cute, Smart, Tough) | ESTILO, BELEZA, FOFURA, ESPERTEZA, FORÇA | |
+| Contest conditions (Cool, Beauty, Cute, Smart, Tough) | ESTILO, BELEZA, FOFURA, ESPERTEZA, FORÇA | no ícone de 32 px, ESPERT. |
 | Hold item | item segurado (“Se segurado, …”) | |
 | Mail | CARTA | |
 | Cancel (menus) | VOLTAR | mesma largura de CANCEL, que algumas janelas têm exata |
@@ -290,7 +290,28 @@ golpes e POKéMON usam os nomes dos catálogos. A ordem alfabética das listas
 
 ## Títulos do resumo
 
-Gráficos redesenhados pelo port (`3ds_icons_ptbr.c`, patch `0049`), cada um
+Gráficos redesenhados pelo port (`3ds_icons_ptbr.c`), cada um
 na faixa de tiles do original: PERFIL, HABILIDADE, ESTADO (ovo), MEMO
 TREINADOR (TRAINER MEMO; "MEMO DO TREINADOR" não cabe nos 72 px), GOLPES,
 EFEITO, DESCRIÇÃO, ITEM, FITAS, ATRIBUTOS (STATS) e EXP.
+
+## Menus da POKéDEX
+
+Escritos com as fontes do jogo (`3ds_icons_ptbr.c`): as abas ÁREA, GRITO e
+TAMANHO; VOLTAR (CANCEL); no menu START, VOLTAR À LISTA, TOPO DA LISTA, FIM
+DA LISTA, VOLTAR À POKéDEX e FECHAR POKéDEX; na busca, MODO, ORDEM, NOME,
+COR, TIPO, OK, TROCAR (SHIFT) e BUSCAR; na lista, BUSCAR, NACIONAL, VISTOS
+(SEEN) e CAPTURADOS (OWN); MENU, HOENN, SELECT e START ficam. O que não
+cabe sai na fonte estreita.
+
+## Gráficos do POKéNAV
+
+Opções: MAPA DE HOENN, CONDIÇÃO, CHAMADAS (MATCH CALL), FITAS, DESLIGAR
+(SWITCH OFF), EQUIPE (PARTY PKMN), BUSCAR, ESTILO, BELEZA, FOFURA,
+ESPERTEZA, FORÇA, VOLTAR. Cabeçalhos: MENU PRINCIPAL, CONDIÇÃO, CHAMADAS,
+FITAS, as condições, EQUIPE, BUSCAR; no mapa, MAPA (MAPA DE HOENN não cabe
+nos 56 px), VISÃO GERAL (FULL VIEW) e AMPLIADO (ZOOM VIEW). Legenda do mapa
+ampliado: CENTRO POKéMON, POKé MART, GINÁSIO POKéMON, TENDA DE BATALHA,
+CONCURSO POKéMON (SALÃO DE CONCURSOS não cabe). Tela de condição: SAIR
+(CANCEL; VOLTAR não cabe nos 18 px). O cabeçalho POKéNAV / POKéMON
+NAVIGATOR fica.

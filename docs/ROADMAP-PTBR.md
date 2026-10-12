@@ -226,18 +226,21 @@ Ordem sugerida, do que o jogador vê mais para o que vê menos:
       cena ampliada 1,5×, atrás da caixa de mensagem, que esconde AT. ESP.,
       DEF. ESP. e VELOC. A versão original em inglês tem o mesmo corte
       (conferido no 3DS em 09/10): é um bug do port, não da tradução.
-- [ ] Ícones de tipo do RESUMO (`graphics/types/move_types.4bpp.lz`, comprimido,
-      diferente da folha `menu_info` já traduzida, que aparece na BOLSA e em
-      menus): fazer junto com os ícones de condição, que pedem o mesmo
-      mecanismo (descomprimir, redesenhar, comprimir de novo, tamanho novo).
+- [x] Ícones de tipo do RESUMO (`graphics/types/move_types.4bpp.lz`):
+      redesenhados depois de descomprimir, sem comprimir de novo (patch
+      `0049`, 10/10).
 - [x] Ícones de condição: ENV, PAR, DOR, CON, QUE, DES (PKRS fica), no
-      resumo (patch `0049`) e na tela de baixo, redesenhados pelo port
+      resumo (patch `0049`, que leva ao port toda folha descomprimida) e na tela de baixo, redesenhados pelo port
       (10/10).
 - [ ] Gráficos ainda em inglês, vistos no 3DS em 10/10: o logo da tela de
-      título (EMERALD VERSION, que fica como no original; o APERTE START foi feito em 10/10, patch
-      `0050`). Os títulos e os ícones de tipo do resumo foram
-      feitos em 10/10 (patch `0049`); as categorias de concurso (COOL,
-      BEAUTY…) seguem em inglês.
+      título (EMERALD VERSION, que fica como no original; o APERTE START foi feito em 10/10). Os títulos e os ícones de tipo do resumo foram
+      feitos em 10/10 (patch `0049`), e as categorias de concurso (ESTILO,
+      BELEZA, FOFURA, ESPERT., FORÇA) em 11/10.
+- [x] Menus da POKéDEX e do POKéNAV, escritos com as fontes do próprio
+      jogo (`Port_LatinGlyph`), 11/10: na POKéDEX, as abas, o menu START,
+      a busca e a lista; no POKéNAV, as opções, os cabeçalhos, a legenda do
+      mapa ampliado e o SAIR da tela de condição. O cabeçalho POKéNAV /
+      POKéMON NAVIGATOR fica (marca).
 - [x] CENTRO POKéMON: na cura, as POKé BOLAS e o brilho da tela aparecem
       fora do lugar. Bug do port original (conferido na 0.3.1 em 10/10):
       fica para o autor do port corrigir, não neste fork.
@@ -259,8 +262,9 @@ Ordem sugerida, do que o jogador vê mais para o que vê menos:
       `0032`).
 - [ ] Gráficos com texto em inglês (logo, "THE END", alguns menus): continuam
       em inglês nesta fase. Avaliar depois se vale desenhar versões próprias.
-- [ ] Ícones de tipo em PT: o builder desenha o nome com a fonte da ROM sobre o
-      fundo do ícone original (resumo, Pokédex, relembrar golpes).
+- [x] Ícones de tipo em PT: o port (não o builder) redesenha o nome sobre o
+      ícone original, com uma fonte própria (`3ds_icons_ptbr.c`): BOLSA,
+      janela de golpes, resumo e tela de baixo.
 - [ ] Atributos: localizar onde são texto (janela de subida de nível) e onde
       são gráfico (página de resumo) e gerar os gráficos no builder.
 - [x] Atributos: larguras conferidas; no resumo, AT.ESP e DEF.ESP (centralizados

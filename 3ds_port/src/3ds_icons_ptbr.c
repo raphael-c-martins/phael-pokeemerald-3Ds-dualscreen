@@ -11,6 +11,7 @@
 
 /* Declared in compat/port_platform.h, which 3ds_assets.c includes. */
 void Port_TransformAsset(const char *path, unsigned char *data, unsigned size);
+const unsigned char *Port_LatinGlyph(unsigned font, unsigned char code, int *width);
 
 #if defined(CTR_LANG_PT_BR)
 
@@ -69,6 +70,7 @@ static const struct Glyph sGlyphs[] = {
     {'U', {"#.#", "#.#", "#.#", "#.#", "#.#", "#.#", "###"}},
     {'V', {"#.#", "#.#", "#.#", "#.#", "#.#", ".#.", ".#."}},
     {'X', {"#.#", "#.#", "#.#", ".#.", "#.#", "#.#", "#.#"}},
+    {'Z', {"###", "..#", "..#", ".#.", "#..", "#..", "###"}},
     {' ', {"..", "..", "..", "..", "..", "..", ".."}},
     {'.', {".", ".", ".", ".", ".", ".", "#"}},
 };
@@ -193,11 +195,12 @@ static void DrawTypeName(unsigned char *tiles, unsigned tile, const char *name)
 }
 
 /* The summary's type icons (graphics/types/move_types.4bpp), one 32x16
- * sprite of 8 tiles (256 bytes) per type, in the order of TYPE_*; ??? and
- * the contest categories stay. */
+ * sprite of 8 tiles (256 bytes) per type, in the order of TYPE_*, then the
+ * contest categories (COOL, BEAUTY, CUTE, SMART, TOUGH); ??? stays. */
 static const char *const sSummaryTypeNames[] = {
     "NORMAL", "LUTADOR", "VOADOR", "VENENO", "TERRA", "PEDRA", "INSETO", "FANTAS", "AcO", NULL,
     "FOGO", "aGUA", "PLANTA", "ELeTR.", "PSiQ.", "GELO", "DRAG~O", "SOMBR.",
+    "ESTILO", "BELEZA", "FOFURA", "ESPERT.", "FORcA",
 };
 
 /* The move window's labels, 42x12: white letters outlined in the colour of
@@ -460,6 +463,335 @@ static void DrawStatusIcon(unsigned char *tiles, int y0, const char *name)
     }
 }
 
+/*
+ * Words written with the game's own fonts (Port_LatinGlyph, 3ds_compat.c),
+ * for the graphics whose letters are as big as the text's: each label is a
+ * box of the sheet, the English ink and shadow in it cleared to the row's
+ * background, the Portuguese in the same colours. A text wider than the box
+ * in the normal font is written in the narrow one.
+ */
+enum { FONT_SMALL = 1, FONT_NARROW = 2, FONT_SHORT = 3, FONT_NORMAL = 4 };
+#define NO_SHADOW 0x10
+
+/* The game's character code of the UTF-8 letter at *s (the few the labels
+ * use), advancing *s; -1 for one it does not know. */
+static int NextGameChar(const char **s)
+{
+    static const struct { const char *utf8; unsigned char code; } sAccents[] = {
+        {"À", 0x01}, {"Á", 0x02}, {"Â", 0x03}, {"Ç", 0x04}, {"É", 0x06}, {"Ê", 0x07}, {"Í", 0x5A},
+        {"Ó", 0x0E}, {"Ô", 0x0F}, {"Ú", 0x12}, {"Ã", 0x2F}, {"Õ", 0x30}, {"é", 0x1B},
+    };
+    unsigned char c = (unsigned char)**s;
+    unsigned i;
+
+    if (c >= 'A' && c <= 'Z') { (*s)++; return 0xBB + (c - 'A'); }
+    if (c >= 'a' && c <= 'z') { (*s)++; return 0xD5 + (c - 'a'); }
+    if (c >= '0' && c <= '9') { (*s)++; return 0xA1 + (c - '0'); }
+    if (c == ' ') { (*s)++; return 0x00; }
+    if (c == '.') { (*s)++; return 0xAD; }
+    for (i = 0; i < sizeof(sAccents) / sizeof(sAccents[0]); i++)
+    {
+        size_t n = strlen(sAccents[i].utf8);
+        if (strncmp(*s, sAccents[i].utf8, n) == 0)
+        {
+            *s += n;
+            return sAccents[i].code;
+        }
+    }
+    (*s)++;
+    return -1;
+}
+
+static unsigned GlyphValue(const unsigned char *glyph, int x, int y)
+{
+    unsigned char byte = glyph[((y / 8) * 2 + x / 8) * 16 + (y % 8) * 2 + ((x % 8) < 4)];
+    return (byte >> (6 - 2 * (x % 4))) & 3;
+}
+
+static int GameTextWidth(unsigned font, const char *text)
+{
+    int total = 0, w, code;
+
+    while (*text)
+        if ((code = NextGameChar(&text)) >= 0 && Port_LatinGlyph(font, (unsigned char)code, &w) != NULL)
+            total += w;
+    return total;
+}
+
+/* The first row of B that the font inks: the top of its capitals. */
+static int CapitalTop(unsigned font)
+{
+    int w, x, y;
+    const unsigned char *glyph = Port_LatinGlyph(font, 0xBB + 1, &w);
+
+    for (y = 0; glyph != NULL && y < 16; y++)
+        for (x = 0; x < 16; x++)
+            if (GlyphValue(glyph, x, y) == 1 || GlyphValue(glyph, x, y) == 2)
+                return y;
+    return 0;
+}
+
+struct GameLabel
+{
+    unsigned char x, y, width, height; /* the box in the sheet */
+    unsigned char capitals;            /* the row the capitals start on */
+    unsigned char ink, shadow; /* shadow NO_SHADOW for text without one */
+    unsigned char centred;
+    const char *text;
+    unsigned char font; /* 0 for the normal font */
+};
+
+static void DrawGameLabel(unsigned char *tiles, const struct GameLabel *label)
+{
+    unsigned font = label->font ? label->font : FONT_NORMAL;
+    int x, y, top, width, code, w, tight = 0, pass;
+    const char *p;
+
+    for (y = label->y; y < label->y + label->height; y++)
+    {
+        /* Each pixel of the English text takes the colour of the nearest
+         * pixel of the same row that is not text, left first: the
+         * button's own background, even next to its border. */
+        unsigned char row[256];
+        for (x = 0; x < label->width; x++)
+            row[x] = (unsigned char)SheetPixel(tiles, label->x + x, y);
+        for (x = 0; x < label->width; x++)
+        {
+            int d;
+            if (row[x] != label->ink && row[x] != label->shadow)
+                continue;
+            for (d = 1; d < label->width; d++)
+            {
+                if (x - d >= 0 && row[x - d] != label->ink && row[x - d] != label->shadow)
+                {
+                    SetSheetPixel(tiles, label->x + x, y, row[x - d]);
+                    break;
+                }
+                if (x + d < label->width && row[x + d] != label->ink && row[x + d] != label->shadow)
+                {
+                    SetSheetPixel(tiles, label->x + x, y, row[x + d]);
+                    break;
+                }
+            }
+        }
+    }
+    /* Narrow when it would not leave a few pixels to the box's edges. */
+    if (font != FONT_NARROW && font != FONT_SMALL
+     && GameTextWidth(font, label->text) > label->width - (label->centred && label->width >= 40 ? 6 : 0))
+        font = FONT_NARROW;
+    width = GameTextWidth(font, label->text);
+    /* Still too wide: the letters a pixel closer together. */
+    if (width > label->width)
+    {
+        int letters = 0;
+        for (p = label->text; *p;)
+            if (NextGameChar(&p) >= 0)
+                letters++;
+        if (width - (letters - 1) <= label->width)
+        {
+            tight = 1;
+            width -= letters - 1;
+        }
+    }
+    top = label->capitals - CapitalTop(font);
+    /* The shadows first and the ink over them, so that letters a pixel
+     * closer together keep their ink. */
+    for (pass = 2; pass >= 1; pass--)
+    {
+        x = label->x + (label->centred ? (label->width - width) / 2 : 0);
+        for (p = label->text; *p;)
+        {
+            const unsigned char *glyph;
+            int gx, gy;
+
+            if ((code = NextGameChar(&p)) < 0 || (glyph = Port_LatinGlyph(font, (unsigned char)code, &w)) == NULL)
+                continue;
+            for (gy = 0; gy < 16; gy++)
+                for (gx = 0; gx < w; gx++)
+                {
+                    int px = x + gx, py = top + gy;
+                    /* An accent above a box too short for it: on its top row. */
+                    if (py < label->y && py >= label->y - 3)
+                        py = label->y;
+                    if (GlyphValue(glyph, gx, gy) == (unsigned)pass && (pass == 1 || label->shadow != NO_SHADOW)
+                     && px >= label->x && px < label->x + label->width
+                     && py >= label->y && py < label->y + label->height)
+                        SetSheetPixel(tiles, px, py, pass == 1 ? label->ink : label->shadow);
+                }
+            x += w - tight;
+        }
+    }
+}
+
+/* graphics/pokedex/menu.4bpp, 16 tiles to a row: the tabs of a species'
+ * page, the B button's and the submenu's CANCEL, and the START menu. */
+static const struct GameLabel sPokedexMenuLabels[] = {
+    {16, 17, 24, 14, 20, 0xF, 0xD, 1, "ÁREA", 0},
+    {48, 17, 40, 14, 20, 0xF, 0xD, 1, "GRITO", 0},
+    {88, 17, 40, 14, 20, 0xF, 0xD, 1, "TAMANHO", 0},
+    {18, 34, 38, 13, 36, 0x9, 0x5, 0, "VOLTAR", 0},
+    {64, 34, 40, 13, 36, 0xF, 0x2, 1, "VOLTAR", 0},
+    {0, 48, 72, 16, 51, 0x9, 0x5, 0, "VOLTAR À LISTA", 0},
+    {0, 64, 72, 16, 67, 0x9, 0x5, 0, "TOPO DA LISTA", 0},
+    {0, 80, 72, 16, 83, 0x9, 0x5, 0, "FIM DA LISTA", 0},
+    {0, 96, 88, 16, 99, 0x9, 0x5, 0, "VOLTAR À POKéDEX", 0},
+    {0, 112, 88, 16, 115, 0x9, 0x5, 0, "FECHAR POKéDEX", 0},
+};
+
+/* graphics/pokedex/search_menu.4bpp: the search's buttons, 40x16 each, in
+ * the short font. */
+static const struct GameLabel sPokedexSearchLabels[] = {
+    {0, 16, 40, 16, 20, 0x4, 0xB, 1, "MODO", FONT_SHORT},
+    {40, 16, 40, 16, 20, 0x4, 0xB, 1, "ORDEM", FONT_SHORT},
+    {80, 16, 40, 16, 20, 0x4, 0xB, 1, "NOME", FONT_SHORT},
+    {0, 32, 40, 16, 36, 0x4, 0xB, 1, "COR", FONT_SHORT},
+    {40, 32, 40, 16, 36, 0x4, 0xB, 1, "TIPO", FONT_SHORT},
+    {80, 32, 40, 16, 36, 0x4, 0x9, 1, "VOLTAR", FONT_SHORT},
+    {0, 48, 40, 16, 52, 0x4, 0x9, 1, "OK", FONT_SHORT},
+    {40, 48, 40, 16, 52, 0x4, 0x9, 1, "TROCAR", FONT_SHORT},
+    {80, 48, 40, 16, 52, 0x4, 0x9, 1, "BUSCAR", FONT_SHORT},
+};
+
+/* graphics/pokedex/interface.4bpp, the list's sprites: 32x16 ones (4 tiles
+ * wide) and the 64x32 SEEN and OWN (8 tiles wide), on a clear background:
+ * SEARCH in the narrow font, the rest in the small one. NATIONAL becomes
+ * NACIONAL by its T (columns 9-12) redrawn as a C: its letters are kerned
+ * by hand, and the font's are too wide to fit at that spacing. */
+static void NationalToNacional(unsigned char *sprite)
+{
+    static const char *const sC[] = {".##", "#..", "#..", "#..", "#..", "#..", ".##"};
+    int x, y;
+
+    for (y = 4; y <= 11; y++)
+        for (x = 9; x <= 12; x++)
+            SetSheetPixel(sprite, x, y, 0);
+    for (y = 0; y < 7; y++)
+        for (x = 0; x < 3; x++)
+            if (sC[y][x] == '#')
+            {
+                int dx, dy;
+                for (dy = 0; dy <= 1; dy++)
+                    for (dx = 0; dx <= 1; dx++)
+                        if ((dx || dy) && SheetPixel(sprite, 9 + x + dx, 4 + y + dy) == 0)
+                            SetSheetPixel(sprite, 9 + x + dx, 4 + y + dy, 0xF);
+            }
+    for (y = 0; y < 7; y++)
+        for (x = 0; x < 3; x++)
+            if (sC[y][x] == '#')
+                SetSheetPixel(sprite, 9 + x, 4 + y, 0x1);
+}
+
+/* MENU, HOENN, SELECT and START stay. */
+static const struct
+{
+    unsigned short tile;
+    unsigned char tilesWide;
+    struct GameLabel label;
+} sPokedexListSprites[] = {
+    {40, 4, {0, 0, 32, 16, 3, 0x1, 0xF, 0, "BUSCAR", FONT_NARROW}},
+    {64, 8, {6, 6, 52, 8, 6, 0x1, 0xF, 1, "VISTOS", FONT_SMALL}},
+    {96, 8, {5, 6, 53, 8, 6, 0x1, 0xF, 1, "CAPTURADOS", FONT_SMALL}},
+};
+
+/* graphics/pokenav/options/options.4bpp: each option a 128x16 strip of four
+ * 32x16 sprites (32 tiles), in the normal font after the strip's square.
+ * PARTY's PKMN glyph goes with it. */
+static const struct GameLabel sPokenavOptionLabels[] = {
+    {16, 2, 112, 14, 4, 0x1, 0x2, 0, "MAPA DE HOENN", 0},
+    {16, 2, 112, 14, 4, 0x1, 0x2, 0, "CONDIÇÃO", 0},
+    {16, 2, 112, 14, 4, 0x1, 0x2, 0, "CHAMADAS", 0},
+    {16, 2, 112, 14, 4, 0x1, 0x2, 0, "FITAS", 0},
+    {16, 2, 112, 14, 4, 0x1, 0x2, 0, "DESLIGAR", 0},
+    {16, 0, 112, 16, 4, 0x1, 0x2, 0, "EQUIPE", 0},
+    {16, 2, 112, 14, 4, 0x1, 0x2, 0, "BUSCAR", 0},
+    {8, 2, 120, 14, 4, 0x1, 0x2, 0, "ESTILO", 0},
+    {8, 2, 120, 14, 4, 0x1, 0x2, 0, "BELEZA", 0},
+    {8, 2, 120, 14, 4, 0x1, 0x2, 0, "FOFURA", 0},
+    {8, 2, 120, 14, 4, 0x1, 0x2, 0, "ESPERTEZA", 0},
+    {8, 2, 120, 14, 4, 0x1, 0x2, 0, "FORÇA", 0},
+    {16, 2, 112, 14, 4, 0x1, 0x2, 0, "VOLTAR", 0},
+};
+
+/* A row of sprites (each spriteW x spriteH tiles, one after another in the
+ * sheet) to a grid of tiles side by side, and back. */
+static void SpritesToGrid(unsigned char *grid, const unsigned char *sprites, int spriteW, int spriteH, int count,
+                          int toGrid)
+{
+    int r, c;
+
+    for (r = 0; r < spriteH; r++)
+        for (c = 0; c < spriteW * count; c++)
+        {
+            unsigned char *g = grid + (r * spriteW * count + c) * 32;
+            unsigned char *t = (unsigned char *)sprites
+                             + ((c / spriteW) * spriteW * spriteH + r * spriteW + c % spriteW) * 32;
+            if (toGrid)
+                memcpy(g, t, 32);
+            else
+                memcpy(t, g, 32);
+        }
+}
+
+/* graphics/pokenav/left_headers: the main menus' headers, two 64x32 sprites
+ * (a 128x32 grid), and the submenus', four 32x16 ones (a 128x16 grid), both
+ * centred in the normal font; HOENN MAP and its FULL VIEW and ZOOM VIEW are
+ * three separate 64x32 sprites, 56 pixels wide (MAPA: MAPA DE HOENN does not
+ * fit, and the menu's option already says it). */
+static const struct
+{
+    const char *file;
+    struct GameLabel label;
+} sPokenavHeaders[] = {
+    {"left_headers/main_menu.4bpp", {0, 5, 86, 13, 7, 0x1, 0x2, 1, "MENU PRINCIPAL", 0}},
+    {"left_headers/condition.4bpp", {0, 5, 86, 13, 7, 0x1, 0x2, 1, "CONDIÇÃO", 0}},
+    {"left_headers/match_call.4bpp", {0, 5, 86, 13, 7, 0x1, 0x2, 1, "CHAMADAS", 0}},
+    {"left_headers/ribbons.4bpp", {0, 5, 86, 13, 7, 0x1, 0x2, 1, "FITAS", 0}},
+    {"left_headers/beauty.4bpp", {0, 2, 62, 12, 4, 0x1, 0x2, 1, "BELEZA", 0}},
+    {"left_headers/cool.4bpp", {0, 2, 62, 12, 4, 0x1, 0x2, 1, "ESTILO", 0}},
+    {"left_headers/cute.4bpp", {0, 2, 62, 12, 4, 0x1, 0x2, 1, "FOFURA", 0}},
+    {"left_headers/smart.4bpp", {0, 2, 62, 12, 4, 0x1, 0x2, 1, "ESPERTEZA", 0}},
+    {"left_headers/tough.4bpp", {0, 2, 62, 12, 4, 0x1, 0x2, 1, "FORÇA", 0}},
+    {"left_headers/party.4bpp", {0, 0, 62, 16, 4, 0x1, 0x2, 1, "EQUIPE", 0}},
+    {"left_headers/search.4bpp", {0, 2, 62, 12, 4, 0x1, 0x2, 1, "BUSCAR", 0}},
+};
+
+/* graphics/pokenav/region_map/city_zoom_text.4bpp: the zoomed map's key,
+ * five strips of 96x8 (12 tiles each) that three 32x8 sprites slide
+ * through, each a coloured square and the name in the small font, one
+ * colour and no shadow. */
+static const struct GameLabel sCityZoomKey[] = {
+    {14, 0, 82, 8, 1, 0x3, NO_SHADOW, 0, "CENTRO POKéMON", FONT_SMALL},
+    {14, 0, 82, 8, 1, 0x5, NO_SHADOW, 0, "POKé MART", FONT_SMALL},
+    {14, 0, 82, 8, 1, 0xF, NO_SHADOW, 0, "GINÁSIO POKéMON", FONT_SMALL},
+    {14, 0, 82, 8, 1, 0x2, NO_SHADOW, 0, "TENDA DE BATALHA", FONT_SMALL},
+    {14, 0, 82, 8, 1, 0x4, NO_SHADOW, 0, "CONCURSO POKéMON", FONT_SMALL},
+};
+
+/* graphics/pokenav/condition/cancel.4bpp (32x16, 4 tiles wide): CANCEL in
+ * letters 5 pixels high that no font of the game matches, in colour F on 2
+ * (x 4-22, rows 5-9). VOLTAR does not fit in 18 pixels: SAIR, drawn here. */
+static void DrawConditionCancel(unsigned char *tiles)
+{
+    static const char *const sSair[] = {
+        "##.###.#.##.", "#..#.#.#.#.#", "##.###.#.##.", ".#.#.#.#.#.#", "##.#.#.#.#.#",
+    };
+    int x, y;
+
+    for (y = 5; y <= 9; y++)
+        for (x = 4; x <= 22; x++)
+            SetSheetPixel(tiles, x, y, 0x2);
+    for (y = 0; y < 5; y++)
+        for (x = 0; x < 12; x++)
+            if (sSair[y][x] == '#')
+                SetSheetPixel(tiles, 7 + x, 5 + y, 0xF);
+}
+
+static const struct GameLabel sHoennMapHeaders[] = {
+    {1, 5, 54, 13, 7, 0x1, 0x2, 1, "MAPA", 0},
+    {1, 5, 54, 13, 7, 0x1, 0x2, 1, "VISÃO GERAL", 0},
+    {1, 5, 54, 13, 7, 0x1, 0x2, 1, "AMPLIADO", 0},
+};
+
 static int EndsWith(const char *path, const char *suffix)
 {
     size_t n = strlen(path), m = strlen(suffix);
@@ -485,6 +817,72 @@ void Port_TransformAsset(const char *path, unsigned char *data, unsigned size)
     else if (EndsWith(path, "title_screen/press_start.4bpp") && size >= 21 * 32)
     {
         DrawPressStart(data);
+    }
+    else if (EndsWith(path, "pokedex/menu.4bpp") && size >= 128 * 128 / 2)
+    {
+        for (i = 0; i < sizeof(sPokedexMenuLabels) / sizeof(sPokedexMenuLabels[0]); i++)
+            DrawGameLabel(data, &sPokedexMenuLabels[i]);
+    }
+    else if (EndsWith(path, "pokedex/search_menu.4bpp") && size >= 128 * 64 / 2)
+    {
+        for (i = 0; i < sizeof(sPokedexSearchLabels) / sizeof(sPokedexSearchLabels[0]); i++)
+            DrawGameLabel(data, &sPokedexSearchLabels[i]);
+    }
+    else if (EndsWith(path, "pokedex/interface.4bpp") && size >= 200 * 32)
+    {
+        for (i = 0; i < sizeof(sPokedexListSprites) / sizeof(sPokedexListSprites[0]); i++)
+        {
+            sTilesWide = sPokedexListSprites[i].tilesWide;
+            DrawGameLabel(data + sPokedexListSprites[i].tile * 32, &sPokedexListSprites[i].label);
+        }
+        sTilesWide = 4;
+        NationalToNacional(data + 168 * 32);
+        sTilesWide = SHEET_TILES_WIDE;
+    }
+    else if (EndsWith(path, "pokenav/options/options.4bpp")
+          && size >= sizeof(sPokenavOptionLabels) / sizeof(sPokenavOptionLabels[0]) * 32 * 32)
+    {
+        unsigned char grid[32 * 32];
+        for (i = 0; i < sizeof(sPokenavOptionLabels) / sizeof(sPokenavOptionLabels[0]); i++)
+        {
+            SpritesToGrid(grid, data + i * 32 * 32, 4, 2, 4, 1);
+            DrawGameLabel(grid, &sPokenavOptionLabels[i]);
+            SpritesToGrid(grid, data + i * 32 * 32, 4, 2, 4, 0);
+        }
+    }
+    else if (EndsWith(path, "pokenav/condition/cancel.4bpp") && size >= 8 * 32)
+    {
+        sTilesWide = 4;
+        DrawConditionCancel(data);
+        sTilesWide = SHEET_TILES_WIDE;
+    }
+    else if (EndsWith(path, "region_map/city_zoom_text.4bpp") && size >= 5 * 12 * 32)
+    {
+        sTilesWide = 12;
+        for (i = 0; i < 5; i++)
+            DrawGameLabel(data + i * 12 * 32, &sCityZoomKey[i]);
+        sTilesWide = SHEET_TILES_WIDE;
+    }
+    else if (EndsWith(path, "left_headers/hoenn_map.4bpp") && size >= 3 * 32 * 32)
+    {
+        sTilesWide = 8;
+        for (i = 0; i < 3; i++)
+            DrawGameLabel(data + i * 32 * 32, &sHoennMapHeaders[i]);
+        sTilesWide = SHEET_TILES_WIDE;
+    }
+    else if (strstr(path, "pokenav/left_headers/") != NULL)
+    {
+        unsigned char grid[64 * 32];
+        for (i = 0; i < sizeof(sPokenavHeaders) / sizeof(sPokenavHeaders[0]); i++)
+        {
+            int main = sPokenavHeaders[i].label.capitals == 7;
+            if (!EndsWith(path, sPokenavHeaders[i].file) || size < (main ? 64u : 32u) * 32)
+                continue;
+            /* Two 64x32 sprites, or four 32x16 ones: either way a grid 16 tiles wide. */
+            SpritesToGrid(grid, data, main ? 8 : 4, main ? 4 : 2, main ? 2 : 4, 1);
+            DrawGameLabel(grid, &sPokenavHeaders[i].label);
+            SpritesToGrid(grid, data, main ? 8 : 4, main ? 4 : 2, main ? 2 : 4, 0);
+        }
     }
     else if (EndsWith(path, "interface/status_icons.4bpp") && size >= 7 * 4 * 32)
     {

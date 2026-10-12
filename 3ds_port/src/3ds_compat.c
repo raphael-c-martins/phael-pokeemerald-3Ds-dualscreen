@@ -346,6 +346,24 @@ const void *Port_ResolveFontPointer(const void *ptr)
     return ptr;
 }
 
+/*
+ * A glyph of one of the latin fonts (0 small narrow, 1 small, 2 narrow,
+ * 3 short, 4 normal), loaded from the pack with the tilde letters: 16x16
+ * pixels of 2 bits as GlyphPixel reads them, 1 the ink and 2 its shadow.
+ * For the port's own drawing of the Portuguese graphics (3ds_icons_ptbr.c).
+ */
+const unsigned char *Port_LatinGlyph(unsigned font, unsigned char code, int *width)
+{
+    if (font >= ARRAY_COUNT(sLatinFonts) || !LoadLatinFont(font)
+     || (u32)(code + 1) * GLYPH_BYTES > sLatinFonts[font].size)
+    {
+        *width = 0;
+        return NULL;
+    }
+    *width = sLatinFontWidths[font][code];
+    return sLatinFonts[font].raw + code * GLYPH_BYTES;
+}
+
 void Port_PreloadLatinFonts(void)
 {
     unsigned i;

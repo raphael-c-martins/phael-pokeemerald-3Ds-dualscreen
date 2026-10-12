@@ -985,6 +985,30 @@ static const void *ResolveLoaded(s32 idx, u32 offset, const void *fallback)
     return data + offset;
 }
 
+/*
+ * A graphic the game has just decompressed (LZ77UnCompWram/Vram, bios.c),
+ * named by the asset its compressed data came from without the ".lz": the
+ * Portuguese build redraws the English words in it (3ds_icons_ptbr.c).
+ */
+void Port_TransformDecompressed(const void *source, void *data, unsigned size)
+{
+    char plain[128];
+    const char *path;
+    size_t n;
+    u32 offset = 0;
+    s32 idx = FindAssetIndexForPointer((u32)source, &offset);
+
+    if (idx < 0 || offset != 0 || data == NULL)
+        return;
+    path = GetAssetPathByIndex((u32)idx);
+    n = strlen(path);
+    if (n <= 3 || n - 3 >= sizeof(plain) || strcmp(path + n - 3, ".lz") != 0)
+        return;
+    memcpy(plain, path, n - 3);
+    plain[n - 3] = '\0';
+    Port_TransformAsset(plain, data, size);
+}
+
 const void *Port_ResolveAssetPointer(const void *ptr)
 {
     u32 offset;
