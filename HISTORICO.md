@@ -439,6 +439,7 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 ### ✅ Resultados Homologados:
 - **Logo e Tela de Título:** 100% aprovados (alinhamento reto e estética oficial).
 - **Fast-Forward Inteligente:** 100% aprovado (1x na abertura/menus e transição suave para 4x in-game).
+- **Menu de Inspeção / Resumo de Pokémon:** 100% aprovado (cabeçalhos, golpes, atributos e descrições com alinhamento e acentuação perfeitos).
 
 ### 🔍 Novos Apontamentos Levantados pelo Usuário:
 1. **Posição da Healthbox do Adversário:**

@@ -14,6 +14,10 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
    - **Status:** **Aprovado com sucesso.**
    - O jogo inicia estritamente a **1x** (velocidade normal, sem acelerar músicas ou menus da abertura). Ao carregar o save e entrar no mundo ativo (*in-game*), o motor ativa dinamicamente a taxa acelerada configurada pelo usuário (ex.: **4x**).
 
+3. **Menu de Inspeção e Resumo de Golpes (Pokémon Summary Screen):**
+   - **Status:** **Aprovado com sucesso.**
+   - Telas de resumo de Pokémon testadas e validadas: cabeçalhos (*GOLPES DE LUTA*, *EFEITO*, *DESCRIÇÃO*), atributos (*PODER*, *PRECISÃO*, *PP*), botões (*TROCAR*, *VOLTAR*) e textos de golpes e descrições com 100% de acentuação e alinhamento visual perfeito.
+
 ---
 
 ## 🎯 2. Novos Apontamentos e Demandas para o Próximo Ciclo
