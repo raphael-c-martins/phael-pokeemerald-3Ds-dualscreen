@@ -125,9 +125,22 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
     1. Através de rotina gráfica dedicada em `3ds_port/src/3ds_icons_ptbr.c` (`Port_TransformAsset` para `trainer_card/tiles.4bpp`).
     2. Ou fornecendo a versão traduzida de `graphics/trainer_card/tiles.png` no pacote de assets localizados em `tools/locales/pt_br/`.
 
+### 📦 Item G: Área Reduzida nas Caixas do PC (Pokémon Storage System) e Botões em Inglês
+- **Cenário Atual (v10):**
+  - Ao abrir a opção de mover Pokémon ou itens nas Caixas do PC (`media_1791826000000.png`):
+    - A tela inteira da caixa (papel de parede, slots dos 30 Pokémon e botões superiores) fica confinada em um bloco de **240x160** pixels centralizado na tela inferior de **320x240** (com 40px de borda ociosa em volta).
+    - Os botões do topo do box exibem textos gráficos em inglês: **`PARTY POKéMON`**, **`CLOSE BOX`** e **`PKMN DATA`** (a etiqueta da caixa já aparece traduzida como *CAIXA 1*).
+- **Diagnóstico da Causa Raiz:**
+  - Em `3ds_port/src/3ds_video.c`, a tela de caixas é tratada como `CTR_CENTRED_STORAGE`, pertencendo ao mesmo grupo de telas GBA renderizadas em proporção 1:1 estrita centralizada (240x160).
+  - Os botões superiores (`PARTY POKéMON`, `CLOSE BOX`, `PKMN DATA`) são carregados a partir do arquivo de blocos gráficos `graphics/pokemon_storage/menu.png` (128x72 pixels), sendo arte gráfica indexada original americana.
+- **Plano de Solução Arquitetônica:**
+  1. Integrar `CTR_CENTRED_STORAGE` ao plano de ampliação/escala ergonômica das sub-telas do GBA na tela inferior touch de 320x240 (proporcionando ícones maiores e muito mais precisão para selecionar e arrastar Pokémon com os dedos/Stylus).
+  2. Ajustar os offsets do handler de toque em `3ds_bottom_ui.c` (`CtrStorage_Tap`).
+  3. Traduzir os tiles de `graphics/pokemon_storage/menu.png` para **`EQUIPE POKéMON`**, **`FECHAR CAIXA`** e **`DADOS POKéMON`**.
+
 ---
 
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menu do Poké Mart, Loja Touch, Equipe de Pokémon e Cartão de Treinador).
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador e Caixas de Armazenamento).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.
