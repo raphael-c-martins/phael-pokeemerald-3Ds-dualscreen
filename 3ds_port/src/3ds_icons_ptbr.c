@@ -14,7 +14,7 @@
 void Port_TransformAsset(const char *path, unsigned char *data, unsigned size);
 const unsigned char *Port_LatinGlyph(unsigned font, unsigned char code, int *width);
 
-#if defined(CTR_LANG_PT_BR)
+#if CTR_LANG_PT_BR
 
 /* 4bpp tiles, 16 to a row: graphics/interface/menu_info.4bpp is 128x128. */
 #define SHEET_TILES_WIDE 16

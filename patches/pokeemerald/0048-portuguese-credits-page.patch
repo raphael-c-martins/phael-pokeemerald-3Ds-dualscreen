@@ -8,7 +8,7 @@ diff --git a/src/data/credits.h b/src/data/credits.h
  enum
  {
      PAGE_TITLE,
-+#if defined(CTR_LANG_PT_BR)
++#if CTR_LANG_PT_BR
 +    // The Portuguese translation and the 3DS port, first, before the crew's
 +    // pages, which players often skip.
 +    PAGE_PTBR_TRANSLATION,
@@ -21,7 +21,7 @@ diff --git a/src/data/credits.h b/src/data/credits.h
  static const u8 sCreditsText_EmptyString[]                    = _("");
  static const u8 sCreditsText_PkmnEmeraldVersion[]             = _("POKéMON EMERALD VERSION");
  static const u8 sCreditsText_Credits[]                        = _("Credits");
-+#if defined(CTR_LANG_PT_BR)
++#if CTR_LANG_PT_BR
 +static const u8 sCreditsText_PtbrTranslation[]                = _("Tradução PT-BR");
 +static const u8 sCreditsText_PtbrTranslator[]                 = _("Carlos Mozart");
 +static const u8 sCreditsText_PtbrAllGenWiki[]                 = _("AllGenWiki");
@@ -35,7 +35,7 @@ diff --git a/src/data/credits.h b/src/data/credits.h
  static const struct CreditsEntry sCreditsEntry_EmptyString                      = { 0, FALSE, sCreditsText_EmptyString};
  static const struct CreditsEntry sCreditsEntry_PkmnEmeraldVersion               = { 7,  TRUE, sCreditsText_PkmnEmeraldVersion};
  static const struct CreditsEntry sCreditsEntry_Credits                          = {11,  TRUE, sCreditsText_Credits};
-+#if defined(CTR_LANG_PT_BR)
++#if CTR_LANG_PT_BR
 +static const struct CreditsEntry sCreditsEntry_PtbrTranslation                  = { 0,  TRUE, sCreditsText_PtbrTranslation};
 +static const struct CreditsEntry sCreditsEntry_PtbrTranslator                   = { 0, FALSE, sCreditsText_PtbrTranslator};
 +static const struct CreditsEntry sCreditsEntry_PtbrAllGenWiki                   = { 0, FALSE, sCreditsText_PtbrAllGenWiki};
@@ -49,7 +49,7 @@ diff --git a/src/data/credits.h b/src/data/credits.h
          _,
          _
      },
-+#if defined(CTR_LANG_PT_BR)
++#if CTR_LANG_PT_BR
 +    [PAGE_PTBR_TRANSLATION] = {
 +        _,
 +        &sCreditsEntry_PtbrTranslation,

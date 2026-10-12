@@ -11,7 +11,7 @@ diff --git a/src/option_menu.c b/src/option_menu.c
 +// The choices' column: from x=104 to x=198 of the options window. Portuguese
 +// words are wider (LENTA MÉDIA RÁPIDA, 96 px), so there the column starts
 +// right after the longest label and ends near the window's edge (208).
-+#if defined(CTR_LANG_PT_BR)
++#if CTR_LANG_PT_BR
 +#define CHOICES_LEFT  96
 +#define CHOICES_RIGHT 204
 +#else

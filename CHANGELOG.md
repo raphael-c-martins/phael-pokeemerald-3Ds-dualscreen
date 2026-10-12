@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Portuguese: the language checks are `#if CTR_LANG_PT_BR`. The Makefile
+  defines it as 0 for the other builds, so `#ifdef`/`defined()` had turned
+  the Portuguese code on in English too (credits pages, metric units, the
+  redrawn graphics, TYPE_NAME_LENGTH 9). TYPE_NAME_LENGTH stays 6 outside
+  Portuguese, so the English data keep their layout.
 - Portuguese: the contest results' title, NÍVEL NORMAL / SUPER / HIPER /
   MESTRE and ESTILO, BELEZA, FOFURA, ESPERT., FORÇA, in a tall narrow font
   drawn for the project after the original's. The ranks share RANK's

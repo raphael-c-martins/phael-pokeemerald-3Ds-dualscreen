@@ -10,7 +10,7 @@ diff --git a/src/item.c b/src/item.c
  
 -#if defined(PORT_BRIDGE) && GAME_LANGUAGE == LANGUAGE_SPANISH
 +// Spanish and Portuguese put the word first: BAYA ATANIA, FRUTAS ORAN.
-+#if defined(PORT_BRIDGE) && (GAME_LANGUAGE == LANGUAGE_SPANISH || defined(CTR_LANG_PT_BR))
++#if defined(PORT_BRIDGE) && (GAME_LANGUAGE == LANGUAGE_SPANISH || CTR_LANG_PT_BR)
      txtPtr = StringCopy(dst, berryString);
      *txtPtr = CHAR_SPACE;
      StringCopy(txtPtr + 1, berryName);
@@ -21,14 +21,14 @@ diff --git a/src/strings.c b/src/strings.c
  const u8 gText_PokeBalls[] = _("POKé BALLS");
  #if defined(PORT_BRIDGE) && GAME_LANGUAGE == LANGUAGE_SPANISH
  const u8 gText_Berry[] = _("BAYA");
-+#elif defined(CTR_LANG_PT_BR)
++#elif CTR_LANG_PT_BR
 +const u8 gText_Berry[] = _("FRUTA");
  #else
  const u8 gText_Berry[] = _("BERRY");
  #endif
  #if defined(PORT_BRIDGE) && GAME_LANGUAGE == LANGUAGE_SPANISH
  const u8 gText_Berries[] = _("BAYAS");
-+#elif defined(CTR_LANG_PT_BR)
++#elif CTR_LANG_PT_BR
 +const u8 gText_Berries[] = _("FRUTAS");
  #else
  const u8 gText_Berries[] = _("BERRIES");

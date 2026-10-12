@@ -373,6 +373,12 @@ O maior volume do projeto, sem equivalente no wiki.
 
 ## Fase 9 — Builder, release e distribuição
 
+- [x] PR para o port original, a pedido do autor (12/10):
+      [ZallaxDev/pokeemerald-3Ds-dualscreen#60](https://github.com/ZallaxDev/pokeemerald-3Ds-dualscreen/pull/60),
+      do branch `ptbr` (sem os arquivos da rotina dos dois PCs). Antes dele,
+      o código em português passou a ficar só na build em português
+      (`#if CTR_LANG_PT_BR`; `TYPE_NAME_LENGTH` 6 no inglês), conferido nas
+      duas builds. Mudanças pedidas pelo autor vão no branch `ptbr`.
 - [ ] Variante `payload/pt/` com o executável PT e a receita da ROM BPEE.
 - [ ] Receita com o texto PT: os textos do jogo vão para `gamedata.bin` e
       `scripts.bin`, que o builder recria da ROM. O texto traduzido não existe
@@ -420,6 +426,7 @@ Registre aqui cada decisão, com data.
 | 2026-10-08 | Tipos com o nome oficial inteiro (patch `0043`, `TYPE_NAME_LENGTH` 9), como previsto em 07/10. Na janela de golpes da batalha o "TIPO/" sai para o nome caber; na busca da Pokédex, um tipo largo usa a fonte estreita. (As abreviações de 6 bytes, registradas antes neste dia, foram descartadas.) |
 | 2026-10-08 | Categorias da POKéDEX com “POKéMON” antes (“POKéMON SEMENTE”), patch `0042`, em até 11 bytes. |
 | 2026-10-08 | Um só fluxo PT-BR: `--port-lang pt_br` com `localize_portuguese.py` e os catálogos de `tools/locales/pt_br/`. O fluxo `--locale ptbr` (`localize_ptbr.py`, catálogo TOML) foi retirado; os textos dele já estavam no catálogo `pt_br`. |
+| 2026-10-12 | Mesclar a tradução no port original por PR (pedido do autor): o branch `ptbr` leva tudo menos a rotina dos dois PCs (`CLAUDE.md`, `.claude`, `sync_pcs.py`); o `main` do fork continua com ela. |
 
 ## Glossário
 
