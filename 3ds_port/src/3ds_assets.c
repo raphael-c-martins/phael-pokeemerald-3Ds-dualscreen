@@ -16,7 +16,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <3ds.h>
 
 #include "port_platform.h"
 #include "port_log.h"
@@ -26,7 +25,7 @@
 #include "3ds_platform.h"
 
 static volatile bool sWarmQuit;
-static Thread sWarmThread;
+static void *sWarmThread;
 
 u32 GetDecompressedDataSize(const u32 *ptr);
 
@@ -754,7 +753,7 @@ void CtrAssets_StartWarmup(void)
         return;
     }
     sWarmQuit = false;
-    sWarmThread = (Thread)CtrPlatform_CreateThread(WarmWorker, list, 16 * 1024, 1, false);
+    sWarmThread = CtrPlatform_CreateThread(WarmWorker, list, 16 * 1024, 1, false);
     if (sWarmThread == NULL)
     {
         free(list);
@@ -767,8 +766,8 @@ void CtrAssets_Shutdown(void)
     sWarmQuit = true;
     if (sWarmThread != NULL)
     {
-        threadJoin(sWarmThread, 1000000000ULL);
-        threadFree(sWarmThread);
+        CtrPlatform_JoinThread(sWarmThread);
+        CtrPlatform_FreeThread(sWarmThread);
         sWarmThread = NULL;
     }
 }

@@ -58,6 +58,8 @@ void CtrLock_Lock(CtrLock *lock);
 void CtrLock_Unlock(CtrLock *lock);
 void *CtrPlatform_CreateThread(void (*entry)(void *), void *arg, unsigned stack, int core, bool detached);
 bool CtrPlatform_StartThread(void (*entry)(void *), void *arg, unsigned stack, int core);
+void CtrPlatform_JoinThread(void *thread);
+void CtrPlatform_FreeThread(void *thread);
 void CtrPlatform_SleepUs(unsigned microseconds);
 /* The frame profiler's report and reset, at present (3ds_prof.c). */
 void CtrProf_EndFrame(float workMs, float waitMs, uint64_t frame);

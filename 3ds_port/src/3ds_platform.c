@@ -147,6 +147,18 @@ bool CtrPlatform_StartThread(void (*entry)(void *), void *arg, unsigned stack, i
     return CtrPlatform_CreateThread(entry, arg, stack, core, true) != NULL;
 }
 
+void CtrPlatform_JoinThread(void *thread)
+{
+    if (thread != NULL)
+        threadJoin((Thread)thread, 1000000000ULL);
+}
+
+void CtrPlatform_FreeThread(void *thread)
+{
+    if (thread != NULL)
+        threadFree((Thread)thread);
+}
+
 void CtrPlatform_SleepUs(unsigned microseconds)
 {
     svcSleepThread((s64)microseconds * 1000);
