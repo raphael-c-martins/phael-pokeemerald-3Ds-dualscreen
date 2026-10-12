@@ -432,12 +432,19 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
   - `parceiro` (`carlosmozart`): 3 novos commits incorporados via merge (`ba7ae7c`, `1b6644e`, `8cadf2d`), adicionando os títulos dos resultados de concursos em português no Nintendo 3DS (*NÍVEL NORMAL / SUPER / HIPER / MESTRE*, *ESTILO*, *BELEZA*, *FOFURA*, *ESPERT.*, *FORÇA*).
 - [x] **Pipeline de Compilação Concluído com Sucesso (Exit Code 0):**
   - Executável final `emerald3ds_v10.3dsx` (33.632.636 bytes) gerado e copiado para `dist_3ds/` e `# TEMPORARIO/Tentativa-v10/`.
-- [ ] **Próximo Passo / Teste do Usuário no Console:**
-  1. Transferir `emerald3ds_v10.3dsx` para o cartão SD do 3DS (`/3ds/emerald3ds/emerald3ds.3dsx`).
-  2. Testar o botão HOME e fechar o aplicativo repetidamente para validar a eliminação total do crash no Core 1.
-  3. Validar visualmente o novo alinhamento das caixas de vida (Healthboxes) nas batalhas (sem barra verde no céu e sem corte lateral).
-  4. Conferir a nova tela de título ("VERSÃO ESMERALDA") e os títulos dos concursos em PT-BR.
+---
 
+## 📝 12/10/2026 - Validação do Usuário e Backlog de Feedbacks (Ciclo pós-v10)
 
+### ✅ Resultados Homologados:
+- **Logo e Tela de Título:** 100% aprovados (alinhamento reto e estética oficial).
+- **Fast-Forward Inteligente:** 100% aprovado (1x na abertura/menus e transição suave para 4x in-game).
 
+### 🔍 Novos Apontamentos Levantados pelo Usuário:
+1. **Posição da Healthbox do Adversário:**
+   - O Pokémon do jogador está bom, mas o oponente ainda deve subir e ir mais para a esquerda no céu (`x ≈ 12~16, y ≈ 8~12`).
+   - **Sugestão do Usuário:** Criar uma opção na aba **MELHORIAS** (tela inferior) para chavear/calibrar as posições das Healthboxes dinamicamente.
+2. **Área da Mochila em Batalha:**
+   - A tela da bolsa em batalha ocupa apenas 240x160 centralizada na tela de 320x240, deixando espaço ocioso considerável ao redor. Estudar ampliação/escala com ajuste de touch.
 
+> **Diretiva de Operação:** Nenhuma compilação ou nova branch será disparada até que o usuário conclua todos os testes em andamento no console e emulador. Todos os pontos foram consolidados em `docs/FEEDBACKS_E_MELHORIAS.md`.
