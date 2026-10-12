@@ -22,6 +22,10 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
    - **Status:** **Aprovado com sucesso.**
    - Textos e diálogos de interação com arbustos de frutas testados e homologados: strings como *"Phael colheu 2 FRUTAS ORAN."* com nomes, concordância gramatical, numerais e acentuação 100% corretos e caixas centralizadas em widescreen.
 
+5. **Diálogos de NPCs até a Rota 104 (Littleroot, Oldale, Rota 102, Petalburg e Rota 104):**
+   - **Status:** **Aprovado com sucesso.**
+   - Todos os NPCs abordados pelo jogador no overworld ao longo do percurso inicial (vilas, cidades, casas e rotas) exibiram falas com localização impecável em Português do Brasil, sem cortes de caracteres, com acentuação e pontuação corretas e sem estouro de balão.
+
 ---
 
 ## 🎯 2. Novos Apontamentos e Demandas para o Próximo Ciclo

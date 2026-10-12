@@ -441,6 +441,7 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 - **Fast-Forward Inteligente:** 100% aprovado (1x na abertura/menus e transição suave para 4x in-game).
 - **Menu de Inspeção / Resumo de Pokémon:** 100% aprovado (cabeçalhos, golpes, atributos e descrições com alinhamento e acentuação perfeitos).
 - **Colheita de Frutas (Overworld):** 100% aprovado (mensagens de colheita como *"Phael colheu 2 FRUTAS ORAN."* com concordância gramatical, nomes de itens e acentuação impecáveis).
+- **Diálogos de NPCs até a Rota 104:** 100% aprovado (Littleroot, Oldale, Rota 102, Petalburg e Rota 104 testados com todos os NPCs exibindo falas em português correto, natural e com acentuação impecável).
 
 ### 🔍 Novos Apontamentos Levantados pelo Usuário:
 1. **Posição da Healthbox do Adversário:**
