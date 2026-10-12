@@ -98,7 +98,23 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
 
 ---
 
+### 💳 Item F: Gráficos em Inglês no Cartão de Treinador (Trainer Card)
+- **Cenário Atual (v10):**
+  - Ao abrir a aba do Trainer Card na tela inferior touch (`media_1791823000000.png`):
+    - O cabeçalho azul do cartão exibe o texto em inglês **`TRAINER CARD`**.
+    - A faixa inferior sobre as caixas das 8 insígnias exibe o texto em inglês **`BADGES`**.
+    - Os demais dados dinâmicos (*Nº ID*, *NOME:*, *DINHEIRO*, *TEMPO*) já aparecem 100% corretos em português.
+- **Diagnóstico da Causa Raiz:**
+  - Em `3ds_bottom_ui.c` (linhas 638 a 641), o motor do 3DS carrega a moldura do cartão a partir do arquivo gráfico compactado `trainer_card/tiles.4bpp.lz` (gerado a partir de `graphics/trainer_card/tiles.png`, 128x80 pixels).
+  - Como os textos `TRAINER CARD` e `BADGES` são estampados diretamente nos blocos (tiles) da imagem de fundo do cartão original em inglês, eles não passam pela tabela de strings traduzidas de `strings.c`.
+- **Plano de Solução Arquitetônica:**
+  - Implementar a substituição desses tiles para **`CARTÃO TREINADOR`** (ou `TREINADOR`) e **`INSÍGNIAS`**:
+    1. Através de rotina gráfica dedicada em `3ds_port/src/3ds_icons_ptbr.c` (`Port_TransformAsset` para `trainer_card/tiles.4bpp`).
+    2. Ou fornecendo a versão traduzida de `graphics/trainer_card/tiles.png` no pacote de assets localizados em `tools/locales/pt_br/`.
+
+---
+
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menu do Poké Mart, Loja Touch e Equipe de Pokémon).
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menu do Poké Mart, Loja Touch, Equipe de Pokémon e Cartão de Treinador).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.
