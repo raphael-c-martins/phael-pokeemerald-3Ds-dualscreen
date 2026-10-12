@@ -208,9 +208,29 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
   2. **Liberação da Altura Integral:** Suspender o corte de 112px da arena de batalha durante o registro da Pokédex, permitindo que a imagem seja composta em seus 160px completos de altura.
   3. **Visualização Completa do Texto:** As 4 linhas completas da descrição e a borda inferior arredondada da Pokédex serão desenhadas com perfeição e sem nenhum corte.
 
+### 🏷️ Item K: Tela de Nomeação / Apelido (Escala Widescreen, Texto Colado e Botões em Inglês)
+- **Cenário Atual (v10):**
+  - Ao capturar um monstro e abrir a tela para dar apelido (*Naming Screen*):
+    - **Área Reduzida:** A tela inteira fica confinada em um bloco de **240x160** pixels no centro da tela superior widescreen de **400x240** (com listras amarelas ociosas preenchendo as laterais), deixando as teclas do teclado e o sprite do monstro muito pequenos.
+    - **Texto Colado e Invertido:** O cabeçalho da caixa estampa o texto sem espaço e com sintaxe invertida: **`WURMPLEApelido de ?`** (em vez de `Apelido de WURMPLE?`).
+    - **Botões Gráficos em Inglês:** Os botões de controle à direita do teclado exibem etiquetas americanas: **`lower`** (tecla Select), **`BACK`** (botão B) e **`OK`** (tecla Start).
+- **Diagnóstico Técnico da Causa Raiz:**
+  - **Escala 1:1:** Em `3ds_video.c:2049`, a tela é tratada como `CTR_CENTRED_NAMING`, sendo renderizada na proporção nativa do GBA (240x160) com repetição de BG3 nas bordas.
+  - **Concatenação Saxon Genitive (Inglês):** Em `src/naming_screen.c` (linha 1722), a função `DrawMonTextEntryBox` foi desenhada para a gramática inglesa (`WURMPLE` + `'s nickname?` = `WURMPLE's nickname?`):
+    ```c
+    StringCopy(buffer, gSpeciesNames[sNamingScreen->monSpecies]);
+    StringAppendN(buffer, sNamingScreen->template->title, 15);
+    ```
+    Ao traduzir a string para português (`Apelido de ?`), a rotina concatena diretamente a espécie antes da frase sem espaço, resultando em `WURMPLEApelido de ?`.
+  - **Sprites dos Botões:** Os botões `lower`, `BACK` e `OK` são blocos gráficos indexados carregados de `graphics/naming_screen/`.
+- **Plano de Solução Arquitetônica:**
+  1. **Aplicação de Escala / Zoom Widescreen:** Integrar a tela de nomeação ao grupo de telas ampliadas (1.5x / widescreen proporcional), expandindo o teclado e a área de digitação de forma confortável e preenchendo o display do 3DS.
+  2. **Correção Sintática da Concatenação:** Ajustar `DrawMonTextEntryBox` para formatar a string na ordem gramatical natural do Português: `"Apelido de %s?"` (ex.: `"Apelido de WURMPLE?"`).
+  3. **Localização dos Botões:** Traduzir os sprites para **`minúsc.`** (ou `abc`), **`VOLTAR`** (ou `APAGAR`) e **`OK`**.
+
 ---
 
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas do PC, Gaveta da Equipe, Transições de Batalha e Tela de Captura da Pokédex).
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas do PC, Gaveta da Equipe, Transições de Batalha, Tela de Captura da Pokédex e Tela de Apelido).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.

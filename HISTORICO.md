@@ -469,5 +469,9 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 10. **Tela de Registro da Pokédex na Captura (Corte da Descrição em 112px):**
     - Ao capturar um Pokémon, a Pokédex abre com a descrição cortada na primeira linha (*"Gruda nos galhos e come folhas. O fio que"*), sumindo as 3 linhas restantes e cortando o rodapé da moldura contra o fundo preto.
     - **Causa Raiz Microscópica:** A tela de captura (`DisplayCaughtMonDexPage`) roda com o callback de batalha ativo (`sBattle = true`). O motor do 3DS em `3ds_video.c:5047/5666` impõe um corte fixo de arena em `bottom = 112px` (160px - 48px da caixa de diálogo de batalha). Como a descrição inicia em `Y = 95` (linhas de 16px), tudo a partir de `Y = 112` é ceifado pela máscara de batalha! Solução: suspender o corte de 112px durante `DisplayCaughtMonDexPage` para liberar a altura total de 160px.
+11. **Tela de Nomeação / Apelido (Escala Widescreen, Texto Colado e Botões em Inglês):**
+    - A tela de apelido (`CTR_CENTRED_NAMING`) fica restrita a 240x160 com listras amarelas ociosas no widescreen de 400x240, deixando o teclado pequeno.
+    - **Texto Colado/Invertido:** `DrawMonTextEntryBox` em `naming_screen.c` concatenava diretamente a espécie com a string sem espaço (`WURMPLEApelido de ?`) devido à estrutura do genitivo saxão do inglês (`WURMPLE's nickname?`). Solução: reordenar para `"Apelido de %s?"`.
+    - **Botões em Inglês:** Sprites `lower` (Select), `BACK` (B) e `OK` (Start) serão localizados para `minúsc.`, `VOLTAR` e `OK`.
 
 > **Diretiva de Operação:** Nenhuma compilação ou nova branch será disparada até que o usuário conclua todos os testes em andamento no console e emulador. Todos os pontos foram consolidados em `docs/FEEDBACKS_E_MELHORIAS.md`.
