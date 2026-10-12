@@ -170,7 +170,8 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
 ### ⚔️ Item I: Transição de Batalha contra Treinadores (NPCs de Rota, May, Líderes, Vilões e Elite 4)
 - **Cenário Atual (v10):**
   - Ao entrar em batalha contra **qualquer treinador NPC do jogo** (treinadores comuns de rotas, Rival May/Brendan, Líderes de Ginásio, Vilões Aqua/Magma e Elite dos Quatro):
-    - A transição gráfica de entrada quebra visualmente: exibe elementos gráficos cortados ao meio, acompanhados de fatias ou blocos pretos desconexos ("tabuleiro quebrado"), revelando o cenário do mapa pelas bordas de forma desalinhada antes do início da luta.
+    - A transição gráfica de entrada quebra visualmente: exibe elementos gráficos cortados ao meio, acompanhados de fatias ou blocos pretos desconexos ("tabuleiro quebrado"), revelando quadrados e faixas do cenário do mapa por trás de forma desalinhada antes do início da luta.
+    - Capturas de tela recebidas mostram blocos do Overworld vazando isolados no topo e no centro da tela enquanto as Pokébolas realizam o rastro.
     - O problema **NÃO** ocorre em batalhas contra Pokémon selvagens.
 - **Diagnóstico Técnico da Causa Raiz:**
   - **Mapeamento das Transições no Código:**
