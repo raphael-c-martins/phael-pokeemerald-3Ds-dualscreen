@@ -138,9 +138,26 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
   2. Ajustar os offsets do handler de toque em `3ds_bottom_ui.c` (`CtrStorage_Tap`).
   3. Traduzir os tiles de `graphics/pokemon_storage/menu.png` para **`EQUIPE POKéMON`**, **`FECHAR CAIXA`** e **`DADOS POKéMON`**.
 
+### 📋 Item H: Corte Superior na Gaveta da Equipe nas Caixas do PC e Botão CANCEL
+- **Cenário Atual (v10):**
+  - Ao abrir a gaveta deslizante da equipe dentro do Sistema de Armazenamento de Pokémon:
+    - A borda superior do painel vertical verde da equipe aparece com um corte horizontal reto e seco (clipping no topo), parecendo "cortada" contra o papel de parede laranja do PC.
+    - O botão inferior da gaveta exibe o texto em inglês **`CANCEL`** (em vez de `VOLTAR` ou `CANCELAR`).
+- **Diagnóstico Microscópico da Causa Raiz:**
+  - **Tilemap e Geometria da Gaveta:** Em `pokemon_storage_system.c` (linha 4118), o tilemap da gaveta (`gStorageSystemPartyMenu_Tilemap` descompactado de `party_menu.bin.lz`) possui **12 colunas x 22 linhas** de blocos (`96 x 176` pixels).
+  - **Diferença de Comportamento GBA vs 3DS Dual-Screen:**
+    - No hardware original do GBA, a tela física possui exatamente **160 pixels de altura**. A gaveta saía pelo topo da tela (`Y = 0`), e a carcaça física de plástico do console ficava logo ali, dando a ilusão de que a gaveta continuava para fora do videogame. Além disso, as linhas 0 a 18 do tilemap original sequer possuem uma borda horizontal fechada (são listras verticais contínuas de 8px).
+    - No Nintendo 3DS, a tela inferior possui **320x240 pixels** de resolução. O motor (`3ds_video.c`) renderiza o PC como `CTR_CENTRED_STORAGE` em uma janela centralizada de **240x160**, preenchendo as sobras (40px em cima, 40px embaixo) com a repetição da camada de fundo quadriculada laranja (`.wrap = true` no BG3).
+    - Como o BG1 (que contém a gaveta e a janela *PKMN DATA*) é ceifado exatamente nos limites de `Y = 0` do GBA (que corresponde a `Y = 40` do 3DS), a gaveta verde é cortada abruptamente contra o fundo laranja do PC.
+  - **Botão CANCEL:** Carregado a partir do mapa de blocos gráficos indexados `graphics/pokemon_storage/menu.png`.
+- **Plano de Solução Arquitetônica:**
+  - A modernização ergonômica da tela de caixas para ocupar os 240px de altura da tela do 3DS eliminará naturalmente o confinamento em 160px.
+  - Desenhar/estender uma borda ou moldura de acabamento no topo da gaveta ou estender sua renderização vertical até o teto da tela touch (`Y = 0` do 3DS), garantindo um acabamento estético natural e polido.
+  - Localizar o botão `CANCEL` em `graphics/pokemon_storage/menu.png` para **`VOLTAR`** ou **`CANCELAR`**.
+
 ---
 
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador e Caixas de Armazenamento).
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas de Armazenamento e Gaveta do PC).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.
