@@ -6134,6 +6134,7 @@ static void DoSave(void)
 {
     u8 status;
 
+    CtrLog_Write(CTR_LOG_GAME, "[SAVE] DoSave iniciado (diffFile=%d, saveFileStatus=%u)", gDifferentSaveFile, gSaveFileStatus);
     SaveMapView();
     IncrementGameStat(GAME_STAT_SAVED_GAME);
     if (gDifferentSaveFile == TRUE)
@@ -6145,6 +6146,8 @@ static void DoSave(void)
     {
         status = TrySavingData(SAVE_NORMAL);
     }
+    CtrLog_Write(CTR_LOG_GAME, "[SAVE] TrySavingData finalizado: status=%u (%s)",
+                 status, status == SAVE_STATUS_OK ? "SUCESSO" : "ERRO");
     StringExpandPlaceholders(sSaveMessage, status == SAVE_STATUS_OK ? gText_PlayerSavedGame : gText_SaveError);
     if (status == SAVE_STATUS_OK)
         PlaySE(SE_SAVE);
@@ -6153,6 +6156,8 @@ static void DoSave(void)
 
 static void OpenSave(void)
 {
+    CtrLog_Write(CTR_LOG_GAME, "[SAVE] Menu de salvar aberto (diffFile=%d, saveFileStatus=%u)",
+                 gDifferentSaveFile, gSaveFileStatus);
     sSaveStep = SAVE_ASK;
     StringExpandPlaceholders(sSaveMessage, gText_ConfirmSave);
 }
@@ -6396,12 +6401,41 @@ static void OpenAsked(u8 mode)
         sScreen = SCR_MAP;
 }
 
+static const char *DescribeHit(u8 id)
+{
+    if (id >= HIT_COLUMN && id < HIT_COLUMN + SCR_COUNT)
+    {
+        static const char *const sScreens[] = {
+            "MAPA", "POKEMON", "BOLSA", "CARTAO_TREINADOR", "POKEDEX", "POKENAV", "SALVAR", "OPCOES"
+        };
+        u8 sc = id - HIT_COLUMN;
+        if (sc < sizeof(sScreens) / sizeof(sScreens[0]))
+            return sScreens[sc];
+    }
+    if (id == HIT_COLUMN + COL_Y) return "ATALHO_Y";
+    if (id == HIT_COLUMN + COL_RUN) return "ALTERNAR_CORRIDA";
+    if (id >= HIT_ACTION && id < HIT_ACTION + 4)
+    {
+        static const char *const sActions[] = { "LUTAR", "BOLSA", "POKEMON", "FUGIR" };
+        return sActions[id - HIT_ACTION];
+    }
+    if (id >= HIT_MOVE && id < HIT_MOVE + 4) return "GOLPE";
+    if (id >= HIT_SLOT && id < HIT_SLOT + 6) return "SLOT_EQUIPE";
+    if (id == HIT_YES) return "CONFIRMAR_SIM";
+    if (id == HIT_NO) return "CANCELAR_NAO";
+    if (id == HIT_OK) return "BOTAO_OK";
+    if (id == HIT_CANCEL) return "BOTAO_CANCELAR";
+    if (id == HIT_QUICK_BALL) return "BOLA_RAPIDA";
+    if (id == HIT_MAP) return "TOQUE_MAPA";
+    return "TOQUE";
+}
+
 static void Activate(u8 id, u8 mode)
 {
     if (id == HIT_NONE)
         return;
-    CtrLog_Write(CTR_LOG_INPUT, "bottom screen: tap %02x (mode %u screen %u panel %u)", id, mode, sShown.screen,
-                 sShown.panel);
+    CtrLog_Write(CTR_LOG_INPUT, "[TOUCH] %s (id 0x%02x, mode %u, screen %u, panel %u)",
+                 DescribeHit(id), id, mode, sShown.screen, sShown.panel);
     if (mode >= MODE_BATTLE_INFO)
     {
         /* The controller waiting for it takes it on its next frame. */
@@ -6508,15 +6542,22 @@ static void Activate(u8 id, u8 mode)
         {
             if (sSaveStep == SAVE_ASK && gSaveFileStatus != SAVE_STATUS_EMPTY && gSaveFileStatus != SAVE_STATUS_CORRUPT)
             {
+                CtrLog_Write(CTR_LOG_GAME, "[SAVE] Solicitando confirmacao de sobrescrita (diffFile=%d, sSaveStep=%u)",
+                             gDifferentSaveFile, sSaveStep);
                 sSaveStep = SAVE_OVERWRITE;
                 StringExpandPlaceholders(sSaveMessage, gDifferentSaveFile ? gText_DifferentSaveFile
                                                                          : gText_AlreadySavedFile);
             }
             else
+            {
+                CtrLog_Write(CTR_LOG_GAME, "[SAVE] Confirmado pelo jogador! Executando DoSave()...");
                 DoSave();
+            }
         }
         else if (id == HIT_NO || id == HIT_OK)
         {
+            CtrLog_Write(CTR_LOG_GAME, "[SAVE] Fechando menu de salvar (id=%s, sSaveStep=%u)",
+                         id == HIT_NO ? "NAO" : "OK", sSaveStep);
             OpenSave();
             sScreen = SCR_MAP;
         }
@@ -6697,6 +6738,11 @@ static u8 ProcessTouch(u8 mode)
 uint16_t CtrBottom_FilterKeys(uint16_t held)
 {
     return sFocus != FOCUS_NONE || sInside != INSIDE_NONE || sSwallow ? 0 : held;
+}
+
+bool CtrBottom_InGame(void)
+{
+    return sInGame;
 }
 
 /* Whether the column is on screen: not in battle, not under the boxes or
@@ -7179,6 +7225,19 @@ void CtrBottom_Frame(void)
 
     sFrames = frames;
     mode = CurrentMode();
+    {
+        static u8 sLastReportedMode = 0xFF;
+        if (mode != sLastReportedMode)
+        {
+            static const char *const sModeNames[] = {
+                "OFF", "FIELD", "PARTY_MENU", "BAG_MENU", "STORAGE", "POKENAV", "POKEDEX",
+                "BATTLE_INFO", "BATTLE_ACTION", "BATTLE_MOVE", "BATTLE_TARGET"
+            };
+            const char *name = (mode < sizeof(sModeNames)/sizeof(sModeNames[0])) ? sModeNames[mode] : "UNKNOWN";
+            CtrLog_Write(CTR_LOG_GAME, "[STATE] Modo de jogo: %s (id %u)", name, mode);
+            sLastReportedMode = mode;
+        }
+    }
     if (mode < MODE_BATTLE_INFO && sCompAny)
     {
         /* The plate pictures are only for a battle. */

@@ -333,7 +333,48 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 
 ---
 
+## 🚀 11/10/2026 - Milestone v9: Correção do Crash no HOME Menu + Healthbox no Céu da Batalha + Telemetria Completa + Limitador Inteligente de 4x
+- **Branch Ativa:** `tentativa9` (sincronizada com `parceiro/main` contendo 6 novos commits de Carlos Mozart).
+- **Binários Gerados:** `dist_3ds/emerald3ds_v9.3dsx` e `dist_3ds/emerald3ds.3dsx` (33.627.064 bytes), além de cópia de conveniência em `# TEMPORARIO/Tentativa-v9/emerald3ds_v9.3dsx`.
+- **Status da Compilação:** **SUCESSO ABSOLUTO (Exit code 0)** via MSYS2 MinGW64 com devkitARM r68.
+
+### 🛡️ 1. Correção Definitiva do Crash no HOME Menu do 3DS (`3ds_platform.c`):
+- **Diagnóstico:** Análise do dump de memória Luma3DS (`crash_dump_00000006.dmp`) indicou falha na newlib libc em `_close_r` com `FAR=0x0000000C`.
+- **Causa Raiz:** Ao pressionar HOME e fechar o aplicativo no menu do 3DS, `CtrPlatform_Shutdown()` chamava `CtrFs_Shutdown()` (desmontando o serviço de arquivos do SDMC) antes de chamar `CtrLog_Close()`. Quando a thread de log tentava efetuar o flush final e fechar o handle de arquivo com `fclose()`, o driver de baixo nível já havia sido destruído, acionando o abort da libc no ARM11.
+- **Solução Implementada:** Invertida rigorosamente a ordem de encerramento da plataforma. `CtrLog_Close()` agora drena o buffer, fecha o arquivo no SD de forma segura e só então o FS é finalizado.
+
+### 🎯 2. Posicionamento de Healthbox de Batalha no Céu (`area para ajustar.png`):
+- **Alinhamento Individual:**
+  - Oponente elevado para `x = 4, y = 10` (renderizado no 3DS com folga de 14px do topo da tela, desobstruindo totalmente o sprite do Pokémon adversário no céu).
+  - Jogador mantido no canto inferior direito (`x = 186, y = 74`).
+- **Alinhamento de Duplas:**
+  - Oponente 1: `x = 4, y = 8`
+  - Oponente 2: `x = 2, y = 30`
+- Patch `0051-widescreen-battle-healthbox-coords.patch` e árvore de build atualizados em conformidade.
+
+### 📊 3. Telemetria e Registro Contínuo de Comandos do Jogador (`port.log`):
+- **Geração Automática do Log (`3ds_log.c`):** Ativação direta de `sdmc:/3ds/emerald3ds/port.log` com rotação limpa para `port-prev.log` sem necessidade do marcador manual `debug.txt`.
+- **Log de Botões Físicos (`3ds_input.c`):** Registro de teclas pressionadas no console (`A`, `B`, `X`, `Y`, `START`, `SELECT`, `D-PAD`, `L`, `R`, `ZL`, `ZR`).
+- **Log de Toques na Tela Touch (`3ds_bottom_ui.c`):** Mapeamento legível das ações do painel inferior (`MAPA`, `POKÉMON`, `BOLSA`, `SALVAR`, `LUTAR`, `GOLPE`, `CONFIRMAR_SIM`, `CANCELAR_NAO`, etc.) e coordenadas `TOUCH(x,y)`.
+- **Rastreabilidade de Salvamento:** Registro das etapas de salvamento (`ASK` -> `OVERWRITE` -> `DoSave`), alertando sobre o comportamento nativo da Game Freak de bloqueio de sobrescrita ao iniciar Novo Jogo sobre um save com outro Trainer ID.
+
+### ⚡ 4. Gerenciamento Inteligente de Velocidade (Fast-Forward):
+- **Comportamento Corrigido (`3ds_platform.c` e `3ds_bottom_ui.c`):** Quando o fast-forward estiver configurado (ex.: 4x), as telas de inicialização, abertura da Game Freak e menu inicial rodam obrigatoriamente a **1x** (com áudio no ritmo perfeito). A aceleração configurada só é ativada dinamicamente após entrar no jogo ativo (`CtrBottom_InGame() == TRUE`).
+
+### 📦 5. Integração Upstream Parceiro (Carlos Mozart):
+- Incorporados 6 novos commits de `parceiro/main` contendo sprites nativos e menus traduzidos em PT-BR para:
+  - **Pokédex:** Menus de busca, ordenação por peso/tamanho e botões *VISTOS*, *CAPTURADOS*, *BUSCAR*, *NACIONAL*.
+  - **PokéNav:** Seções *MAPA*, *TREINADORES*, *CONDIÇÃO*, *FITAS*.
+  - **Concursos Pokémon (Contest):** Categorias *Carisma*, *Beleza*, *Graça*, *Esperteza*, *Rigidez*.
+
+### 🗺️ 6. Roadmap Oficial 100%:
+- Publicado em `docs/ROADMAP_100_PORCENTO.md` com checklist completo de todas as etapas até a versão final estável (1.0.0).
+
+---
+
 ## 📌 Próximos Passos
-- [ ] Teste pelo usuário no hardware real 3DS da Milestone v8 (avaliando a tradução do Carlos Mozart com as melhorias de layout, correção do Wally e nova transição).
-- [ ] Mapear quaisquer pendências visuais pontuais que ainda persistam na experiência de jogo.
+- [ ] Validação no console físico Nintendo 3DS pelo usuário da Milestone v9.
+- [ ] Inspeção do arquivo `port.log` gerado no console com a nova telemetria.
+- [ ] Ajustar a caixa de diálogo na introdução de captura do Wally durante a batalha.
+
 

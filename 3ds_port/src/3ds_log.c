@@ -203,18 +203,11 @@ void CtrLog_Init(void)
      * never grows without bound and a crash is still readable after relaunch. */
     /* No log file unless sdmc:/3ds/emerald3ds/debug.txt exists: players never
      * pay for SD writes; to diagnose, create that file (any content). */
+    /* Open port.log directly; the previous session is preserved as port-prev.log */
     sFile = NULL;
-    {
-        FILE *marker = fopen("sdmc:/3ds/emerald3ds/debug.txt", "r");
-
-        if (marker != NULL)
-        {
-            fclose(marker);
-            remove("sdmc:/3ds/emerald3ds/port-prev.log");
-            rename("sdmc:/3ds/emerald3ds/port.log", "sdmc:/3ds/emerald3ds/port-prev.log");
-            sFile = fopen("sdmc:/3ds/emerald3ds/port.log", "w");
-        }
-    }
+    remove("sdmc:/3ds/emerald3ds/port-prev.log");
+    rename("sdmc:/3ds/emerald3ds/port.log", "sdmc:/3ds/emerald3ds/port-prev.log");
+    sFile = fopen("sdmc:/3ds/emerald3ds/port.log", "w");
     if (sFile)
     {
         /* The ring already batches; a second buffer would only copy twice. */

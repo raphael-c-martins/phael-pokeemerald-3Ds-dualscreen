@@ -200,9 +200,14 @@ static unsigned sHidden;
 static uint64_t sShownTick;
 static float sPresentMs = 4.0f;
 
+bool __attribute__((weak)) CtrBottom_InGame(void)
+{
+    return true;
+}
+
 static bool FrameShown(uint64_t now)
 {
-    int speed = CtrSettings_Speed();
+    int speed = CtrBottom_InGame() ? CtrSettings_Speed() : 1;
     float since = sShownTick ? (now - sShownTick) * 1000.0f / SYSCLOCK_ARM11 : FRAME_MS;
 
     if (speed <= 1 || ++sHidden >= (unsigned)speed || since + sTiming.gameMs + sPresentMs > FRAME_MS)
@@ -338,8 +343,8 @@ void CtrPlatform_Shutdown(void)
     CtrAudio_Shutdown();
     CtrLog_Write(CTR_LOG_BOOT, "clean shutdown, platform frames=%llu", (unsigned long long)sFrames);
     aptUnhook(&sAptHook);
-    CtrFs_Shutdown();
     CtrLog_Close();
+    CtrFs_Shutdown();
     gfxExit();
 }
 

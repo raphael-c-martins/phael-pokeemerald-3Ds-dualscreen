@@ -33,6 +33,8 @@ uint16_t CtrBottom_InjectedKeys(void);
 /* The player's keys as the game should see them: none while the button
  * column has the X focus, or until the keys that left it are let go. */
 uint16_t CtrBottom_FilterKeys(uint16_t held);
+/* Whether the player is currently in gameplay (save loaded / overworld active). */
+bool CtrBottom_InGame(void);
 
 /*
  * The light green the bottom screen's sections sit on (its own screens, and
