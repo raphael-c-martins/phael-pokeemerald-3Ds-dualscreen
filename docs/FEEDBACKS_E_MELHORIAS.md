@@ -188,9 +188,29 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
   2. **Eliminação dos Pilares Pretos Prematuros:** Sincronizar as margens laterais de 20px para acompanhar a transição de forma contínua em vez de forçar corte preto sólido nas laterais.
   3. **Camada de Transição Limpa (Seamless):** Garantir que o fechamento da cortina seja 100% sólido e contínuo em todas as classes de treinadores antes do handoff para a cena de batalha.
 
+### 📖 Item J: Tela de Registro da Pokédex na Captura (Corte da Descrição em 112px)
+- **Cenário Atual (v10):**
+  - Ao capturar qualquer Pokémon selvagem (ex.: Wurmple), a tela de registro da Pokédex exibe a descrição incompleta cortada no meio:
+    - Aparece apenas a primeira linha: *"Gruda nos galhos e come folhas. O fio que"*
+    - O restante do texto desaparece e o rodapé da moldura da Pokédex é cortado por uma barra preta horizontal sólida no meio da tela.
+- **Diagnóstico Microscópico da Causa Raiz:**
+  - **Texto da Pokédex:** Em `src/data/pokemon/pokedex_text.h` (linha 531), o texto completo do Wurmple possui 4 linhas:
+    `"Gruda nos galhos e come folhas. O fio que\ncospe pela boca, que fica pegajoso ao\ntocar o ar, deixa os inimigos mais\nlentos."`
+  - **Disparo via Batalha:** Ao capturar um monstro, o script da batalha chama `DisplayCaughtMonDexPage` (`src/pokedex.c:4041`), que renderiza a tela em tela cheia do GBA (240x160), iniciando o texto em `top = 95` com altura de linha de 16px.
+  - **O Conflito de Batalha no 3DS (`bottom = 112`):**
+    - Como a captura ocorre dentro do fluxo de batalha, a flag de batalha `sBattle` do motor do 3DS permanece ativa.
+    - Em `3ds_port/src/3ds_video.c` (linhas 5047 e 5666), o motor assume que toda tela em `sBattle` possui altura útil restrita a **`bottom = 112`** (que equivale a 160px do GBA menos 48px da caixa de diálogo da arena de batalha).
+    - Como o corte é cravado na linha `Y = 112`:
+      - A linha 1 (Y=95 a 111) é renderizada.
+      - A linha 2 (Y=111 a 127), as linhas 3 e 4, e toda a moldura inferior da Pokédex (Y=152 a 160) são **ceifadas pelo corte de 112px** contra o fundo preto da tela superior!
+- **Plano de Solução Arquitetônica:**
+  1. **Detecção da Tela de Captura:** Identificar quando `Task_DisplayCaughtMonDexPage` ou `sNewEntryInfoScreen_WindowTemplates` estiver ativa (ou quando o modo for captura de Pokédex).
+  2. **Liberação da Altura Integral:** Suspender o corte de 112px da arena de batalha durante o registro da Pokédex, permitindo que a imagem seja composta em seus 160px completos de altura.
+  3. **Visualização Completa do Texto:** As 4 linhas completas da descrição e a borda inferior arredondada da Pokédex serão desenhadas com perfeição e sem nenhum corte.
+
 ---
 
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas do PC, Gaveta da Equipe e Transições de Batalha).
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas do PC, Gaveta da Equipe, Transições de Batalha e Tela de Captura da Pokédex).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.
