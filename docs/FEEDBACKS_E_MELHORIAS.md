@@ -66,7 +66,21 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
 
 ---
 
+### 🛒 Item D: Área Reduzida no Menu de Compras da Loja (Poké Mart Buy Menu)
+- **Cenário Atual (v10):**
+  - Ao entrar na opção "COMPRAR" na vendinha (`media_1791819000000.png`), a tela de compras inteira é renderizada na tela inferior touch centralizada em um bloco reduzido de **240x160** pixels dentro do espaço de **320x240** (com 40px de borda ociosa em volta).
+  - Além disso, a etiqueta amarela de saldo exibe o texto em inglês `MONEY` (sprite `sSpriteSheet_MoneyLabel` em `src/money.c`).
+- **Diagnóstico da Causa Raiz:**
+  - Em `3ds_port/src/3ds_video.c`, telas centradas completas como `CTR_CENTRED_SHOP`, `CTR_CENTRED_BAG_WHOLE` e `CTR_CENTRED_PARTY_WHOLE` são compostas como recortes 1:1 da resolução nativa do GBA (240x160).
+  - Como a tela inferior do 3DS possui 320x240 pixels (proporção 4:3), isso gera um espaçamento ocioso substancial que restringe o espaço útil para visualização da lista de itens e a precisão dos toques tácteis.
+- **Plano de Solução Arquitetônica:**
+  1. Tratar o redimensionamento/escala da tela de compras (`CTR_CENTRED_SHOP`) junto com a mochila de batalha (`CTR_CENTRED_BAG_WHOLE`) para preencher a área útil de 320x240 de forma ergonômica.
+  2. Ajustar os offsets de toque táctil da lista (`CtrShop_ListTouch` e `CtrShop_QuantityTouch` em `src/shop.c`).
+  3. Adicionar a transformação ou substituição da sprite `MONEY` -> `DINHEIRO` (ou `SALDO`) em `src/money.c` / `3ds_icons_ptbr.c`.
+
+---
+
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha e Menu do Poké Mart).
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menu do Poké Mart e Loja Touch).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.
