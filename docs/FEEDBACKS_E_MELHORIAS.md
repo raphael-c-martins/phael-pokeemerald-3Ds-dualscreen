@@ -66,17 +66,18 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
 
 ---
 
-### 🛒 Item D: Área Reduzida no Menu de Compras da Loja (Poké Mart Buy Menu)
+### 🛒 Item D: Menu de Compras da Loja (Poké Mart Buy Menu) - Escala Touch e Sprite MONEY
 - **Cenário Atual (v10):**
-  - Ao entrar na opção "COMPRAR" na vendinha (`media_1791819000000.png`), a tela de compras inteira é renderizada na tela inferior touch centralizada em um bloco reduzido de **240x160** pixels dentro do espaço de **320x240** (com 40px de borda ociosa em volta).
-  - Além disso, a etiqueta amarela de saldo exibe o texto em inglês `MONEY` (sprite `sSpriteSheet_MoneyLabel` em `src/money.c`).
+  - **Textos Validados:** Todos os nomes de itens (*POÇÃO*, *ANTÍDOTO*, *CURA PARALIS.*, *DESPERTAR*, *VOLTAR*) e descrições (*"Recupera 20 PS de um POKéMON."*) estão **100% traduzidos para PT-BR**.
+  - **Ponto Pendente 1 (Área de Tela):** A tela de compras inteira é renderizada na tela inferior centralizada em um bloco reduzido de **240x160** pixels dentro do espaço de **320x240** (com 40px de borda ociosa em volta).
+  - **Ponto Pendente 2 (Sprite em Inglês):** A etiqueta amarela de saldo no topo esquerdo exibe o texto gráfico em inglês **`MONEY`** (sprite de 32x16 pixels em `graphics/shop/money.png`).
 - **Diagnóstico da Causa Raiz:**
   - Em `3ds_port/src/3ds_video.c`, telas centradas completas como `CTR_CENTRED_SHOP`, `CTR_CENTRED_BAG_WHOLE` e `CTR_CENTRED_PARTY_WHOLE` são compostas como recortes 1:1 da resolução nativa do GBA (240x160).
-  - Como a tela inferior do 3DS possui 320x240 pixels (proporção 4:3), isso gera um espaçamento ocioso substancial que restringe o espaço útil para visualização da lista de itens e a precisão dos toques tácteis.
+  - O texto `MONEY` é desenhado através de um sprite indexado 4bpp de 32x16 pixels (`sSpriteSheet_MoneyLabel` em `src/money.c`), não sendo uma string de texto dinâmica da tabela de fontes.
 - **Plano de Solução Arquitetônica:**
   1. Tratar o redimensionamento/escala da tela de compras (`CTR_CENTRED_SHOP`) junto com a mochila de batalha (`CTR_CENTRED_BAG_WHOLE`) para preencher a área útil de 320x240 de forma ergonômica.
   2. Ajustar os offsets de toque táctil da lista (`CtrShop_ListTouch` e `CtrShop_QuantityTouch` em `src/shop.c`).
-  3. Adicionar a transformação ou substituição da sprite `MONEY` -> `DINHEIRO` (ou `SALDO`) em `src/money.c` / `3ds_icons_ptbr.c`.
+  3. Localizar o sprite `graphics/shop/money.png` (32x16) para exibir **`DINHEIRO`** ou **`SALDO`** (ou transformá-lo dinamicamente em `3ds_icons_ptbr.c`).
 
 ---
 
