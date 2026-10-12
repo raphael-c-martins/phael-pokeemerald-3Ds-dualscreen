@@ -423,15 +423,21 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 
 ---
 
-### 📌 5. Ponto de Parada e Onde Devemos Continuar Amanhã:
-- [x] Branch `tentativa10` criada e isolada.
-- [x] Causa raiz do crash no HOME Menu (Core 1) 100% identificada e corrigida no código C.
-- [x] Coordenadas das Healthboxes de batalha recalculadas e aplicadas nos patches.
-- [x] Relatório técnico redigido e salvo no `HISTORICO.md`.
-- [ ] **Ação Imediata para Amanhã:**
-  1. Concluir a execução do pipeline de compilação da v10 via `scratch/build_v10.sh`.
-  2. Gerar e disponibilizar o executável `emerald3ds_v10.3dsx` em `dist_3ds/` e `# TEMPORARIO/Tentativa-v10/`.
-  3. Realizar o teste no hardware Nintendo 3DS para homologar o fim do crash no HOME Menu e validar visualmente as novas posições das healthboxes.
+### 📌 5. Conclusão da Milestone v10 (12/10/2026):
+- [x] Branch `tentativa10` sincronizada com `origin/tentativa10`.
+- [x] Causa raiz do crash no HOME Menu (Core 1) 100% resolvida: cancelamento cooperativo e join seguro com isolamento de headers SDK em `CtrPlatform_JoinThread`/`CtrPlatform_FreeThread`.
+- [x] Coordenadas das Healthboxes de batalha recalculadas e aplicadas (`0051-widescreen-battle-healthbox-coords.patch`).
+- [x] **Checagem Diária de Repositórios Realizada:**
+  - `upstream` (`ZallaxDev`): Checado via `git fetch`, 100% atualizado.
+  - `parceiro` (`carlosmozart`): 3 novos commits incorporados via merge (`ba7ae7c`, `1b6644e`, `8cadf2d`), adicionando os títulos dos resultados de concursos em português no Nintendo 3DS (*NÍVEL NORMAL / SUPER / HIPER / MESTRE*, *ESTILO*, *BELEZA*, *FOFURA*, *ESPERT.*, *FORÇA*).
+- [x] **Pipeline de Compilação Concluído com Sucesso (Exit Code 0):**
+  - Executável final `emerald3ds_v10.3dsx` (33.632.636 bytes) gerado e copiado para `dist_3ds/` e `# TEMPORARIO/Tentativa-v10/`.
+- [ ] **Próximo Passo / Teste do Usuário no Console:**
+  1. Transferir `emerald3ds_v10.3dsx` para o cartão SD do 3DS (`/3ds/emerald3ds/emerald3ds.3dsx`).
+  2. Testar o botão HOME e fechar o aplicativo repetidamente para validar a eliminação total do crash no Core 1.
+  3. Validar visualmente o novo alinhamento das caixas de vida (Healthboxes) nas batalhas (sem barra verde no céu e sem corte lateral).
+  4. Conferir a nova tela de título ("VERSÃO ESMERALDA") e os títulos dos concursos em PT-BR.
+
 
 
 
