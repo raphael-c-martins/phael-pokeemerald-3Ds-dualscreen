@@ -48,7 +48,25 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
 
 ---
 
+### 🏪 Item C: Quebra no Menu da Vendinha (Poké Mart)
+- **Cenário Atual (v10):**
+  - Ao interagir com o atendente do Poké Mart em qualquer cidade (`media_1791818973379.png`), a janela de opções (`COMPRAR`, `VENDER`, `SAIR`) aparece graficamente partida ao meio:
+    - O topo da janela (`COMPRAR`, `VENDER` e a metade de cima da palavra `SAIR`) fica encostado na esquerda.
+    - A metade inferior da palavra `SAIR` (e a borda direita da janela) aparece deslocada 80 pixels para a direita, como um bloco flutuante duplicado/cortado.
+- **Diagnóstico da Causa Raiz (RCA Cirúrgico):**
+  - Em `3ds_port/src/3ds_video.c` (função `DrawFieldBgTex`, linhas 2885 a 2925), o compositor gráfico divide a camada `BG0` do overworld widescreen usando limites fixos:
+    - `splitX = 104` e `splitY = 48`.
+    - O objetivo original era deixar a plaquinha de cidade/rota (que fica no canto superior esquerdo até `x < 104, y < 48`) sem o shift horizontal de centralização (`sLayerShift = 80px`).
+    - No entanto, a janela do Poké Mart é criada em `src/shop.c` com `tilemapLeft = 2, tilemapTop = 1` e altura de 6 tiles (48px de altura, atingindo `y = 56px`):
+      - As linhas com `y < 48` são desenhadas sem o shift (`+ 0px`).
+      - As linhas com `y >= 48` (onde fica a palavra `SAIR`) caem na regra 3 (`y1 > splitY`), que aplica `+ sLayerShift` (+80px).
+    - Essa divisão arbitrária corta a janela ao meio e joga a parte inferior 80 pixels para o lado!
+- **Plano de Solução Arquitetônica:**
+  - Em vez de uma divisão geométrica ingênua por coordenadas fixas (`splitX = 104, splitY = 48`), o compositor de UI do campo deve identificar se há janelas de menu/diálogo ativas (`gTasks`, `sMartInfo` ou tipo de janela) ou aplicar o deslocamento consistente (`sLayerShift`) a toda a janela de diálogo/menu do Poké Mart para que ela seja renderizada inteira e unificada, ou elevar `splitY` adequadamente quando em ambientes fechados (interiores de prédios/lojas onde a plaquinha de rota nunca existe).
+
+---
+
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído.
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha e Menu do Poké Mart).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.

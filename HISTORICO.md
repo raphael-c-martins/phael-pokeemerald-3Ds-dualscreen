@@ -446,5 +446,8 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
    - **Sugestão do Usuário:** Criar uma opção na aba **MELHORIAS** (tela inferior) para chavear/calibrar as posições das Healthboxes dinamicamente.
 2. **Área da Mochila em Batalha:**
    - A tela da bolsa em batalha ocupa apenas 240x160 centralizada na tela de 320x240, deixando espaço ocioso considerável ao redor. Estudar ampliação/escala com ajuste de touch.
+3. **Quebra no Menu da Vendinha (Poké Mart):**
+   - Ao interagir com o vendedor, a janela com `COMPRAR`, `VENDER`, `SAIR` aparece partida ao meio: a metade superior encostada à esquerda e a metade inferior (`SAIR`) deslocada 80px para a direita.
+   - **Causa Raiz Identificada:** O corte arbitrário de `splitY = 48` em `3ds_video.c` (feito para a plaquinha de rotas) cortou o menu do Mart (que tem 56px de altura) jogando tudo com `y >= 48` 80px para o lado.
 
 > **Diretiva de Operação:** Nenhuma compilação ou nova branch será disparada até que o usuário conclua todos os testes em andamento no console e emulador. Todos os pontos foram consolidados em `docs/FEEDBACKS_E_MELHORIAS.md`.
