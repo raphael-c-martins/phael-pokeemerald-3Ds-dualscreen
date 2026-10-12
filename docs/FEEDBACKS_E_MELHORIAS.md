@@ -18,6 +18,10 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
    - **Status:** **Aprovado com sucesso.**
    - Telas de resumo de Pokémon testadas e validadas: cabeçalhos (*GOLPES DE LUTA*, *EFEITO*, *DESCRIÇÃO*), atributos (*PODER*, *PRECISÃO*, *PP*), botões (*TROCAR*, *VOLTAR*) e textos de golpes e descrições com 100% de acentuação e alinhamento visual perfeito.
 
+4. **Colheita de Frutas (Overworld Berry Picking):**
+   - **Status:** **Aprovado com sucesso.**
+   - Textos e diálogos de interação com arbustos de frutas testados e homologados: strings como *"Phael colheu 2 FRUTAS ORAN."* com nomes, concordância gramatical, numerais e acentuação 100% corretos e caixas centralizadas em widescreen.
+
 ---
 
 ## 🎯 2. Novos Apontamentos e Demandas para o Próximo Ciclo
