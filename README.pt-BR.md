@@ -30,8 +30,8 @@ mundo em voxel opcional.
   genérica dos lugares (ROTA 101, CIDADE DE LITTLEROOT). Espécies,
   personagens e nomes próprios de lugares ficam como no original.
 - **A interface do port:** a tela de baixo, as opções e as mensagens.
-- **Gráficos:** os ícones de tipo e de condição, os títulos do resumo, os menus da POKéDEX e do POKéNAV, a janela de golpes e
-  o APERTE START da tela de título, redesenhados pelo port a partir da ROM do
+- **Gráficos:** os ícones de tipo e de condição, os títulos do resumo, os menus da POKéDEX e do POKéNAV, a janela de golpes,
+  o logo VERSÃO ESMERALDA e o APERTE START da tela de título, redesenhados pelo port a partir da ROM do
   jogador.
 - **Letras com til** (ã, õ, Ã, Õ), que as fontes do jogo não tinham, e as
   medidas da POKéDEX em metros e quilos.
@@ -41,7 +41,6 @@ O save é o mesmo do jogo em inglês.
 ## Problemas conhecidos
 
 - **POKéDEX:** na tela que registra um POKéMON novo, o texto aparece cortado.
-- Ainda em inglês: o logo EMERALD VERSION, que fica como no original.
 - Do port original, não da tradução: golpes com animação na tela toda (SURF)
   só cobrem os 240 px do GBA, e a animação da cura no CENTRO POKéMON aparece
   fora do lugar.

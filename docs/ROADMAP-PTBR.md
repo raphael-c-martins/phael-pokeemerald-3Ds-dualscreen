@@ -82,7 +82,7 @@ As fases 5 a 8 podem andar em paralelo depois que 1 a 3 estiverem prontas.
   - [x] `--check`, `--status` (progresso) e `--show` (hash, largura e inglês).
 - [x] `tools/bootstrap.py --port-lang pt_br`: aplica os catálogos depois dos
       patches e antes do build; reinicia a árvore ao trocar de idioma.
-- [ ] Um texto traduzido aparece no jogo no Azahar/Citra.
+- [x] Um texto traduzido aparece no jogo (conferido no 3DS de verdade, 08/10).
 
 **Pronto quando:** `python tools/bootstrap.py --make --port-lang pt_br` gera um
 3DSX (com os dados embutidos, como toda build de desenvolvimento) que mostra os
@@ -97,7 +97,8 @@ A tabela de caracteres da Gen 3 não tem `ã`, `õ`, `Ã` nem `Õ`.
 - [x] O port desenha os glifos ao carregar as fontes (`3ds_compat.c`), a
       partir dos da ROM. Nada do gráfico é distribuído.
 - [ ] Teclado de nomes: decidir se `ã`/`õ` entram no teclado.
-- [ ] Captura de tela das fontes com `São Paulo` e `ações` no emulador.
+- [x] ã e õ conferidos no 3DS (08/10: "acentuação e til normais"), no lugar
+      da captura no emulador.
 
 **Pronto quando:** as quatro letras aparecem certas em todas as fontes no
 emulador e no 3DS.
@@ -115,7 +116,8 @@ emulador e no 3DS.
   - [x] Recusa caracteres fora da tabela.
   - [x] Relatório de cobertura por arquivo (`--status`) (traduzidos, faltando, com erro).
   - [ ] Lista de textos que não cabem, para estudar abreviações.
-- [ ] Quebra automática de linha, para os textos importados.
+- [x] Quebra automática de linha: dispensada; os catálogos foram escritos à
+      mão, com as quebras conferidas pela checagem de largura.
 - [ ] Testes em `3ds_port/tests` ou `builder/tests` rodando o check sobre o
       catálogo.
 
@@ -125,8 +127,8 @@ emulador e no 3DS.
 
 - [x] Cópia dos dados do wiki em `tools/locales/pt_br/referencia/hoennkantowiki/`
       (só leitura do wiki).
-- [ ] Conversor neste projeto, que gera entradas do catálogo da fase 1 a
-      partir da cópia.
+- [x] Conversor da cópia do wiki: dispensado; os catálogos foram escritos à
+      mão, com a cópia só como referência.
 
 | Conteúdo | Arquivo da cópia | Destino no pret | Volume |
 |---|---|---|---|
@@ -149,10 +151,10 @@ emulador e no 3DS.
       fonte estreita.
 - [x] `sATypeMove_Table` em PT ("um golpe de FOGO"), alargando a tabela como o
       patch `0034` fez (`0043`, cortando a cópia no tamanho do buffer).
-- [ ] Normalizar o texto do wiki para o estilo do jogo: caixa alta nos termos
-      (`POKéMON`), tipos e atributos nas formas do Glossário.
-- [ ] Locais: só o termo funcional (`ROUTE` vira `ROTA`), respeitando o limite
-      do nome no mapa.
+- [x] Estilo do jogo (caixa alta nos termos, tipos e atributos do Glossário):
+      aplicado direto nos catálogos.
+- [x] Locais: feitos na Fase 5 (opção a, 09/10): as cidades só com o nome
+      próprio, ROTA 101, até 16 caracteres.
 
 **Pronto quando:** o catálogo importado passa no check da fase 3 e as telas de
 golpes e Pokédex aparecem em PT no jogo.
@@ -170,9 +172,9 @@ Nomes primeiro, porque as descrições e os diálogos citam esses nomes.
       `ITEM_NAME_LENGTH` = 14.
 - [x] **Habilidades (76):** `gAbilityNames` em `src/data/text/abilities.h`,
       limite `ABILITY_NAME_LENGTH` = 12.
-- [ ] **Bagas:** o nome fica no limite de 6 de `BERRY_NAME_LENGTH`, que faz
-      parte do save e **não pode mudar**; traduzir o "BERRY" que o código
-      acrescenta (como o patch `0031` fez no espanhol).
+- [x] **Bagas:** o nome fica no limite de 6 de `BERRY_NAME_LENGTH`, que faz
+      parte do save; o "BERRY" que o código acrescenta virou FRUTA / FRUTAS,
+      antes do nome (patch `0047`, 09/10).
 - [x] **Lugares:** no mapa, na placa e no resumo, as cidades só com o nome
       próprio (LITTLEROOT) e o resto em até 16 caracteres (ROTA 101, CAT.
       METEOROS), pelo cabeçalho gerado `region_map_entries.h` (09/10).
@@ -180,9 +182,8 @@ Nomes primeiro, porque as descrições e os diálogos citam esses nomes.
       FITAS (66) e decorações da BASE SECRETA (120 nomes e 120 descrições)
       feitas em 09/10; as palavras da FALA FÁCIL (1008) também, com a ordem
       alfabética refeita do português (`tools/easy_chat_order.py`).
-- [ ] Os limites de golpe, item e habilidade não estão no save e podem
-      aumentar; antes, conferir as janelas que mostram esses nomes. Se não
-      couber, abreviar (Princípio 2).
+- [x] Limites de golpe, item e habilidade: mantidos; o que não coube foi
+      abreviado e registrado no glossário (REPELENTE MÁX, PRATO CHUVA…).
 - [x] **Habilidades (76):** o PT do wiki é a versão expandida (mediana de 2,2×
       o inglês, até 83 caracteres). No jogo cabe uma linha curta ("Ups GRASS
       moves in a pinch."). Escrever versões curtas, aproveitando o sentido do
@@ -195,8 +196,8 @@ Nomes primeiro, porque as descrições e os diálogos citam esses nomes.
       224 px, com medidas no sistema métrico. Conferir no 3DS as mais
       largas.
 - [x] Descrições de itens.
-- [ ] Descrições das bagas e da etiqueta de bagas (comparar com o patch
-      `0036`).
+- [x] Descrições das bagas e da etiqueta (`src/berry.c`), feitas no PC dos
+      mapas em 10/10.
 
 ## Fase 6 — Interface, menus e batalha
 
@@ -232,10 +233,21 @@ Ordem sugerida, do que o jogador vê mais para o que vê menos:
 - [x] Ícones de condição: ENV, PAR, DOR, CON, QUE, DES (PKRS fica), no
       resumo (patch `0049`, que leva ao port toda folha descomprimida) e na tela de baixo, redesenhados pelo port
       (10/10).
-- [ ] Gráficos ainda em inglês, vistos no 3DS em 10/10: o logo da tela de
-      título (EMERALD VERSION, que fica como no original; o APERTE START foi feito em 10/10). Os títulos e os ícones de tipo do resumo foram
-      feitos em 10/10 (patch `0049`), e as categorias de concurso (ESTILO,
-      BELEZA, FOFURA, ESPERT., FORÇA) em 11/10.
+- [x] Gráficos com palavras, vistos no 3DS em 10/10: o APERTE START da
+      tela de título, o logo VERSÃO ESMERALDA (desenho próprio, reto,
+      aprovado no 3DS em 12/10), os
+      títulos e os ícones de tipo do resumo (10/10) e as categorias de
+      concurso (ESTILO, BELEZA, FOFURA, ESPERT., FORÇA, 11/10). Desde 11/10
+      o patch `0049` leva ao port toda folha que o jogo descomprime.
+- [ ] Conferir no 3DS os gráficos de 10 e 11/10, já pelo caminho do patch
+      `0049`: títulos e ícones do resumo, ícones de condição e de concurso,
+      APERTE START, POKéDEX (abas, menu START, busca, lista) e POKéNAV
+      (opções, cabeçalhos, legenda do mapa, SAIR). Em teste pelo usuário.
+- [ ] Os títulos dos concursos no 3DS (o espanhol precisou do patch
+      `0032`).
+- [ ] POKéDEX: na tela que registra um POKéMON novo, o texto aparece
+      cortado (10/10). Conferir na versão original em inglês antes de
+      investigar.
 - [x] Menus da POKéDEX e do POKéNAV, escritos com as fontes do próprio
       jogo (`Port_LatinGlyph`), 11/10: na POKéDEX, as abas, o menu START,
       a busca e a lista; no POKéNAV, as opções, os cabeçalhos, a legenda do
@@ -260,13 +272,13 @@ Ordem sugerida, do que o jogador vê mais para o que vê menos:
       SECRETAS (textos de `src/strings.c` e de `data/text`, 09/10). Falta
       conferir no 3DS os títulos dos concursos (o espanhol precisou do patch
       `0032`).
-- [ ] Gráficos com texto em inglês (logo, "THE END", alguns menus): continuam
-      em inglês nesta fase. Avaliar depois se vale desenhar versões próprias.
+- [ ] "THE END" no fim dos créditos: decidir se fica em inglês, como os
+      créditos. O logo e os menus foram feitos.
 - [x] Ícones de tipo em PT: o port (não o builder) redesenha o nome sobre o
       ícone original, com uma fonte própria (`3ds_icons_ptbr.c`): BOLSA,
       janela de golpes, resumo e tela de baixo.
-- [ ] Atributos: localizar onde são texto (janela de subida de nível) e onde
-      são gráfico (página de resumo) e gerar os gráficos no builder.
+- [x] Atributos: são texto na janela de subida de nível e no resumo; os
+      gráficos do resumo foram redesenhados pelo port (10/10), sem builder.
 - [x] Atributos: larguras conferidas; no resumo, AT.ESP e DEF.ESP (centralizados
       em 36 px), na equipe e nas mensagens, AT. ESP. e DEF. ESP.
 
@@ -332,8 +344,8 @@ O maior volume do projeto, sem equivalente no wiki.
 - [x] Textos comuns aos mapas: todo o `data/text` e os `data/scripts`
       compartilhados têm catálogo (09/10).
 - [x] Frases de treinador (intro, derrota, revanche): `trainers.inc`, 09/10.
-- [ ] Cartas, Easy Chat e vocabulário (decidir se ficam em inglês: o Easy Chat
-      é trocado entre saves e jogos).
+- [x] Cartas e FALA FÁCIL: traduzidas em 09/10 (as frases são guardadas como
+      números, então save e troca não mudam), com a ordem alfabética refeita.
 - [x] Braille das ruínas: fica em inglês (decidido em 09/10).
 - [x] Créditos e cena final: ficam em inglês, com duas páginas novas logo
       depois do título (patch `0048`): Tradução PT-BR, Carlos Mozart e

@@ -21,7 +21,7 @@
 **[Leia em português](README.pt-BR.md).** This fork translates the whole game
 into **Brazilian Portuguese** (PT-BR), with the official Brazilian names:
 every map's dialogue, battles, menus, the POKéDEX, the port's interface and
-the graphics with words (type and status icons, summary titles, POKéDEX and POKéNAV menus, APERTE START), over
+the graphics with words (type and status icons, summary titles, POKéDEX and POKéNAV menus, the VERSÃO ESMERALDA logo, APERTE START), over
 14,000 texts. Build it with
 `python tools/bootstrap.py --make --port-lang pt_br`; see
 [Portuguese build](docs/PORTUGUESE.md) and the
@@ -32,7 +32,6 @@ Known issues in the Portuguese build:
 
 - **POKéDEX:** on the screen that registers a new POKéMON, the text
   appears cut.
-- Still in English: the EMERALD VERSION logo (kept as the original).
 - From the original port: moves with full-screen animations (SURF) cover
   only the GBA's 240 pixels, and the POKéMON CENTER's healing animation is
   out of place.

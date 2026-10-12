@@ -46,3 +46,19 @@ diff --git a/src/platform/bios.c b/src/platform/bios.c
  #ifdef PORT_BRIDGE
      if (assetBuf != NULL)
          free(assetBuf);
+diff --git a/src/menu.c b/src/menu.c
+--- a/src/menu.c
++++ b/src/menu.c
+@@ -1934,6 +1934,12 @@
+ #endif
+     if (ptr)
+         LZ77UnCompWram(src, ptr);
++#ifdef CTR_LANG_PT_BR
++    /* Decompressed from a copy, which the port cannot name: named here by
++     * the asset it was copied from (bios.c does it for the rest). */
++    if (ptr != NULL && compressed != NULL)
++        Port_TransformDecompressed(asset, ptr, *size);
++#endif
+ #ifdef PORT_BRIDGE
+     Free(compressed);
+     if (assetPath != NULL && strstr(assetPath, "data/tilesets/") != NULL)

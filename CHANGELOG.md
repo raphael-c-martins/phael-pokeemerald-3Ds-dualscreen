@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Portuguese: the title logo reads VERSÃO ESMERALDA, VERSÃO centred over a
+  wide ESMERALDA. It is drawn for this project (3ds_icons_ptbr.c, DrawLogo)
+  in the palette of the player's logo, with its outline, straight;
+  tools/logo_ptbr.py draws the same into a preview.
+- Portuguese: the POKéDEX menu and search sheets (and the summary's titles)
+  were still English on the 3DS: malloc_and_decompress decompresses a copy
+  of the asset, which the port could not name. Patch 0049 now passes it the
+  original asset there.
 - Portuguese: the POKéNAV's graphics: the menu options (MAPA DE HOENN,
   CONDIÇÃO, CHAMADAS, FITAS, DESLIGAR, EQUIPE, BUSCAR, the five conditions,
   VOLTAR), the headers (MENU PRINCIPAL, MAPA, VISÃO GERAL, AMPLIADO…), the

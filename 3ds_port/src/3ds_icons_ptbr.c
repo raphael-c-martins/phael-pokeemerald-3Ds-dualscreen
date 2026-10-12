@@ -7,6 +7,7 @@
  *
  * tools/type_icons_ptbr.py draws the same thing into a PNG, as a preview.
  */
+#include <stdlib.h>
 #include <string.h>
 
 /* Declared in compat/port_platform.h, which 3ds_assets.c includes. */
@@ -792,6 +793,122 @@ static const struct GameLabel sHoennMapHeaders[] = {
     {1, 5, 54, 13, 7, 0x1, 0x2, 1, "AMPLIADO", 0},
 };
 
+/*
+ * The title screen's logo (graphics/title_screen/emerald_version.8bpp, two
+ * 64x32 sprites of 8bpp tiles, one byte a pixel): VERSÃO over ESMERALDA,
+ * drawn here in the original's palette (white letters, grey shading, a near
+ * black outline and a dark one around it), straight.
+ * tools/logo_ptbr.py draws the same into a PNG, as a preview.
+ */
+static const char *const sLogoBig[][12] = {
+    {".########.", "##########", "###.......", "###.......", "#########.", "#########.", "###.......", "###.......", "###.......", "##########", "##########", ".########."}, /* E */
+    {".########.", "##########", "###.....##", "###.......", "#########.", ".#########", ".......###", ".......###", "##.....###", "##########", ".########.", ".........."}, /* S */
+    {".##....##.", "####..####", "##########", "##########", "###.##.###", "###....###", "###....###", "###....###", "###....###", "###....###", "###....###", ".##....##."}, /* M */
+    {".########.", "##########", "###....###", "###....###", "###....###", "#########.", "#########.", "###.#####.", "###...####", "###....###", "###....###", ".##....##."}, /* R */
+    {"..######..", ".########.", "###....###", "###....###", "###....###", "##########", "##########", "###....###", "###....###", "###....###", "###....###", ".##....##."}, /* A */
+    {".##.......", "###.......", "###.......", "###.......", "###.......", "###.......", "###.......", "###.......", "###.......", "##########", "##########", ".########."}, /* L */
+    {".#######..", "#########.", "###...####", "###....###", "###....###", "###....###", "###....###", "###....###", "###...####", "#########.", "########..", ".........."}, /* D */
+};
+static const char *const sLogoSmall[][10] = {
+    {"###..###", "###..###", "###..###", "###..###", "###..###", ".######.", ".######.", "..####..", "..####..", "...##..."}, /* V */
+    {"########", "########", "###.....", "###.....", "#######.", "#######.", "###.....", "###.....", "########", "########"}, /* E */
+    {"#######.", "########", "###..###", "###..###", "########", "#######.", "###.###.", "###..###", "###..###", "###..###"}, /* R */
+    {".#######", "########", "###.....", "#######.", ".#######", "......##", "......##", "########", "########", ".######."}, /* S */
+    {"..##..#.", ".#..##..", "........", ".######.", "###..###", "###..###", "########", "########", "###..###", "###..###"}, /* Ã */
+    {".######.", "########", "###..###", "###..###", "###..###", "###..###", "###..###", "###..###", "########", ".######."}, /* O */
+};
+
+#define LOGO_W 128
+#define LOGO_H 32
+
+static int LogoWidth(const char *text, int big)
+{
+    int w = 0;
+    for (; *text; text++)
+        w += (big ? 10 : 8) + 1;
+    return w - 1;
+}
+
+static int LogoGlyph(char ch, int big)
+{
+    const char *order = big ? "ESMRALD" : "VERS@O";
+    const char *at = strchr(order, ch);
+    return at != NULL ? (int)(at - order) : 0;
+}
+
+/* Marks the text's pixels in mask, centred, its top on row y0. */
+static void LogoText(unsigned char mask[LOGO_H][LOGO_W], const char *text, int big, int y0)
+{
+    int x = (LOGO_W - LogoWidth(text, big)) / 2;
+    int w = big ? 10 : 8, h = big ? 12 : 10;
+
+    for (; *text; text++)
+    {
+        int g = LogoGlyph(*text, big), c, r;
+        for (c = 0; c < w; c++)
+        {
+            int col = x + c;
+            for (r = 0; r < h; r++)
+            {
+                const char *row = big ? sLogoBig[g][r] : sLogoSmall[g][r];
+                int y = y0 + r;
+                if (row[c] == '#' && col >= 0 && col < LOGO_W && y >= 0 && y < LOGO_H)
+                    mask[y][col] = 1;
+            }
+        }
+        x += w + 1;
+    }
+}
+
+static int LogoNear(unsigned char mask[LOGO_H][LOGO_W], int x, int y, int n)
+{
+    int dx, dy;
+    for (dy = -n; dy <= n; dy++)
+        for (dx = -n; dx <= n; dx++)
+            if (abs(dx) + abs(dy) <= n + (n > 1) && y + dy >= 0 && y + dy < LOGO_H && x + dx >= 0
+             && x + dx < LOGO_W && mask[y + dy][x + dx])
+                return 1;
+    return 0;
+}
+
+static void DrawLogo(unsigned char *data)
+{
+    static unsigned char img[LOGO_H][LOGO_W], mask[LOGO_H][LOGO_W];
+    int pass, x, y;
+
+    memset(img, 0, sizeof(img));
+    for (pass = 0; pass < 2; pass++)
+    {
+        memset(mask, 0, sizeof(mask));
+        if (pass == 0)
+            LogoText(mask, "ESMERALDA", 1, 16);
+        else
+            LogoText(mask, "VERS@O", 0, 3);
+        for (y = 0; y < LOGO_H; y++)
+            for (x = 0; x < LOGO_W; x++)
+            {
+                int near1 = LogoNear(mask, x, y, 1), near2 = LogoNear(mask, x, y, 2);
+                if (near2 && !near1)
+                    img[y][x] = 0xE;
+                if (near1 && !mask[y][x])
+                    img[y][x] = 0x4;
+                if (mask[y][x])
+                {
+                    /* White, the stroke's bottom row grey, its right edge light grey. */
+                    if (y + 1 < LOGO_H && !mask[y + 1][x])
+                        img[y][x] = 0x8;
+                    else if (x + 1 < LOGO_W && !mask[y][x + 1])
+                        img[y][x] = 0xC;
+                    else
+                        img[y][x] = 0xF;
+                }
+            }
+    }
+    for (y = 0; y < LOGO_H; y++)
+        for (x = 0; x < LOGO_W; x++)
+            data[((x / 64) * 32 + (y / 8) * 8 + (x % 64) / 8) * 64 + (y % 8) * 8 + x % 8] = img[y][x];
+}
+
 static int EndsWith(const char *path, const char *suffix)
 {
     size_t n = strlen(path), m = strlen(suffix);
@@ -817,6 +934,10 @@ void Port_TransformAsset(const char *path, unsigned char *data, unsigned size)
     else if (EndsWith(path, "title_screen/press_start.4bpp") && size >= 21 * 32)
     {
         DrawPressStart(data);
+    }
+    else if (EndsWith(path, "title_screen/emerald_version.8bpp") && size >= LOGO_W * LOGO_H)
+    {
+        DrawLogo(data);
     }
     else if (EndsWith(path, "pokedex/menu.4bpp") && size >= 128 * 128 / 2)
     {
