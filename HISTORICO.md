@@ -477,5 +477,10 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
     - Ao abrir a tela de Perfil (*Easy Chat*, ex.: *"EU SOU UM POKéMON AMIGO"*), a tela fica colada em `X=0, Y=0` no topo esquerdo do display superior de 400x240, deixando 160px pretos à direita e 80px abaixo, além de desalinhar caixas de diálogo (*"Parar de editar?"* e *"SIM / NÃO"*).
     - **Causa Raiz Microscópica:** Em `src/easy_chat.c:1352`, a tela chama diretamente `SetVBlankCallback(VBlankCB_EasyChatScreen)`. Ela não possui registro na tabela `sCentred` do porte do 3DS (`3ds_game_full.c`), fazendo o motor tratá-la como cena de Overworld a partir do ponto `(0, 0)` em vez de centralizá-la (`CTR_CENTRED_PLAIN` / `CTR_CENTRED_EASY_CHAT`) com expansão de fundo xadrez até 400x240.
 
+13. **Captura do Wally (Batalha Tutorial com Ralts e Zigzagoon):**
+    - Durante a cena da captura do Ralts pelo Wally, a caixa de diálogo no rodapé fica confinada a um bloco centralizado de 240px com barras pretas sólidas de 80px em cada lateral (sem extensão widescreen), a healthbox do Zigzagoon colide/fica atrás da base circular do Ralts selvagem, e o corpo inferior do Zigzagoon sofre corte no chão.
+    - **Causa Raiz Microscópica:** O recorte emergencial `DrawBattleCut` de 240px em `3ds_video.c:1800` (inserido na v8 para manter o menu do GBA visível no topo sem touch) não estende a moldura da caixa até 400px. Além disso, as coordenadas gerais de healthbox da v10 (`x=160`) conflitam com a posição centralizada da base do Ralts no tutorial. Solução: caixa widescreen integral contínua de 400px com menu sobreposto e coordenadas exclusivas de healthbox para `BATTLE_TYPE_WALLY_TUTORIAL`.
+
 > **Diretiva de Operação:** Nenhuma compilação ou nova branch será disparada até que o usuário conclua todos os testes em andamento no console e emulador. Todos os pontos foram consolidados em `docs/FEEDBACKS_E_MELHORIAS.md`.
+
 

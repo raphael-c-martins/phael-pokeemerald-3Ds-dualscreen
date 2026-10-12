@@ -249,10 +249,41 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
      - Configurar `.wrap = true` no preenchimento de fundo em `sCentredFills`, estendendo o padrão gráfico quadriculado bege/laranja até as extremidades de 400x240 pixels para cobrir 100% da tela superior sem barras pretas.
   3. **Sincronização de Janelas de Diálogo:** Garantir que o `BG0` (caixa *"Parar de editar?"* e menu *"SIM/NÃO"*) acompanhe o deslocamento de centralização da tela principal.
 
+### 🎒 Item M: Captura do Wally (Batalha Tutorial com Ralts e Zigzagoon)
+- **Cenário Atual (v10):**
+  - Durante o evento de captura do Wally (tutorial na Rota 102 com o Zigzagoon emprestado):
+    1. **Barras Pretas na Caixa de Diálogo:** A caixa de texto no rodapé da tela superior não se estende em widescreen; ela fica confinada em um bloco estreito de 240 pixels no centro, cercada por duas barras pretas sólidas de 80 pixels em cada lateral.
+    2. **Colisão da Healthbox com a Base de Grama:** A caixa de HP do Zigzagoon (`ZIGZAGOON Lv7`) fica sobreposta/atrás da plataforma circular de grama do Ralts selvagem, gerando confusão visual e sobreposição de elementos.
+    3. **Corte no Sprite do Zigzagoon:** O Pokémon do jogador/Wally tem sua base cortada de forma abrupta rente à caixa de diálogo.
+    4. **Cena de Lançamento da Pokébola:** Quando Wally arremessa a bola (*"WALLY usou POKé BOLA!"*), a caixa de diálogo flutuando no meio mantém as barras pretas laterais, aparentando uma tela quebrada.
+- **Diagnóstico Microscópico da Causa Raiz:**
+  - **Recorte Rígido Emergencial em `3ds_video.c:1800`:**
+    - Na v8, para contornar o fato de que a tela touch do 3DS fica desativada no tutorial e os menus do GBA (Fight, Bag, Run) precisavam aparecer na tela superior, foi inserida a seguinte rotina:
+      ```c
+      if (gBattleTypeFlags & BATTLE_TYPE_WALLY_TUTORIAL_BIT)
+      {
+          DrawBattleCut(bg, 0, 240, 0, 160, (CTR_GAME_WIDTH - 240) / 2);
+          return;
+      }
+      ```
+    - Essa instrução corta os 240 pixels nativos do GBA e os estampa com deslocamento de 80px no centro da tela de 400px. Porém, ela **não estende** o fundo nem a moldura da caixa até as extremidades do display, gerando as duas barras pretas laterais de 80px.
+  - **Coordenadas Widescreen em Batalha Específica:**
+    - As novas coordenadas de healthbox da v10 (`x = 160, y = 88` para o jogador) foram calibradas para o cenário de batalha individual padrão.
+    - No Wally Tutorial, o Ralts e sua base verde estão posicionados mais próximos do centro da tela (`X ≈ 180~200` no GBA, escalando para `X ≈ 280` no 3DS). Como `x = 160` escala para `X ≈ 256`, a caixa do Zigzagoon colide diretamente com a borda circular da plataforma do Ralts.
+- **Plano de Solução Arquitetônica:**
+  1. **Caixa de Diálogo Widescreen Contínua no Tutorial:**
+     - Substituir o recorte seco de 240px: desenhar a caixa de diálogo da batalha cobrindo os 400 pixels de largura (left cap na margem esquerda `X = 0`, right cap na margem direita `X = 368` e preenchimento contínuo de miolo), eliminando integralmente as barras pretas laterais.
+     - Quando o menu de comandos do Wally estiver ativo no `BG0`, desenhá-lo sobreposto à caixa widescreen contínua sem quebrar as margens do display.
+  2. **Calibração de Healthbox Exclusiva para `BATTLE_TYPE_WALLY_TUTORIAL`:**
+     - Em `InitBattlerHealthboxCoords` (`battle_interface.c`), criar exceção quando `gBattleTypeFlags & BATTLE_TYPE_WALLY_TUTORIAL` estiver ativo, ajustando a healthbox do Zigzagoon para coordenadas livres de interferência com a base do Ralts.
+  3. **Ajuste de Composição Visual:**
+     - Garantir que os sprites de Zigzagoon, Ralts e Wally se apoiem com naturalidade sobre a nova caixa widescreen sem linhas de clipping indesejadas.
+
 ---
 
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas do PC, Gaveta da Equipe, Transições de Batalha, Tela de Captura da Pokédex, Tela de Apelido e Tela de Perfil/Easy Chat).
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas do PC, Gaveta da Equipe, Transições de Batalha, Tela de Captura da Pokédex, Tela de Apelido, Tela de Perfil/Easy Chat e Batalha Tutorial do Wally).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.
+
 
