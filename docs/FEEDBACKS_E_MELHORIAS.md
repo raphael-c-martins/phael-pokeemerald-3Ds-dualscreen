@@ -55,10 +55,14 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
 ### 🏪 Item C: Quebra em Menus do Canto Superior Esquerdo (Poké Mart, PC de Pokémon e Diálogos Multichoice)
 - **Cenário Atual (v10):**
   - **Poké Mart (`media_1791818973379.png`):** Ao interagir com o atendente, o menu de opções (`COMPRAR`, `VENDER`, `SAIR`) é cortado na horizontal e vertical: o topo fica em `x = 0` e o comando `SAIR` salta 80 pixels para a direita.
-  - **Menu do PC (`media_1791824000000.png`):** Ao acessar o PC no Centro Pokémon ou na Casa do Jogador, o menu com `PC DE ALGUÉM`, `PC de Phael`, `DESLIGAR` sofre exatamente a mesma deformação: as opções superiores ficam encostadas na esquerda e `DESLIGAR` é jogado 80 pixels para o lado, cortado ao meio.
+  - **Menu Principal do PC (`media_1791824000000.png`):** Ao acessar o PC, `PC DE ALGUÉM`, `PC de Phael`, `DESLIGAR` sofre deformação idêntica (opção `DESLIGAR` partida e jogada 80px para a direita).
+  - **Menu de Itens do PC (`media_1791825000000.png`):** Como a string `ITENS GUARDADOS` tem mais de 104px de largura, o menu ultrapassa `splitX = 104`: a metade direita é jogada 80px para a frente, deixando um **buraco negro retangular no meio do menu** e fatiando o box em 4 pedaços!
+  - **Submenus de Armazenamento e Caixas:**
+    - `RETIRAR ITEM`, `GUARDAR ITEM`, `DESCARTAR`, `VOLTAR` (fatiado verticalmente no `DESCARTAR`).
+    - `RETIRAR`, `DEPOSITAR`, `MOVER POKÉMON`, `MOVER ITENS`, `ATÉ MAIS!` (fatiado e duplicado na tela).
 - **Mapeamento Preventivo Completo das Telas Afetadas:**
   Como observado pelo usuário, **todos os menus e escolhas que abrem no canto superior esquerdo do campo usam o mesmo sistema de janelas do GBA (`tilemapLeft = 2, tilemapTop = 1` no `BG0`)**:
-  1. 💻 **Menu do PC:** Todas as opções de caixas, armazenamento de itens e desligar.
+  1. 💻 **Menu do PC e Submenus:** Itens guardados, cartas, caixas de Pokémon (Bill/Lanette), mover itens e desligar.
   2. 🏪 **Menu do Poké Mart:** Comprar, Vender, Sair.
   3. 🏢 **Menu de Elevadores (ex.: Loja de Departamentos de Lilycove):** Seleção de andares (1º, 2º, 3º, 4º, 5º, Cobertura, Sair).
   4. 🚠 **Menu do Teleférico (Mt. Chimney):** Escolha de subida/descida.
@@ -70,7 +74,9 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
   - Em `3ds_port/src/3ds_video.c` (linhas 1234 a 1238 e linhas 2885 a 2925), existe uma divisão estática baseada em coordenadas:
     - Qualquer tile com `px < 104 && py < 48` recebe deslocamento `shift = 0.0f` (esquerda).
     - Qualquer tile com `px >= 104 || py >= 48` recebe deslocamento `shift = sLayerShift = 80.0f` (centralizado widescreen).
-  - Essa divisão foi feita com a intenção de manter a **plaquinha de nome de rota/cidade** no canto esquerdo, mas como todos os menus do campo também usam a camada `BG0`, qualquer menu com 3 ou mais opções (altura > 48px) é literalmente rasgado ao meio pela linha invisível de `py = 48`!
+  - Essa divisão foi feita com a intenção de manter a **plaquinha de nome de rota/cidade** no canto esquerdo, mas como todos os menus do campo também usam a camada `BG0`:
+    - Qualquer menu com altura > 48px é cortado horizontalmente (linha do `py = 48`).
+    - Qualquer menu com largura > 104px (como `ITENS GUARDADOS`) é cortado verticalmente (linha do `px = 104`), gerando buracos negros gráficos!
 - **Plano de Solução Arquitetônica Definitiva:**
   - Desativar a regra de corte de `px < 104 && py < 48` quando qualquer menu ou diálogo do jogo estiver ativo (`sFieldUi` centraliza o `BG0` de forma unificada).
   - Ou aplicar o shift horizontal somente se a tarefa ativa for estritamente a plaquinha de rota (`FuncIsActiveTask(Task_MapNamePopUpWindow)`), garantindo que todos os menus, diálogos, PC, Mart e caixas multichoice do jogo permaneçam 100% íntegros, sólidos e alinhados com suas respectivas caixas de texto.
