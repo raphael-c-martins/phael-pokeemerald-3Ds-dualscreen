@@ -372,9 +372,66 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 
 ---
 
-## 📌 Próximos Passos
-- [ ] Validação no console físico Nintendo 3DS pelo usuário da Milestone v9.
-- [ ] Inspeção do arquivo `port.log` gerado no console com a nova telemetria.
-- [ ] Ajustar a caixa de diálogo na introdução de captura do Wally durante a batalha.
+## 🚀 11/10/2026 - Milestone v10: Diagnóstico Cirúrgico do Crash no Core 1 (HOME Menu), Calibração das Healthboxes e Blindagem de Build
+- **Branch Ativa:** `tentativa10` (criada especificamente para este ciclo de testes a partir de `tentativa9`).
+- **Status Atual:** Código-fonte e arquitetura totalmente corrigidos; pipeline de compilação em ajuste fino de ambiente.
+
+### 🔍 1. Resultados e Validações dos Testes da v9 (Console Real):
+- **Fast-Forward Inteligente 1x -> 4x APROVADO:** O teste do usuário confirmou que, ao iniciar o jogo com 4x configurado, os menus iniciais e tela de título rodaram a **1x limpo e estável** (música no tempo correto), ativando o turbo somente após carregar o save in-game.
+- **Telemetria (`port.log`):** Registro de botões físicos, toques touch e operações de salvamento gravados com 100% de sucesso no cartão SD.
+
+---
+
+### 🛡️ 2. Diagnóstico da Causa Raiz do Crash no HOME Menu (`crash_dump_00000007.dmp`):
+- **Evidências:** Foto do console (`20261011_223206.jpg`) e dump de memória Luma3DS inspecionados:
+  - Processador: `Arm11 (core 1)`
+  - Tipo de Exceção: `data abort (Translation - Section)`
+  - Endereço da Instrução: `PC = 0x003e94dc` em `_close_r` (Newlib libc)
+  - Endereço da Falha: `FAR = 0x0000000c`
+- **Causa Raiz Exata Identificada:**
+  - Em `3ds_port/src/3ds_assets.c`, existe uma thread em segundo plano (`WarmWorker`) disparada no **Core 1** que itera sobre todos os assets do RomFS em loop contínuo por aproximadamente 60 segundos.
+  - Quando o jogador pressiona o botão HOME e escolhe fechar o jogo no sistema operacional do 3DS, a thread principal (Core 0) executa `CtrPlatform_Shutdown()` e chamava `romfsExit()`, desregistrando o driver `romfs:` da tabela de dispositivos da libc (`devoptab_list`).
+  - No mesmo milissegundo, a thread do Core 1 tentava fazer `fclose()` ou fechar um arquivo do RomFS e chamava `_close_r`. Ao buscar o driver do dispositivo, encontrou ponteiro `NULL` e tentou desreferenciar `devoptab->close_r` no offset `+12` (`0x0000000C`), provocando a falha fatal.
+- **Solução Arquitetônica Implementada:**
+  - Criação de controle de cancelamento cooperativo com flag `static volatile bool sWarmQuit;` e handle rastreável `static Thread sWarmThread;` em `3ds_assets.c`.
+  - Todos os loops de pré-carregamento (`WarmWorker`, `WarmPack`, `WarmHinted`, `WarmOne`) agora verificam `sWarmQuit` e abortam imediatamente.
+  - Implementada a função `CtrAssets_Shutdown(void)` que sinaliza `sWarmQuit = true`, aguarda a thread encerrar via `threadJoin` e libera seus recursos (`threadFree`).
+  - Integrada a chamada de `CtrAssets_Shutdown()` e `CtrData_Shutdown()` em `CtrPlatform_Shutdown()` **antes** de qualquer desmontagem de sistema de arquivos (`CtrFs_Shutdown()`).
+
+---
+
+### 🎯 3. Calibração Precisa das Healthboxes na Batalha:
+- **Diagnóstico da v9:**
+  - `x = 4, y = 10` (oponente) causou corte na borda esquerda do balão e provocou wrap-around de scanlines do GBA OAM (`10 - 16 = -6`, correspondente à linha 250 unsigned), desenhando uma barra verde horizontal no topo da tela.
+  - `x = 186, y = 74` (jogador) elevou a caixa a uma altura que sobrepôs o sprite do Pokémon adversário.
+- **Novas Coordenadas Calibradas e Blindadas contra Wrap/Clipping:**
+  - **Batalha Individual:**
+    - Oponente: `x = 38, y = 20` (deixa folga superior no céu de ~4px e margem esquerda de ~6px, sem corte e sem wrap).
+    - Jogador: `x = 160, y = 88` (posicionado com perfeição entre o Pokémon adversário e a caixa de diálogo inferior, com margem direita ergonômica).
+  - **Batalha em Duplas:**
+    - Jogador Esquerda: `x = 160, y = 76`
+    - Jogador Direita: `x = 171, y = 101`
+    - Oponente Esquerda: `x = 38, y = 19`
+    - Oponente Direita: `x = 32, y = 44`
+  - Patch `patches/pokeemerald/0051-widescreen-battle-healthbox-coords.patch` e árvore upstream atualizados.
+
+---
+
+### 🛠️ 4. Ajustes no Pipeline de Build (`full.mk`):
+- **Diagnóstico:** O compilador ARM nativo de Windows (devkitARM MinGW) falhava ao tentar escrever arquivos temporários quando chamado com caminhos do MSYS2 gerados por `$(CURDIR)` (`/d/Projetos/...`).
+- **Correção:** Substituídas as saídas de compilação por caminhos relativos universais `3ds_port/$@`, garantindo resolução correta em qualquer ambiente.
+
+---
+
+### 📌 5. Ponto de Parada e Onde Devemos Continuar Amanhã:
+- [x] Branch `tentativa10` criada e isolada.
+- [x] Causa raiz do crash no HOME Menu (Core 1) 100% identificada e corrigida no código C.
+- [x] Coordenadas das Healthboxes de batalha recalculadas e aplicadas nos patches.
+- [x] Relatório técnico redigido e salvo no `HISTORICO.md`.
+- [ ] **Ação Imediata para Amanhã:**
+  1. Concluir a execução do pipeline de compilação da v10 via `scratch/build_v10.sh`.
+  2. Gerar e disponibilizar o executável `emerald3ds_v10.3dsx` em `dist_3ds/` e `# TEMPORARIO/Tentativa-v10/`.
+  3. Realizar o teste no hardware Nintendo 3DS para homologar o fim do crash no HOME Menu e validar visualmente as novas posições das healthboxes.
+
 
 

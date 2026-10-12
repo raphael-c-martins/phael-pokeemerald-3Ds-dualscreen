@@ -120,14 +120,12 @@ void CtrLock_Init(CtrLock *lock) { LightLock_Init((LightLock *)lock); }
 void CtrLock_Lock(CtrLock *lock) { LightLock_Lock((LightLock *)lock); }
 void CtrLock_Unlock(CtrLock *lock) { LightLock_Unlock((LightLock *)lock); }
 
-bool CtrPlatform_StartThread(void (*entry)(void *), void *arg, unsigned stack, int core)
+void *CtrPlatform_CreateThread(void (*entry)(void *), void *arg, unsigned stack, int core, bool detached)
 {
     s32 priority = 0x30;
 
     svcGetThreadPriority(&priority, CUR_THREAD_HANDLE);
     priority = priority < 0x3F ? priority + 1 : 0x3F;
-    /* The system core needs a share of it for the application first; one
-     * already asked for (the sound engine's, the voxel streams') is kept. */
     if (core == 1)
     {
         u32 limit = 0;
@@ -135,12 +133,18 @@ bool CtrPlatform_StartThread(void (*entry)(void *), void *arg, unsigned stack, i
         if ((R_SUCCEEDED(APT_GetAppCpuTimeLimit(&limit)) && limit >= 30)
             || R_SUCCEEDED(APT_SetAppCpuTimeLimit(30)))
         {
-            if (threadCreate(entry, arg, stack, priority, 1, true) != NULL)
-                return true;
+            Thread t = threadCreate(entry, arg, stack, priority, 1, detached);
+            if (t != NULL)
+                return (void *)t;
         }
         core = -2;
     }
-    return threadCreate(entry, arg, stack, priority, core, true) != NULL;
+    return (void *)threadCreate(entry, arg, stack, priority, core, detached);
+}
+
+bool CtrPlatform_StartThread(void (*entry)(void *), void *arg, unsigned stack, int core)
+{
+    return CtrPlatform_CreateThread(entry, arg, stack, core, true) != NULL;
 }
 
 void CtrPlatform_SleepUs(unsigned microseconds)
@@ -339,6 +343,8 @@ void CtrPlatform_Shutdown(void)
     CtrSettings_Shutdown();
     if (sHooks.shutdown)
         sHooks.shutdown();
+    CtrAssets_Shutdown();
+    CtrData_Shutdown();
     CtrVideo_Shutdown();
     CtrAudio_Shutdown();
     CtrLog_Write(CTR_LOG_BOOT, "clean shutdown, platform frames=%llu", (unsigned long long)sFrames);

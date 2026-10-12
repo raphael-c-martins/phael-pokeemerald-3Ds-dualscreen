@@ -134,7 +134,7 @@ build/root/%.o: $(ROOT)/%.c Makefile full.mk
 	@mkdir -p $(dir $@)
 	cd $(ROOT) && "$(CC)" $(FULLFLAGS) $(FULLCFLAGS) -E -x c $(patsubst $(ROOT)/%,%,$<) \
 		| "$(PREPROC)" -i $(patsubst $(ROOT)/%,%,$<) charmap.txt \
-		| "$(CC)" $(FULLFLAGS) $(FULLCFLAGS) -x c -c -o $(CURDIR)/$@ -
+		| "$(CC)" $(FULLFLAGS) $(FULLCFLAGS) -x c -c -o 3ds_port/$@ -
 
 # Screens staged as one whole GBA picture: GBA geometry, and their VBlank
 # callbacks reported to the bridge (compat/ctr_gba_stage.h).
@@ -223,13 +223,13 @@ build/root/data/maps.o: build/maps.s build/map_layouts.inc $(ROOT)/data/layouts/
 	@mkdir -p $(dir $@)
 	cd $(ROOT) && "$(PREPROC)" 3ds_port/build/maps.s charmap.txt | "$(CPPTOOL)" -Iinclude -I. - \
 		| "$(PREPROC)" -ie 3ds_port/build/maps.s charmap.txt | $(ASM_PSEUDO_OP_CONV) - \
-		| "$(AS)" $(ASFLAGS) -o $(CURDIR)/$@
+		| "$(AS)" $(ASFLAGS) -o 3ds_port/$@
 
 build/root/data/%.o: $(ROOT)/data/%.s Makefile full.mk
 	@mkdir -p $(dir $@)
 	cd $(ROOT) && "$(PREPROC)" data/$*.s charmap.txt | "$(CPPTOOL)" -Iinclude -I. - \
 		| "$(PREPROC)" -ie data/$*.s charmap.txt | $(ASM_PSEUDO_OP_CONV) - \
-		| "$(AS)" $(ASFLAGS) -o $(CURDIR)/$@
+		| "$(AS)" $(ASFLAGS) -o 3ds_port/$@
 
 # The samples are .incbin'd from paths relative to the repository root, and the
 # generic data rule already assembles from there. Only the dependency is new,
@@ -240,7 +240,7 @@ else
 SAMPLE_OVERLAY_SED := $(foreach f,$(SAMPLE_OVERLAY),-e 's\#"sound/direct_sound_samples/\(cries/\)\{0,1\}$(notdir $(f))"\#"$(f)"\#')
 build/root/data/sound_data.o: $(ROOT)/data/sound_data.s $(ROOT_SOUND_BIN_SRCS) $(SAMPLE_OVERLAY) Makefile full.mk
 	@mkdir -p $(dir $@)
-	cd $(ROOT) && "$(PREPROC)" data/sound_data.s charmap.txt | "$(CPPTOOL)" -Iinclude -I. - 		| "$(PREPROC)" -ie data/sound_data.s charmap.txt | $(ASM_PSEUDO_OP_CONV) - 		| sed $(SAMPLE_OVERLAY_SED) | "$(AS)" $(ASFLAGS) -o $(CURDIR)/$@
+	cd $(ROOT) && "$(PREPROC)" data/sound_data.s charmap.txt | "$(CPPTOOL)" -Iinclude -I. - 		| "$(PREPROC)" -ie data/sound_data.s charmap.txt | $(ASM_PSEUDO_OP_CONV) - 		| sed $(SAMPLE_OVERLAY_SED) | "$(AS)" $(ASFLAGS) -o 3ds_port/$@
 endif
 
 build/root/sound/songs/%.o: $(ROOT)/sound/songs/%.s

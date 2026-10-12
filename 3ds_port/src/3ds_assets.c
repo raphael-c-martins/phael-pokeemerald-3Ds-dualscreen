@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <3ds.h>
 
 #include "port_platform.h"
 #include "port_log.h"
@@ -23,6 +24,9 @@
 #include "3ds_assets.h"
 #include "3ds_data.h"
 #include "3ds_platform.h"
+
+static volatile bool sWarmQuit;
+static Thread sWarmThread;
 
 u32 GetDecompressedDataSize(const u32 *ptr);
 
@@ -610,7 +614,7 @@ static void WarmOne(const WarmEntry *entry)
     u32 idx = entry->idx;
     u8 *data;
 
-    if (WarmClaim(entry, 0, 1) == 0)
+    if (sWarmQuit || WarmClaim(entry, 0, 1) == 0)
         return;
     data = ReadPayload(idx);
     CtrLock_Lock(&sLock);
@@ -627,6 +631,8 @@ static void WarmHinted(const WarmEntry *list, unsigned count)
     char hint[sizeof(sWarmHint)];
     size_t length;
 
+    if (sWarmQuit)
+        return;
     CtrLock_Lock(&sLock);
     if (!sWarmHintPending)
     {
@@ -637,7 +643,7 @@ static void WarmHinted(const WarmEntry *list, unsigned count)
     sWarmHintPending = false;
     CtrLock_Unlock(&sLock);
     length = strlen(hint);
-    for (unsigned i = 0; i < count && WarmRoom(); ++i)
+    for (unsigned i = 0; i < count && WarmRoom() && !sWarmQuit; ++i)
         if (sPayloads[list[i].idx].data == NULL
          && strncmp(GetAssetPathByIndex(list[i].idx), hint, length) == 0)
             WarmOne(&list[i]);
@@ -649,7 +655,7 @@ static void WarmPack(WarmEntry *list, unsigned count, u8 *run)
     unsigned first = 0;
 
     qsort(list, count, sizeof(*list), CompareWarmEntries);
-    while (first < count && WarmRoom())
+    while (first < count && WarmRoom() && !sWarmQuit)
     {
         unsigned end = first + 1;
         u64 start = list[first].offset, stop = start + list[first].size;
@@ -665,7 +671,7 @@ static void WarmPack(WarmEntry *list, unsigned count, u8 *run)
         {
             bool ok = CtrData_ReadRange(start, run, (u32)(stop - start));
 
-            for (unsigned i = first; ok && i < end; ++i)
+            for (unsigned i = first; ok && i < end && !sWarmQuit; ++i)
             {
                 u32 idx = list[i].idx;
                 u8 *copy;
@@ -693,33 +699,44 @@ static void WarmWorker(void *arg)
     u8 *run = NULL;
     u64 begin = CtrPlatform_Ticks();
 
-    for (u32 idx = 0; idx < sEntryCount; ++idx)
+    for (u32 idx = 0; idx < sEntryCount && !sWarmQuit; ++idx)
         if (CtrData_Locate(GetAssetPathByIndex(idx), &list[count].offset, &list[count].size)
             && list[count].size == sEntries[idx].size)
         {
             list[count].idx = idx;
             list[count++].rank = WarmRank(GetAssetPathByIndex(idx));
         }
+    if (sWarmQuit)
+    {
+        free(list);
+        return;
+    }
     if (count == sEntryCount && (run = malloc(WARM_RUN)) != NULL)
         WarmPack(list, count, run);
     else
     {
         /* RomFS or loose files: one file at a time. */
-        for (u32 idx = 0; idx < sEntryCount; ++idx)
+        for (u32 idx = 0; idx < sEntryCount && !sWarmQuit; ++idx)
             list[idx] = (WarmEntry){0, sEntries[idx].size, idx, WarmRank(GetAssetPathByIndex(idx))};
-        qsort(list, sEntryCount, sizeof(*list), CompareWarmEntries);
+        if (!sWarmQuit)
+            qsort(list, sEntryCount, sizeof(*list), CompareWarmEntries);
         count = 0;
-        for (u32 i = 0; i < sEntryCount && WarmRoom(); ++i)
+        for (u32 i = 0; i < sEntryCount && WarmRoom() && !sWarmQuit; ++i)
         {
             WarmHinted(list, sEntryCount);
+            if (sWarmQuit)
+                break;
             WarmOne(&list[i]);
         }
     }
     free(run);
     free(list);
-    CtrLog_Write(CTR_LOG_FS, "assets warmed: %lu KiB of %lu payloads in %.0f ms (%s)",
-                 (unsigned long)(sStats.bytes >> 10), (unsigned long)sStats.loads,
-                 CtrPlatform_TickMs(CtrPlatform_Ticks() - begin), count ? "pack runs" : "file by file");
+    if (!sWarmQuit)
+    {
+        CtrLog_Write(CTR_LOG_FS, "assets warmed: %lu KiB of %lu payloads in %.0f ms (%s)",
+                     (unsigned long)(sStats.bytes >> 10), (unsigned long)sStats.loads,
+                     CtrPlatform_TickMs(CtrPlatform_Ticks() - begin), count ? "pack runs" : "file by file");
+    }
 }
 
 void CtrAssets_StartWarmup(void)
@@ -730,18 +747,29 @@ void CtrAssets_StartWarmup(void)
         return;
     sWarming = calloc(sEntryCount, 1);
     list = malloc(sEntryCount * sizeof(*list));
-    if (sWarming == NULL || list == NULL
-        /*
-         * On the system core: on the application core, below the game, the
-         * worker only ran while the game waited for the display, and read
-         * the RomFS a file at a time over a whole minute (58 s on an Old
-         * 3DS), the field asking for its tiles in the frame meanwhile. It
-         * waits on the FS service far more than it computes.
-         */
-        || !CtrPlatform_StartThread(WarmWorker, list, 16 * 1024, 1))
+    if (sWarming == NULL || list == NULL)
     {
         free(list);
         CtrLog_Write(CTR_LOG_ERROR, "assets: no warm-up worker; payloads load on demand");
+        return;
+    }
+    sWarmQuit = false;
+    sWarmThread = (Thread)CtrPlatform_CreateThread(WarmWorker, list, 16 * 1024, 1, false);
+    if (sWarmThread == NULL)
+    {
+        free(list);
+        CtrLog_Write(CTR_LOG_ERROR, "assets: no warm-up worker; payloads load on demand");
+    }
+}
+
+void CtrAssets_Shutdown(void)
+{
+    sWarmQuit = true;
+    if (sWarmThread != NULL)
+    {
+        threadJoin(sWarmThread, 1000000000ULL);
+        threadFree(sWarmThread);
+        sWarmThread = NULL;
     }
 }
 
