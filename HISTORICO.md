@@ -473,5 +473,9 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
     - A tela de apelido (`CTR_CENTRED_NAMING`) fica restrita a 240x160 com listras amarelas ociosas no widescreen de 400x240, deixando o teclado pequeno.
     - **Texto Colado/Invertido:** `DrawMonTextEntryBox` em `naming_screen.c` concatenava diretamente a espécie com a string sem espaço (`WURMPLEApelido de ?`) devido à estrutura do genitivo saxão do inglês (`WURMPLE's nickname?`). Solução: reordenar para `"Apelido de %s?"`.
     - **Botões em Inglês:** Sprites `lower` (Select), `BACK` (B) e `OK` (Start) serão localizados para `minúsc.`, `VOLTAR` e `OK`.
+12. **Tela de Perfil / Mensagens (Easy Chat) Deslocada no Canto Superior Esquerdo:**
+    - Ao abrir a tela de Perfil (*Easy Chat*, ex.: *"EU SOU UM POKéMON AMIGO"*), a tela fica colada em `X=0, Y=0` no topo esquerdo do display superior de 400x240, deixando 160px pretos à direita e 80px abaixo, além de desalinhar caixas de diálogo (*"Parar de editar?"* e *"SIM / NÃO"*).
+    - **Causa Raiz Microscópica:** Em `src/easy_chat.c:1352`, a tela chama diretamente `SetVBlankCallback(VBlankCB_EasyChatScreen)`. Ela não possui registro na tabela `sCentred` do porte do 3DS (`3ds_game_full.c`), fazendo o motor tratá-la como cena de Overworld a partir do ponto `(0, 0)` em vez de centralizá-la (`CTR_CENTRED_PLAIN` / `CTR_CENTRED_EASY_CHAT`) com expansão de fundo xadrez até 400x240.
 
 > **Diretiva de Operação:** Nenhuma compilação ou nova branch será disparada até que o usuário conclua todos os testes em andamento no console e emulador. Todos os pontos foram consolidados em `docs/FEEDBACKS_E_MELHORIAS.md`.
+

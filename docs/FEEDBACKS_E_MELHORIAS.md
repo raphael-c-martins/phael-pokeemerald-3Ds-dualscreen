@@ -228,9 +228,31 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
   2. **Correção Sintática da Concatenação:** Ajustar `DrawMonTextEntryBox` para formatar a string na ordem gramatical natural do Português: `"Apelido de %s?"` (ex.: `"Apelido de WURMPLE?"`).
   3. **Localização dos Botões:** Traduzir os sprites para **`minúsc.`** (ou `abc`), **`VOLTAR`** (ou `APAGAR`) e **`OK`**.
 
+### 💬 Item L: Tela de Perfil / Mensagens (Easy Chat) Deslocada no Canto Superior Esquerdo
+- **Cenário Atual (v10):**
+  - Ao abrir o Perfil do Treinador para editar frases ou mensagens personalizadas (*Easy Chat*, ex.: *"EU SOU UM POKéMON AMIGO"*, *"APAGAR"*, *"VOLTAR"*):
+    - A tela inteira do GBA é projetada colada no canto superior esquerdo (`X = 0, Y = 0`) da tela superior panorâmica do 3DS (ocupando apenas 240x160 pixels).
+    - O restante da tela superior (uma faixa de 160 pixels à direita e 80 pixels abaixo) fica em vácuo preto completo, sem repetição da grade xadrez de fundo.
+    - Ao abrir a caixa de confirmação de saída (*"Parar de editar?"* e menu *"SIM / NÃO"*), os balões de diálogo e caixas de texto aparecem com artefatos visuais ou desalinhados em relação ao layout.
+- **Diagnóstico Microscópico da Causa Raiz:**
+  - **Ausência de Callback Centrado no Porte:** Em `3ds_port/src/3ds_game_full.c` e `3ds_video.c`, o motor do 3DS depende da tabela `sCentred` e do enum `CTR_CENTRED_*` para identificar telas estáticas do GBA que devem ser centralizadas com moldura ou fundo repetido.
+  - **Chamada Direta no Código do GBA:** Em `src/easy_chat.c` (linha 1352), a rotina de transição chama diretamente o manipulador nativo do GBA:
+    ```c
+    SetVBlankCallback(VBlankCB_EasyChatScreen);
+    ```
+    Diferente de outras telas (como `CtrCentredNaming_SetVBlankCallback` ou `CtrCentredSummary_SetVBlankCallback`), o Easy Chat **não** foi interceptado pelo porte original do 3DS.
+  - **Comportamento Padrão no Motor de Vídeo:** Como `sCentredRequested` permanece como `CTR_CENTRED_NONE`, o motor do 3DS interpreta o Easy Chat como se fosse o Overworld comum (que utiliza a resolução nativa expandida de 400x240 a partir da coordenada 0,0). Como o tilemap do Easy Chat só possui 240x160 pixels, ele fica confinado ao quadrante superior esquerdo, deixando todo o resto da tela em preto absoluto.
+- **Plano de Solução Arquitetônica:**
+  1. **Registro do Hook de VBlank Centrado:** Adicionar `CtrCentredEasyChat_SetVBlankCallback(VBlankCB_EasyChatScreen)` (ou vincular ao `CTR_CENTRED_PLAIN` / `CTR_CENTRED_EASY_CHAT`).
+  2. **Centralização e Expansão de Bordas:**
+     - Centralizar o viewport em `X = 80, Y = 40` da tela superior do 3DS (ou aplicar escala proporcional widescreen).
+     - Configurar `.wrap = true` no preenchimento de fundo em `sCentredFills`, estendendo o padrão gráfico quadriculado bege/laranja até as extremidades de 400x240 pixels para cobrir 100% da tela superior sem barras pretas.
+  3. **Sincronização de Janelas de Diálogo:** Garantir que o `BG0` (caixa *"Parar de editar?"* e menu *"SIM/NÃO"*) acompanhe o deslocamento de centralização da tela principal.
+
 ---
 
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas do PC, Gaveta da Equipe, Transições de Batalha, Tela de Captura da Pokédex e Tela de Apelido).
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas do PC, Gaveta da Equipe, Transições de Batalha, Tela de Captura da Pokédex, Tela de Apelido e Tela de Perfil/Easy Chat).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.
+
