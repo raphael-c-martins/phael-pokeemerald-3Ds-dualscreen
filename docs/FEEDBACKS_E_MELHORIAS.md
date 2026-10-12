@@ -125,18 +125,26 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
     1. Através de rotina gráfica dedicada em `3ds_port/src/3ds_icons_ptbr.c` (`Port_TransformAsset` para `trainer_card/tiles.4bpp`).
     2. Ou fornecendo a versão traduzida de `graphics/trainer_card/tiles.png` no pacote de assets localizados em `tools/locales/pt_br/`.
 
-### 📦 Item G: Área Reduzida nas Caixas do PC (Pokémon Storage System) e Botões em Inglês
+### 📦 Item G: Área Reduzida nas Caixas do PC (Pokémon Storage System) e Tradução de Botões Gráficos
 - **Cenário Atual (v10):**
-  - Ao abrir a opção de mover Pokémon ou itens nas Caixas do PC (`media_1791826000000.png`):
+  - Ao abrir a opção de mover Pokémon ou itens nas Caixas do PC:
     - A tela inteira da caixa (papel de parede, slots dos 30 Pokémon e botões superiores) fica confinada em um bloco de **240x160** pixels centralizado na tela inferior de **320x240** (com 40px de borda ociosa em volta).
-    - Os botões do topo do box exibem textos gráficos em inglês: **`PARTY POKéMON`**, **`CLOSE BOX`** e **`PKMN DATA`** (a etiqueta da caixa já aparece traduzida como *CAIXA 1*).
-- **Diagnóstico da Causa Raiz:**
+    - Os botões superiores exibem textos gráficos originais em inglês:
+      - **`CLOSE BOX`** (botão azul de 72x16px): apontamento prioritário do usuário para tradução.
+      - **`PARTY POKéMON`** (botão verde de 72x16px): usuário sinalizou que pode ser traduzido como `EQUIPE POKéMON` (ou até mantido `PARTY POKÉMON` se preferível).
+      - **`PKMN DATA`** (aba cinza da esquerda de 48x16px): pode ser adaptado para `DADOS PKMN` ou `DADOS POKÉMON`.
+      - *(A etiqueta da caixa já aparece traduzida como CAIXA 1)*.
+- **Diagnóstico Técnico da Causa Raiz:**
   - Em `3ds_port/src/3ds_video.c`, a tela de caixas é tratada como `CTR_CENTRED_STORAGE`, pertencendo ao mesmo grupo de telas GBA renderizadas em proporção 1:1 estrita centralizada (240x160).
-  - Os botões superiores (`PARTY POKéMON`, `CLOSE BOX`, `PKMN DATA`) são carregados a partir do arquivo de blocos gráficos `graphics/pokemon_storage/menu.png` (128x72 pixels), sendo arte gráfica indexada original americana.
+  - Os botões superiores (`PARTY POKéMON`, `CLOSE BOX`, `PKMN DATA`) e seus estados alternantes (normal e selecionado/piscando) são compostos a partir do arquivo gráfico indexado `graphics/pokemon_storage/menu.png` (128x72 pixels) e do mapa de blocos `close_box_button.bin` (9x4 tiles).
 - **Plano de Solução Arquitetônica:**
-  1. Integrar `CTR_CENTRED_STORAGE` ao plano de ampliação/escala ergonômica das sub-telas do GBA na tela inferior touch de 320x240 (proporcionando ícones maiores e muito mais precisão para selecionar e arrastar Pokémon com os dedos/Stylus).
-  2. Ajustar os offsets do handler de toque em `3ds_bottom_ui.c` (`CtrStorage_Tap`).
-  3. Traduzir os tiles de `graphics/pokemon_storage/menu.png` para **`EQUIPE POKéMON`**, **`FECHAR CAIXA`** e **`DADOS POKéMON`**.
+  1. **Tradução dos Tiles Gráficos:**
+     - `CLOSE BOX` -> **`FECHAR CAIXA`** (ou **`FECHAR`**), desenhado nos estados normal (azul) e piscando (destacado).
+     - `PARTY POKéMON` -> **`EQUIPE POKéMON`** (ou `EQUIPE`, mantendo harmonia com o restante do jogo em PT-BR).
+     - `PKMN DATA` -> **`DADOS PKMN`**.
+  2. **Ergonomia e Escala Touch:**
+     - Integrar `CTR_CENTRED_STORAGE` ao plano de ampliação/escala ergonômica das sub-telas do GBA na tela inferior touch de 320x240 (proporcionando ícones maiores e muito mais precisão para selecionar e arrastar Pokémon com os dedos/Stylus).
+     - Ajustar os offsets do handler de toque em `3ds_bottom_ui.c` (`CtrStorage_Tap`).
 
 ### 📋 Item H: Corte Superior na Gaveta da Equipe nas Caixas do PC e Botão CANCEL
 - **Cenário Atual (v10):**

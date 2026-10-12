@@ -456,8 +456,9 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
    - O menu da equipe na tela inferior (`MODE_PARTY_MENU`) fica confinado a 160px de altura (com 40px vazios no topo e 40px no fundo), deixando os slots estreitos e com espaço útil subaproveitado no touchscreen.
 6. **Gráficos em Inglês no Cartão de Treinador (Trainer Card):**
    - No cartão na tela touch, os títulos gráficos `TRAINER CARD` e `BADGES` ainda estão em inglês pois são tiles de imagem vindos de `trainer_card/tiles.png`.
-7. **Área Reduzida nas Caixas do PC (Pokémon Storage) e Botões em Inglês:**
-   - A tela de gerenciamento de caixas (`CTR_CENTRED_STORAGE`) também fica restrita a 240x160 centralizada na tela inferior de 320x240, além dos botões superiores gráficos `PARTY POKéMON`, `CLOSE BOX` e `PKMN DATA` estarem em inglês em `pokemon_storage/menu.png`.
+7. **Área Reduzida nas Caixas do PC (Pokémon Storage) e Tradução de Botões Gráficos:**
+   - A tela de gerenciamento de caixas (`CTR_CENTRED_STORAGE`) fica restrita a 240x160 centralizada na tela inferior de 320x240.
+   - Os botões gráficos superiores em `pokemon_storage/menu.png` serão localizados: prioridade mandatória no botão `CLOSE BOX` (para **`FECHAR CAIXA`** ou **`FECHAR`**), adaptação de `PARTY POKéMON` (para **`EQUIPE POKéMON`** ou `EQUIPE`) e `PKMN DATA` (para **`DADOS PKMN`**).
 8. **Corte Superior na Gaveta da Equipe nas Caixas do PC e Botão CANCEL:**
    - Ao abrir a gaveta da equipe nas caixas do PC, o topo da gaveta sofre um corte horizontal reto e seco contra o papel de parede laranja do PC.
    - **Causa Raiz Microscópica:** O tilemap da gaveta tem 176px de altura (`12x22` tiles), sem moldura de teto nativa. No GBA original (160px), a gaveta saía pelo topo da tela física (`Y = 0`) encostando na carcaça de plástico. No 3DS, como a sub-tela de 240x160 é renderizada no centro da tela de 320x240 com repetição do papel de parede ao redor, o corte ocorre exatamente no limite de `Y = 0` do GBA (`Y = 40` do 3DS). Além disso, o botão de saída exibe `CANCEL` em inglês (`pokemon_storage/menu.png`).
