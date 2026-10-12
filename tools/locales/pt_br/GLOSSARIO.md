@@ -176,7 +176,7 @@ Os nomes dos POKéMON não se traduzem.
 | Grunt | CAPANGA | |
 | Bird Pokémon | POKéMON PÁSSARO | |
 | Super Repel | SUPER REPELENTE | REPELENTE SUP no nome do item |
-| Contest Hall / Master Rank | SALÃO DE CONCURSOS / NÍVEL MESTRE | concursos: CONCURSO DE ESTILO, BELEZA, FOFURA, ESPERTEZA, FORÇA |
+| Contest Hall / Master Rank | SALÃO DE CONCURSOS / NÍVEL MESTRE (no título do resultado, NÍVEL NORMAL, SUPER, HIPER, MESTRE e ESPERT. para SMART) | concursos: CONCURSO DE ESTILO, BELEZA, FOFURA, ESPERTEZA, FORÇA |
 | Department Store | LOJA DE DEPARTAMENTOS | andares: T, 1º, 2º… como no Brasil |
 | Move Deleter | APAGADOR DE GOLPES | |
 | Berry Blender | LIQUIDIFICADOR DE FRUTAS | |

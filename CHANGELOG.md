@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Portuguese: the contest results' title, NÍVEL NORMAL / SUPER / HIPER /
+  MESTRE and ESTILO, BELEZA, FOFURA, ESPERT., FORÇA, in a tall narrow font
+  drawn for the project after the original's. The ranks share RANK's
+  tiles, which become NÍVEL; their tilemaps put those first.
 - Portuguese: the title logo reads VERSÃO ESMERALDA, VERSÃO centred over a
   wide ESMERALDA. It is drawn for this project (3ds_icons_ptbr.c, DrawLogo)
   in the palette of the player's logo, with its outline, straight;

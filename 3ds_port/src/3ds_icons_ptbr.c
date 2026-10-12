@@ -909,6 +909,137 @@ static void DrawLogo(unsigned char *data)
             data[((x / 64) * 32 + (y / 8) * 8 + (x % 64) / 8) * 64 + (y % 8) * 8 + x % 8] = img[y][x];
 }
 
+/*
+ * The contest results' title (graphics/contest/results_screen/tiles.4bpp,
+ * 16 tiles to a row): the rank and the category, each 40x16, in a tall
+ * narrow font of 2-pixel strokes that no font of the game matches, drawn
+ * here: ink 1, its shadow 9 to the right and below, on 8. The four ranks
+ * share the tiles of RANK, after the rank's own: those become NÍVEL and the
+ * rank tilemaps put them first (TransformContestRankTilemap). 'i' stands
+ * for Í and 'c' for Ç.
+ */
+static const struct
+{
+    char ch;
+    const char *rows[11];
+} sTitleGlyphs[] = {
+    {'A', {".###.", "##.##", "##.##", "##.##", "##.##", "#####", "#####", "##.##", "##.##", "##.##", "##.##"}},
+    {'B', {"####.", "##.##", "##.##", "##.##", "####.", "####.", "##.##", "##.##", "##.##", "##.##", "####."}},
+    {'C', {".####", "##...", "##...", "##...", "##...", "##...", "##...", "##...", "##...", "##...", ".####"}},
+    {'E', {"#####", "##...", "##...", "##...", "####.", "####.", "##...", "##...", "##...", "##...", "#####"}},
+    {'F', {"#####", "##...", "##...", "##...", "####.", "####.", "##...", "##...", "##...", "##...", "##..."}},
+    {'H', {"##.##", "##.##", "##.##", "##.##", "##.##", "#####", "#####", "##.##", "##.##", "##.##", "##.##"}},
+    {'I', {"##", "##", "##", "##", "##", "##", "##", "##", "##", "##", "##"}},
+    {'L', {"##..", "##..", "##..", "##..", "##..", "##..", "##..", "##..", "##..", "##..", "####"}},
+    {'M', {"##...##", "###.###", "#######", "##.#.##", "##.#.##", "##.#.##", "##...##", "##...##", "##...##", "##...##", "##...##"}},
+    {'N', {"##..##", "###.##", "###.##", "######", "######", "##.###", "##.###", "##..##", "##..##", "##..##", "##..##"}},
+    {'O', {".###.", "##.##", "##.##", "##.##", "##.##", "##.##", "##.##", "##.##", "##.##", "##.##", ".###."}},
+    {'P', {"####.", "##.##", "##.##", "##.##", "##.##", "####.", "##...", "##...", "##...", "##...", "##..."}},
+    {'R', {"####.", "##.##", "##.##", "##.##", "####.", "####.", "##.##", "##.##", "##.##", "##.##", "##.##"}},
+    {'S', {".####", "##...", "##...", "##...", ".###.", "...##", "...##", "...##", "...##", "...##", "####."}},
+    {'T', {"######", "..##..", "..##..", "..##..", "..##..", "..##..", "..##..", "..##..", "..##..", "..##..", "..##.."}},
+    {'U', {"##.##", "##.##", "##.##", "##.##", "##.##", "##.##", "##.##", "##.##", "##.##", "##.##", ".###."}},
+    {'V', {"##.##", "##.##", "##.##", "##.##", "##.##", "##.##", "##.##", "##.##", ".###.", ".###.", "..#.."}},
+    {'Z', {"#####", "...##", "...##", "..##.", "..##.", ".##..", ".##..", "##...", "##...", "##...", "#####"}},
+    {'.', {"..", "..", "..", "..", "..", "..", "..", "..", "..", "##", "##"}},
+};
+
+static const char *TitleGlyph(char ch, int row, int *width)
+{
+    char base = ch == 'i' ? 'I' : ch == 'c' ? 'C' : ch;
+    unsigned i;
+
+    for (i = 0; i < sizeof(sTitleGlyphs) / sizeof(sTitleGlyphs[0]); i++)
+        if (sTitleGlyphs[i].ch == base)
+        {
+            *width = (int)strlen(sTitleGlyphs[i].rows[0]);
+            return sTitleGlyphs[i].rows[row];
+        }
+    *width = 0;
+    return NULL;
+}
+
+static void DrawContestTitle(unsigned char *tiles, int x0, int y0, const char *text)
+{
+    unsigned char ink[16][40];
+    int width = -1, x, y, w;
+    const char *p;
+
+    for (p = text; *p; p++)
+    {
+        TitleGlyph(*p, 0, &w);
+        width += w + 1;
+    }
+    memset(ink, 0, sizeof(ink));
+    x = (40 - width) / 2;
+    for (p = text; *p; p++)
+    {
+        int r, c;
+        for (r = 0; r < 11; r++)
+        {
+            const char *row = TitleGlyph(*p, r, &w);
+            for (c = 0; row != NULL && c < w; c++)
+                if (row[c] == '#' && x + c >= 0 && x + c < 40)
+                    ink[r + 2][x + c] = 1;
+        }
+        if (*p == 'i') /* the acute, two rows above */
+        {
+            if (x + 2 < 40) ink[0][x + 2] = 1;
+            if (x + 1 < 40) ink[1][x + 1] = 1;
+        }
+        if (*p == 'c' && x + 2 < 40) /* the cedilla, below */
+            ink[13][x + 2] = 1;
+        x += w + 1;
+    }
+    for (y = 0; y < 16; y++)
+        for (x = 0; x < 40; x++)
+            SetSheetPixel(tiles, x0 + x, y0 + y, ink[y][x] ? 0x1 : 0x8);
+    for (y = 0; y < 16; y++)
+        for (x = 0; x < 40; x++)
+        {
+            int dx, dy;
+            if (!ink[y][x])
+                continue;
+            for (dy = 0; dy <= 1; dy++)
+                for (dx = 0; dx <= 1; dx++)
+                    if ((dx || dy) && x + dx < 40 && y + dy < 16 && SheetPixel(tiles, x0 + x + dx, y0 + y + dy) == 0x8)
+                        SetSheetPixel(tiles, x0 + x + dx, y0 + y + dy, 0x9);
+        }
+}
+
+static const struct
+{
+    unsigned char x, y;
+    const char *text;
+} sContestTitles[] = {
+    {88, 48, "NiVEL"},  /* RANK, tiles 107-111 */
+    {0, 16, "NORMAL"},  /* tiles 32-36 */
+    {40, 16, "SUPER"},  /* 37-41 */
+    {80, 16, "HIPER"},  /* 42-46 */
+    {80, 0, "MESTRE"},  /* 10-14 */
+    {0, 96, "ESTILO"},  /* COOL, 192-196 */
+    {40, 96, "BELEZA"}, /* 197-201 */
+    {80, 96, "FOFURA"}, /* 202-206 */
+    {0, 112, "ESPERT."}, /* SMART, 224-228 */
+    {40, 112, "FORcA"}, /* TOUGH, 229-233 */
+};
+
+/* A rank's title tilemap, 10x2: its own five tiles, then RANK's. */
+static void TransformContestRankTilemap(unsigned char *map)
+{
+    int r, c;
+
+    for (r = 0; r < 2; r++)
+        for (c = 0; c < 5; c++)
+        {
+            unsigned char *a = map + (r * 10 + c) * 2, *b = map + (r * 10 + c + 5) * 2, t0 = a[0], t1 = a[1];
+            a[0] = b[0];
+            a[1] = b[1];
+            b[0] = t0;
+            b[1] = t1;
+        }
+}
+
 static int EndsWith(const char *path, const char *suffix)
 {
     size_t n = strlen(path), m = strlen(suffix);
@@ -938,6 +1069,17 @@ void Port_TransformAsset(const char *path, unsigned char *data, unsigned size)
     else if (EndsWith(path, "title_screen/emerald_version.8bpp") && size >= LOGO_W * LOGO_H)
     {
         DrawLogo(data);
+    }
+    else if (EndsWith(path, "contest/results_screen/tiles.4bpp") && size >= 256 * 32)
+    {
+        for (i = 0; i < sizeof(sContestTitles) / sizeof(sContestTitles[0]); i++)
+            DrawContestTitle(data, sContestTitles[i].x, sContestTitles[i].y, sContestTitles[i].text);
+    }
+    else if ((EndsWith(path, "results_screen/title_normal.bin") || EndsWith(path, "results_screen/title_super.bin")
+           || EndsWith(path, "results_screen/title_hyper.bin") || EndsWith(path, "results_screen/title_master.bin"))
+          && size >= 10 * 2 * 2)
+    {
+        TransformContestRankTilemap(data);
     }
     else if (EndsWith(path, "pokedex/menu.4bpp") && size >= 128 * 128 / 2)
     {

@@ -96,7 +96,7 @@ A tabela de caracteres da Gen 3 não tem `ã`, `õ`, `Ã` nem `Õ`.
       livres `2F`–`32`.
 - [x] O port desenha os glifos ao carregar as fontes (`3ds_compat.c`), a
       partir dos da ROM. Nada do gráfico é distribuído.
-- [ ] Teclado de nomes: decidir se `ã`/`õ` entram no teclado.
+- [x] Teclado de nomes: sem `ã`/`õ` por enquanto (decidido em 12/10).
 - [x] ã e õ conferidos no 3DS (08/10: "acentuação e til normais"), no lugar
       da captura no emulador.
 
@@ -243,8 +243,10 @@ Ordem sugerida, do que o jogador vê mais para o que vê menos:
       `0049`: títulos e ícones do resumo, ícones de condição e de concurso,
       APERTE START, POKéDEX (abas, menu START, busca, lista) e POKéNAV
       (opções, cabeçalhos, legenda do mapa, SAIR). Em teste pelo usuário.
-- [ ] Os títulos dos concursos no 3DS (o espanhol precisou do patch
-      `0032`).
+- [x] Títulos dos concursos (resultado): NÍVEL NORMAL / SUPER / HIPER /
+      MESTRE e as categorias, numa fonte alta desenhada como a original
+      (12/10). Sem o patch `0032`: os textos cabem nos 40 px de cada parte.
+      Conferir no 3DS com a lista acima.
 - [ ] POKéDEX: na tela que registra um POKéMON novo, o texto aparece
       cortado (10/10). Conferir na versão original em inglês antes de
       investigar.
@@ -272,8 +274,8 @@ Ordem sugerida, do que o jogador vê mais para o que vê menos:
       SECRETAS (textos de `src/strings.c` e de `data/text`, 09/10). Falta
       conferir no 3DS os títulos dos concursos (o espanhol precisou do patch
       `0032`).
-- [ ] "THE END" no fim dos créditos: decidir se fica em inglês, como os
-      créditos. O logo e os menus foram feitos.
+- [x] "THE END" no fim dos créditos: fica em inglês, como os créditos
+      (decidido em 12/10).
 - [x] Ícones de tipo em PT: o port (não o builder) redesenha o nome sobre o
       ícone original, com uma fonte própria (`3ds_icons_ptbr.c`): BOLSA,
       janela de golpes, resumo e tela de baixo.
