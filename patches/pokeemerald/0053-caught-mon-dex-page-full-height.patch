@@ -1,0 +1,28 @@
+Pokémon Emerald 3Ds Dual Screen changes: full height caught mon dex page (disable 112px bottom clip)
+Applies after 0052-move-backgrounds-widescreen.patch; apply with tools/bootstrap.py.
+
+diff --git a/src/pokedex.c b/src/pokedex.c
+--- a/src/pokedex.c
++++ b/src/pokedex.c
+@@ -4042,6 +4042,10 @@ u8 DisplayCaughtMonDexPage(u16 dexNum, u32 otId, u32 personality)
+ {
+     u8 taskId = CreateTask(Task_DisplayCaughtMonDexPage, 0);
+ 
++#ifdef PLATFORM_3DS
++    void CtrVideo_SetCaughtMonDexPage(bool active);
++    CtrVideo_SetCaughtMonDexPage(TRUE);
++#endif
+     gTasks[taskId].tState = 0;
+     gTasks[taskId].tDexNum = dexNum;
+     gTasks[taskId].tOtIdLo = otId;
+@@ -4169,6 +4173,10 @@ static void Task_ExitCaughtMonPage(u8 taskId)
+         paletteNum = gSprites[gTasks[taskId].tMonSpriteId].oam.paletteNum;
+         lzPaletteData = GetMonSpritePalFromSpeciesAndPersonality(species, otId, personality);
+         LoadCompressedPalette(lzPaletteData, OBJ_PLTT_ID(paletteNum), PLTT_SIZE_4BPP);
++#ifdef PLATFORM_3DS
++        void CtrVideo_SetCaughtMonDexPage(bool active);
++        CtrVideo_SetCaughtMonDexPage(FALSE);
++#endif
+         DestroyTask(taskId);
+     }
+ }

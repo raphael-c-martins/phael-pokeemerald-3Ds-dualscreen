@@ -28,10 +28,8 @@ the graphics with words (type and status icons, summary titles, POKéDEX and POK
 [translation roadmap](docs/ROADMAP-PTBR.md). Translation: Carlos Mozart
 (AllGenWiki). Original 3DS port: Daniel Cazalla.
 
-Known issues in the Portuguese build:
+Known issues:
 
-- **POKéDEX:** on the screen that registers a new POKéMON, the text
-  appears cut.
 - From the original port: moves with full-screen animations (SURF) cover
   only the GBA's 240 pixels, and the POKéMON CENTER's healing animation is
   out of place.

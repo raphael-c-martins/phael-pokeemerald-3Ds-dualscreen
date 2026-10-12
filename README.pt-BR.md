@@ -40,7 +40,6 @@ O save é o mesmo do jogo em inglês.
 
 ## Problemas conhecidos
 
-- **POKéDEX:** na tela que registra um POKéMON novo, o texto aparece cortado.
 - Do port original, não da tradução: golpes com animação na tela toda (SURF)
   só cobrem os 240 px do GBA, e a animação da cura no CENTRO POKéMON aparece
   fora do lugar.

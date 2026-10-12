@@ -41,6 +41,8 @@
 #define SetVBlankCallback CtrCentredParty_SetVBlankCallback
 #elif defined(CTR_CENTRED_SHOP)
 #define SetVBlankCallback CtrCentredShop_SetVBlankCallback
+#elif defined(CTR_CENTRED_EASY_CHAT)
+#define SetVBlankCallback CtrCentredEasyChat_SetVBlankCallback
 #else
 #define SetVBlankCallback CtrCentred_SetVBlankCallback
 #endif

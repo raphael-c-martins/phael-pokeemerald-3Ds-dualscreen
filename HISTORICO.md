@@ -484,4 +484,43 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 
 > **Diretiva de Operação:** Nenhuma compilação ou nova branch será disparada até que o usuário conclua todos os testes em andamento no console e emulador. Todos os pontos foram consolidados em `docs/FEEDBACKS_E_MELHORIAS.md`.
 
+---
+
+## 🚀 12/10/2026 - Milestone v11: Sincronização Upstream/Parceiro, Widescreen Integral e Localização de Gráficos
+
+### 1. Resumo da Entrega v11
+- **Branch de Trabalho:** `tentativa11` (rastreando `origin/tentativa11`).
+- **Binário Gerado:** `dist_3ds/emerald3ds_v11.3dsx` (33.631.992 bytes) e cópia direta `dist_3ds/emerald3ds.3dsx`.
+- **Compatibilidade:** Build compilado via MSYS2 / devkitARM com Engine ABI `a719bfc9` sobre 6.436 arquivos de dados e 0 erros.
+
+### 2. Sincronização dos Repositórios
+- **Upstream (`ZallaxDev/pokeemerald-3Ds-dualscreen`):** Incorporadas as melhorias da branch `dev`:
+  - Correção de áudio do grito do Pokémon saindo da Pokébola em fast-forward 2x/4x (`3ds_sound.c`).
+  - Preenchimento widescreen para os fundos de ataques em batalha em BG3 (`0052-move-backgrounds-widescreen.patch`).
+- **Parceiro (`carlosmozart/pokeemerald-3Ds-dualscreen-br`):**
+  - Manutenção e refinamento das condicionais `#if CTR_LANG_PT_BR` para garantir isolamento do código em português.
+
+### 3. Soluções e Correções Implementadas (Itens A até M)
+1. **Menus do Mart, PC e Caixas Multichoice (Item C):**
+   - Removido o corte fixo de `splitX = 104, splitY = 48` em `DrawTextSpanAt` e `DrawFieldBgTex` (`3ds_video.c`). Agora, as opções de menus no canto superior esquerdo não são mais partidas ao meio, mantendo alinhamento perfeito com os diálogos.
+2. **Transições de Batalha de Treinadores (Item I):**
+   - Refatorada a rotina `TransitionPicture` em `3ds_video.c` para projetar a cortina a 400px contínuos (`scaleX = CTR_GAME_WIDTH / (240.0f * SCENE_ZOOM)`), eliminando as barras pretas de 20px e o fatiamento visual contra NPCs, May, Líderes e Elite dos Quatro.
+3. **Pokédex Pós-Captura (Item J):**
+   - Criado e aplicado o patch `0053-caught-mon-dex-page-full-height.patch` em `src/pokedex.c` integrado com `CtrVideo_SetCaughtMonDexPage(bool)` no motor 3DS. O corte de arena de 112px é suspenso durante a exibição da Pokédex, permitindo ler todas as 4 linhas da descrição do Pokémon capturado sem cortes no rodapé.
+4. **Formatação da Naming Screen (Item K):**
+   - Criado e aplicado o patch `0054-naming-screen-portuguese-word-order.patch` em `src/naming_screen.c`, implementando `StringExpandPlaceholders` com `gStringVar1` para formatar a pergunta no padrão em português: `"Apelido de %s?"`.
+5. **Easy Chat / Perfil Centralizado (Item L):**
+   - Registrada a tela `CTR_CENTRED_EASY_CHAT` na tabela `sCentredFills` em `3ds_video.c` com `.layers = 1u << 3, .wrap = true`. O editor de perfil e frases agora é exibido centralizado com expansão do papel de parede superior em 400x240, sem ficar confinado no canto superior esquerdo.
+6. **Wally Tutorial Widescreen e Base do Zigzagoon (Item M):**
+   - A rotina `DrawBattleText` em `3ds_video.c` agora estende os caps laterais da moldura até as extremidades (0 a 400px), cobrindo a tela inteira sem barras pretas laterais.
+   - Atualizado o patch `0051-widescreen-battle-healthbox-coords.patch` em `src/battle_interface.c` para posicionar a healthbox do Zigzagoon do Wally em `x = 180, y = 96`, e a do adversário em `x = 16, y = 12`, eliminando a sobreposição gráfica.
+7. **Localização de Botões e Elementos Gráficos:**
+   - Criado o módulo `tools/localize_graphics_ptbr.py` integrado ao pipeline de build:
+     - `graphics/shop/money.png`: texto `MONEY` substituído por `SALDO`.
+     - `graphics/trainer_card/tiles.png`: títulos substituídos por `CARTÃO TREINADOR` e `INSÍGNIAS`.
+     - `graphics/pokemon_storage/menu.png`: botão `CLOSE BOX` substituído por `FECHAR`, e botão da gaveta `CANCEL` substituído por `VOLTAR`.
+     - `graphics/naming_screen/`: botões localizados (`BACK` -> `VOLTAR`, `lower` -> `MINUS.`, `UPPER` -> `MAIUS.`, `others` -> `OUTROS`).
+   - Todos os arquivos `.4bpp` e `.4bpp.lz` foram compilados via `gbagfx` e indexados no RomFS (`asset_map.txt`).
+
+
 

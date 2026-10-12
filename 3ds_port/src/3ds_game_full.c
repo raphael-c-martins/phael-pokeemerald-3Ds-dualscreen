@@ -291,6 +291,11 @@ void CtrCentredShop_SetVBlankCallback(IntrCallback callback)
     SetCentredCallback(callback, CTR_CENTRED_SHOP);
 }
 
+void CtrCentredEasyChat_SetVBlankCallback(IntrCallback callback)
+{
+    SetCentredCallback(callback, CTR_CENTRED_EASY_CHAT);
+}
+
 /* The bag from the field goes left of the column, from anywhere else over the
  * whole bottom screen. */
 void CtrCentredBag_SetVBlankCallback(IntrCallback callback)

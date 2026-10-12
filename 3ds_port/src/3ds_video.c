@@ -1233,8 +1233,6 @@ static void DrawTextSpanAt(unsigned bg, int left, int right, int top, int bottom
                 if (mirrorX2 >= 0) { dx = mirrorX2 - px - 8; flipX = !flipX; }
                 if (mirrorY2 >= 0) { dy = mirrorY2 - py - 8; flipY = !flipY; }
                 float shift = sLayerShift;
-                if (bg == 0 && !sFieldBanner && px < 104 && py < 48)
-                    shift = 0.0f;
                 DrawSlot(slot, dx + sSpanShiftX + CTR_VIEW_X + shift, dy + sSpanShiftY + CTR_VIEW_Y,
                          flipX, flipY);
             }
@@ -1801,8 +1799,11 @@ static void DrawBattleText(unsigned bg)
     {
         /* No Wally Tutorial, o menu de ação e seleção (LUTA, BOLSA...) fica no BG0
          * na tela superior pois a tela touch fica inativa.
-         * Desenhamos o BG0 inteiro centralizado na tela de 400px (offset de 80px),
-         * preservando perfeitamente a mensagem e os botões sem divisão esticada. */
+         * Desenhamos a caixa centralizada em 400px (offset de 80px),
+         * e estendemos as pontas esquerda e direita para cobrir a tela widescreen
+         * completa (0 a 400px), eliminando totalmente as barras pretas laterais. */
+        DrawBattleCut(bg, 0, 80, BATTLE_BAND_TOP, 160, 0);
+        DrawBattleCut(bg, 160, 240, BATTLE_BAND_TOP, 160, CTR_GAME_WIDTH - 240);
         DrawBattleCut(bg, 0, 240, 0, 160, (CTR_GAME_WIDTH - 240) / 2);
         return;
     }
@@ -2066,7 +2067,16 @@ static const CentredFill sCentredFills[CTR_CENTRED_SCREENS] =
     [CTR_CENTRED_POKEDEX] = {.backmost = true},
     [CTR_CENTRED_PARTY] = {.section = true},
     [CTR_CENTRED_PARTY_WHOLE] = {.section = true},
+    /* Easy Chat / Trainer Profile with repeating wallpaper. */
+    [CTR_CENTRED_EASY_CHAT] = {.layers = 1u << 3, .wrap = true},
 };
+
+static bool sCaughtMonDexPage;
+
+void CtrVideo_SetCaughtMonDexPage(bool active)
+{
+    sCaughtMonDexPage = active;
+}
 
 int CtrPokenavList_Bg(void);
 /* pokedex.c: the tile of a layer the Pokédex's screen on show carries out to
@@ -2882,48 +2892,6 @@ static bool DrawFieldBgTex(unsigned bg)
     sx = Reg(0x10 + bg * 4) & 511;
     sy = Reg(0x12 + bg * 4) & 511;
     ViewBase();
-    if (bg == 0 && !sFieldBanner && sFieldUi && sLayerShift > 0.0f)
-    {
-        int splitX = 104;
-        int splitY = 48;
-
-        // 1. Região da plaquinha de cidade/rota (canto superior esquerdo sem shift horizontal)
-        if (x0 < splitX && y0 < splitY)
-        {
-            int rx1 = x1 < splitX ? x1 : splitX;
-            int ry1 = y1 < splitY ? y1 : splitY;
-            const Tex3DS_SubTexture run = {(u16)(rx1 - x0), (u16)(ry1 - y0),
-                (sx + x0) / width, 1.0f - (sy + y0) / height,
-                (sx + rx1) / width, 1.0f - (sy + ry1) / height};
-            ++sStats.tiles;
-            C2D_DrawImageAt((C2D_Image){&layer->tex, &run}, x0 + CTR_VIEW_X,
-                            y0 + CTR_VIEW_Y, 0, &sTint, 1, 1);
-        }
-        // 2. Região superior direita (menus à direita se abertos no topo)
-        if (x1 > splitX && y0 < splitY)
-        {
-            int rx0 = x0 > splitX ? x0 : splitX;
-            int ry1 = y1 < splitY ? y1 : splitY;
-            const Tex3DS_SubTexture run = {(u16)(x1 - rx0), (u16)(ry1 - y0),
-                (sx + rx0) / width, 1.0f - (sy + y0) / height,
-                (sx + x1) / width, 1.0f - (sy + ry1) / height};
-            ++sStats.tiles;
-            C2D_DrawImageAt((C2D_Image){&layer->tex, &run}, rx0 + CTR_VIEW_X + sLayerShift,
-                            y0 + CTR_VIEW_Y, 0, &sTint, 1, 1);
-        }
-        // 3. Região inferior (diálogos e caixas de texto mantêm sLayerShift para centralização)
-        if (y1 > splitY)
-        {
-            int ry0 = y0 > splitY ? y0 : splitY;
-            const Tex3DS_SubTexture run = {(u16)(x1 - x0), (u16)(y1 - ry0),
-                (sx + x0) / width, 1.0f - (sy + ry0) / height,
-                (sx + x1) / width, 1.0f - (sy + y1) / height};
-            ++sStats.tiles;
-            C2D_DrawImageAt((C2D_Image){&layer->tex, &run}, x0 + CTR_VIEW_X + sLayerShift,
-                            ry0 + CTR_VIEW_Y, 0, &sTint, 1, 1);
-        }
-        return true;
-    }
     {
         const Tex3DS_SubTexture run = {(u16)(x1 - x0), (u16)(y1 - y0),
             (sx + x0) / width, 1.0f - (sy + y0) / height,
@@ -5036,7 +5004,8 @@ static void BattleSceneCompose(int margin, unsigned exclude)
      * top row (DrawBattleBg), so it is filled from the surface's own top tile
      * rows, repeated, rather than doubling the surface for a dozen lines.
      */
-    int left = VIEW_LEFT - margin, top = VIEW_TOP, lowest = 112 - (int)(SCENE_H / SCENE_ZOOM);
+    int battleBottom = sCaughtMonDexPage ? 160 : 112;
+    int left = VIEW_LEFT - margin, top = VIEW_TOP, lowest = battleBottom - (int)(SCENE_H / SCENE_ZOOM);
     float ox, oy;
 
     if (top < lowest) top = lowest;
@@ -5044,7 +5013,8 @@ static void BattleSceneCompose(int margin, unsigned exclude)
     oy = top * zoom + offY;
     float scale = zoom / SCENE_ZOOM;
     int width = (int)ceilf((CTR_GAME_WIDTH + margin * zoom - ox) / scale);
-    int height = (int)ceilf((CTR_GAME_HEIGHT - 48 - oy) / scale);
+    int bottomPx = sCaughtMonDexPage ? CTR_GAME_HEIGHT : (CTR_GAME_HEIGHT - 48);
+    int height = (int)ceilf((bottomPx - oy) / scale);
 
     if (width > SCENE_W) width = SCENE_W;
     if (height > SCENE_H) height = SCENE_H;
@@ -5663,7 +5633,7 @@ static bool BattleSprites(unsigned *furthest, bool *apart)
     unsigned display = Reg(0), control = Reg(0x50);
     bool alpha = ((control >> 6) & 3) == 1 && (control & 16);
     int reach = (int)ceilf(BATTLE_SPRITE_DEPTH / sShiftZoom) + 1;
-    int top = (int)lroundf((sScenePut.oy - sOffY) / sZoom), bottom = 112;
+    int top = (int)lroundf((sScenePut.oy - sOffY) / sZoom), bottom = sCaughtMonDexPage ? 160 : 112;
     int left = VIEW_LEFT - reach, right = VIEW_RIGHT + reach;
 
     sSlotCount = 0;
@@ -7349,15 +7319,10 @@ static void TransitionPicture(void)
             const Tex3DS_SubTexture part = {(u16)(240 * SCENE_ZOOM), (u16)(bottom - top),
                 left, v0, right, v1};
             const C2D_ImageTint *t = band.bright > 0.0f ? &tint : NULL;
+            float scaleX = (float)CTR_GAME_WIDTH / (240.0f * SCENE_ZOOM);
+            float scaleY = scale;
 
-            C2D_DrawImageAt((C2D_Image){&sSceneTex, &part}, TRANSITION_X, y, 0, t, scale, scale);
-            /* As margens laterais de 20px recebem preenchimento sólido limpo da cor da transição
-             * (acompanhando o flash branco se ativo ou preto sólido), eliminando o glitch de faixas borradas. */
-            uint32_t edgeColor = (band.bright > 0.0f && band.white)
-                ? C2D_Color32(255, 255, 255, (uint8_t)(band.bright * 255.0f))
-                : C2D_Color32(0, 0, 0, 255);
-            C2D_DrawRectSolid(0, y, 0, TRANSITION_X, (next - g) * TRANSITION_ZOOM, edgeColor);
-            C2D_DrawRectSolid(CTR_GAME_WIDTH - TRANSITION_X, y, 0, TRANSITION_X, (next - g) * TRANSITION_ZOOM, edgeColor);
+            C2D_DrawImageAt((C2D_Image){&sSceneTex, &part}, 0, y, 0, t, scaleX, scaleY);
         }
     }
     C2D_Flush();

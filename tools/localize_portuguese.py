@@ -459,6 +459,8 @@ def main() -> int:
     words, groups = easy_chat_order.word_texts(tree)
     easy_chat_order.reorder_groups(groups)
     easy_chat_order.reorder_letters(tree, words)
+    import localize_graphics_ptbr
+    localize_graphics_ptbr.main(tree)
     (tree / ".emerald3ds-locale").write_text(MARKER + "\n")
     print("localize_portuguese: %d texts staged from %d files"
           % (sum(r.applied for r in results), len(results)))

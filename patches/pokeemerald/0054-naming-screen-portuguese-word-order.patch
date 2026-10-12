@@ -1,0 +1,20 @@
+Pokémon Emerald 3Ds Dual Screen changes: Portuguese word order and placeholder expansion in naming screen
+Applies after 0053-caught-mon-dex-page-full-height.patch; apply with tools/bootstrap.py.
+
+diff --git a/src/naming_screen.c b/src/naming_screen.c
+--- a/src/naming_screen.c
++++ b/src/naming_screen.c
+@@ -1719,8 +1719,13 @@ static void DrawMonTextEntryBox(void)
+ {
+     u8 buffer[32];
+ 
++#if CTR_LANG_PT_BR
++    StringCopy(gStringVar1, gSpeciesNames[sNamingScreen->monSpecies]);
++    StringExpandPlaceholders(buffer, sNamingScreen->template->title);
++#else
+     StringCopy(buffer, gSpeciesNames[sNamingScreen->monSpecies]);
+     StringAppendN(buffer, sNamingScreen->template->title, 15);
++#endif
+     FillWindowPixelBuffer(sNamingScreen->windows[WIN_TEXT_ENTRY_BOX], PIXEL_FILL(1));
+     AddTextPrinterParameterized(sNamingScreen->windows[WIN_TEXT_ENTRY_BOX], FONT_NORMAL, buffer, 8, 1, 0, 0);
+     PutWindowTilemap(sNamingScreen->windows[WIN_TEXT_ENTRY_BOX]);

@@ -285,9 +285,24 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
 
 ---
 
-## 📌 Status Atual de Desenvolvimento
-- [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas do PC, Gaveta da Equipe, Transições de Batalha, Tela de Captura da Pokédex, Tela de Apelido, Tela de Perfil/Easy Chat e Batalha Tutorial do Wally).
-- [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.
+## 📌 Status Atual de Desenvolvimento (Milestone v11)
+- [x] **Feedbacks e imagens anotados e catalogados.**
+- [x] **Diagnósticos e Soluções Concluídos e Compilados na Milestone v11:**
+  - [x] **Item A:** Posição da Healthbox do oponente ajustada para o alto e à esquerda (`x = 16, y = 12`).
+  - [x] **Item C:** Menus do canto superior esquerdo (Mart, PC, Multichoice, itens guardados e caixas) íntegros e sem corte.
+  - [x] **Item D (Sprite):** Etiqueta `MONEY` localizada para `SALDO`.
+  - [x] **Item F:** Cabeçalho do Cartão de Treinador (`CARTÃO TREINADOR`) e faixa de insígnias (`INSÍGNIAS`) traduzidos em gráficos nativos.
+  - [x] **Item G & H (Botões):** Botão `CLOSE BOX` localizado para `FECHAR`, e botão `CANCEL` da gaveta localizado para `VOLTAR`.
+  - [x] **Item I:** Transições de treinadores em widescreen 400px contínuos sem fatiamento ou pilares pretos prematuros.
+  - [x] **Item J:** Pokédex pós-captura exibindo altura integral de 160px (leitura completa das 4 linhas da descrição).
+  - [x] **Item K:** Naming Screen com ordenação gramatical em português (`"Apelido de %s?"`) e botões gráficos traduzidos (`VOLTAR`, `MINUS.`, `MAIUS.`, `OUTROS`).
+  - [x] **Item L:** Easy Chat / Perfil centralizado com papel de parede estendido em 400x240 (sem cortes no topo esquerdo).
+  - [x] **Item M:** Wally Tutorial com caixa de diálogo contínua em 400px widescreen e healthbox do Zigzagoon desobstruída.
+- [ ] **Backlog para Ciclos Futuros (v12+ - Ergonomia e Escala Touch Screen):**
+  - [ ] **Item B:** Escala ampliada da Bolsa em batalha para preenchimento ergonômico da tela touch (320x240).
+  - [ ] **Item D (Layout):** Ampliação da área de compra da loja na tela touch (320x240).
+  - [ ] **Item E:** Ampliação vertical dos slots da equipe Pokémon na tela touch (320x240).
+  - [ ] **Item G & H (Layout):** Ampliação das caixas de Pokémon do PC para 320x240 na tela touch.
+
 
 

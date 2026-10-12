@@ -140,9 +140,12 @@ enum
      * and of the people in it (shop.c): the top screen keeps the world.
      */
     CTR_CENTRED_SHOP,
+    /* Easy Chat / Trainer Profile screen centred on the top screen with wrapped backdrop. */
+    CTR_CENTRED_EASY_CHAT,
     CTR_CENTRED_SCREENS
 };
 void CtrVideo_SetCentred(unsigned screen);
+void CtrVideo_SetCaughtMonDexPage(bool active);
 /*
  * The window edges an HBlank DMA writes line by line (the PokéNav's glow
  * behind its chosen option, its condition graph): values holds WIN0H for each
