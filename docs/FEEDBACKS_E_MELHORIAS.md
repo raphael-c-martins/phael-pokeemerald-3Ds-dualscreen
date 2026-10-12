@@ -81,7 +81,20 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
 
 ---
 
+### 🐾 Item E: Área Reduzida no Menu da Equipe de Pokémon (Party Menu no Touch Screen)
+- **Cenário Atual (v10):**
+  - Ao abrir a aba "POKÉMON" na tela inferior touch (`media_1791822000000.png`), a interface da equipe fica alinhada à esquerda da coluna de botões, ocupando estritamente **160 pixels de altura** (proporção GBA) no centro da tela de **240 pixels de altura**.
+  - Isso gera 40 pixels de faixa verde vazia no topo e 40 pixels no rodapé, fazendo com que as caixas dos slots dos Pokémon (Torchic e os 5 slots vazios) fiquem estreitas e compactas, deixando muito espaço ocioso vertical.
+- **Diagnóstico da Causa Raiz:**
+  - Em `3ds_bottom_ui.c` (linhas 6677 a 6680), a interface da equipe é posicionada com offset vertical fixo `oy = (H - 160) / 2 = 40px`.
+  - Como a tela inferior do 3DS tem 240px de altura (50% a mais que os 160px do GBA), desenhar o layout original 1:1 desperdiça 80px de altura útil que poderiam deixar os slots maiores, mais espaçados e muito mais fáceis de tocar com os dedos ou com a Stylus.
+- **Plano de Solução Arquitetônica:**
+  - Incluir o Party Menu (`MODE_PARTY_MENU`) no plano de modernização ergonômica das sub-telas do GBA na tela inferior (junto da Bolsa e do Menu da Loja).
+  - Ajustar o estiramento/escala vertical ou layout expandido dos slots e remapear o handler de toque `CtrMenu_PostTap` para responder com total precisão nas novas posições ampliadas.
+
+---
+
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menu do Poké Mart e Loja Touch).
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menu do Poké Mart, Loja Touch e Equipe de Pokémon).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.

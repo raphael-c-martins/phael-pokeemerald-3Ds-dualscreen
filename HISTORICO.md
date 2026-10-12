@@ -451,5 +451,7 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
    - **Causa Raiz Identificada:** O corte arbitrário de `splitY = 48` em `3ds_video.c` (feito para a plaquinha de rotas) cortou o menu do Mart (que tem 56px de altura) jogando tudo com `y >= 48` 80px para o lado.
 4. **Área Reduzida no Menu de Compras da Loja (Poké Mart) e Sprite MONEY:**
    - A tela de compras (`CTR_CENTRED_SHOP`) também fica restrita a 240x160 centralizada na tela inferior touch de 320x240, além do sprite de saldo exibir `MONEY` em inglês.
+5. **Área Reduzida no Menu da Equipe de Pokémon (Party Menu):**
+   - O menu da equipe na tela inferior (`MODE_PARTY_MENU`) fica confinado a 160px de altura (com 40px vazios no topo e 40px no fundo), deixando os slots estreitos e com espaço útil subaproveitado no touchscreen.
 
 > **Diretiva de Operação:** Nenhuma compilação ou nova branch será disparada até que o usuário conclua todos os testes em andamento no console e emulador. Todos os pontos foram consolidados em `docs/FEEDBACKS_E_MELHORIAS.md`.
