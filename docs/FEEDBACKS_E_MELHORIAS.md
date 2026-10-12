@@ -52,21 +52,28 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
 
 ---
 
-### 🏪 Item C: Quebra no Menu da Vendinha (Poké Mart)
+### 🏪 Item C: Quebra em Menus do Canto Superior Esquerdo (Poké Mart, PC de Pokémon e Diálogos Multichoice)
 - **Cenário Atual (v10):**
-  - Ao interagir com o atendente do Poké Mart em qualquer cidade (`media_1791818973379.png`), a janela de opções (`COMPRAR`, `VENDER`, `SAIR`) aparece graficamente partida ao meio:
-    - O topo da janela (`COMPRAR`, `VENDER` e a metade de cima da palavra `SAIR`) fica encostado na esquerda.
-    - A metade inferior da palavra `SAIR` (e a borda direita da janela) aparece deslocada 80 pixels para a direita, como um bloco flutuante duplicado/cortado.
+  - **Poké Mart (`media_1791818973379.png`):** Ao interagir com o atendente, o menu de opções (`COMPRAR`, `VENDER`, `SAIR`) é cortado na horizontal e vertical: o topo fica em `x = 0` e o comando `SAIR` salta 80 pixels para a direita.
+  - **Menu do PC (`media_1791824000000.png`):** Ao acessar o PC no Centro Pokémon ou na Casa do Jogador, o menu com `PC DE ALGUÉM`, `PC de Phael`, `DESLIGAR` sofre exatamente a mesma deformação: as opções superiores ficam encostadas na esquerda e `DESLIGAR` é jogado 80 pixels para o lado, cortado ao meio.
+- **Mapeamento Preventivo Completo das Telas Afetadas:**
+  Como observado pelo usuário, **todos os menus e escolhas que abrem no canto superior esquerdo do campo usam o mesmo sistema de janelas do GBA (`tilemapLeft = 2, tilemapTop = 1` no `BG0`)**:
+  1. 💻 **Menu do PC:** Todas as opções de caixas, armazenamento de itens e desligar.
+  2. 🏪 **Menu do Poké Mart:** Comprar, Vender, Sair.
+  3. 🏢 **Menu de Elevadores (ex.: Loja de Departamentos de Lilycove):** Seleção de andares (1º, 2º, 3º, 4º, 5º, Cobertura, Sair).
+  4. 🚠 **Menu do Teleférico (Mt. Chimney):** Escolha de subida/descida.
+  5. ⛵ **Menu de Balsa / Barco do Mr. Briney:** Destinos de viagem (Dewford, Slateport).
+  6. 🎰 **Menu do Cassino / Game Corner:** Troca de fichas e prêmios.
+  7. ❓ **Menus de Perguntas e Quizzes:** Casa dos Desafios (Trick House), entrevistas da TV e NPCs de charadas.
+  8. ⚔️ **Battle Frontier (Recepção das 7 Facilidades):** Seleção de categorias (Single, Double, Multi, Aluguel, etc.).
 - **Diagnóstico da Causa Raiz (RCA Cirúrgico):**
-  - Em `3ds_port/src/3ds_video.c` (função `DrawFieldBgTex`, linhas 2885 a 2925), o compositor gráfico divide a camada `BG0` do overworld widescreen usando limites fixos:
-    - `splitX = 104` e `splitY = 48`.
-    - O objetivo original era deixar a plaquinha de cidade/rota (que fica no canto superior esquerdo até `x < 104, y < 48`) sem o shift horizontal de centralização (`sLayerShift = 80px`).
-    - No entanto, a janela do Poké Mart é criada em `src/shop.c` com `tilemapLeft = 2, tilemapTop = 1` e altura de 6 tiles (48px de altura, atingindo `y = 56px`):
-      - As linhas com `y < 48` são desenhadas sem o shift (`+ 0px`).
-      - As linhas com `y >= 48` (onde fica a palavra `SAIR`) caem na regra 3 (`y1 > splitY`), que aplica `+ sLayerShift` (+80px).
-    - Essa divisão arbitrária corta a janela ao meio e joga a parte inferior 80 pixels para o lado!
-- **Plano de Solução Arquitetônica:**
-  - Em vez de uma divisão geométrica ingênua por coordenadas fixas (`splitX = 104, splitY = 48`), o compositor de UI do campo deve identificar se há janelas de menu/diálogo ativas (`gTasks`, `sMartInfo` ou tipo de janela) ou aplicar o deslocamento consistente (`sLayerShift`) a toda a janela de diálogo/menu do Poké Mart para que ela seja renderizada inteira e unificada, ou elevar `splitY` adequadamente quando em ambientes fechados (interiores de prédios/lojas onde a plaquinha de rota nunca existe).
+  - Em `3ds_port/src/3ds_video.c` (linhas 1234 a 1238 e linhas 2885 a 2925), existe uma divisão estática baseada em coordenadas:
+    - Qualquer tile com `px < 104 && py < 48` recebe deslocamento `shift = 0.0f` (esquerda).
+    - Qualquer tile com `px >= 104 || py >= 48` recebe deslocamento `shift = sLayerShift = 80.0f` (centralizado widescreen).
+  - Essa divisão foi feita com a intenção de manter a **plaquinha de nome de rota/cidade** no canto esquerdo, mas como todos os menus do campo também usam a camada `BG0`, qualquer menu com 3 ou mais opções (altura > 48px) é literalmente rasgado ao meio pela linha invisível de `py = 48`!
+- **Plano de Solução Arquitetônica Definitiva:**
+  - Desativar a regra de corte de `px < 104 && py < 48` quando qualquer menu ou diálogo do jogo estiver ativo (`sFieldUi` centraliza o `BG0` de forma unificada).
+  - Ou aplicar o shift horizontal somente se a tarefa ativa for estritamente a plaquinha de rota (`FuncIsActiveTask(Task_MapNamePopUpWindow)`), garantindo que todos os menus, diálogos, PC, Mart e caixas multichoice do jogo permaneçam 100% íntegros, sólidos e alinhados com suas respectivas caixas de texto.
 
 ---
 

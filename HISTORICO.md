@@ -447,9 +447,9 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
    - **Sugestão do Usuário:** Criar uma opção na aba **MELHORIAS** (tela inferior) para chavear/calibrar as posições das Healthboxes dinamicamente.
 2. **Área da Mochila em Batalha:**
    - A tela da bolsa em batalha ocupa apenas 240x160 centralizada na tela de 320x240, deixando espaço ocioso considerável ao redor. Estudar ampliação/escala com ajuste de touch.
-3. **Quebra no Menu da Vendinha (Poké Mart):**
-   - Ao interagir com o vendedor, a janela com `COMPRAR`, `VENDER`, `SAIR` aparece partida ao meio: a metade superior encostada à esquerda e a metade inferior (`SAIR`) deslocada 80px para a direita.
-   - **Causa Raiz Identificada:** O corte arbitrário de `splitY = 48` em `3ds_video.c` (feito para a plaquinha de rotas) cortou o menu do Mart (que tem 56px de altura) jogando tudo com `y >= 48` 80px para o lado.
+3. **Quebra em Menus do Canto Superior Esquerdo (Poké Mart, PC e Caixas Multichoice):**
+   - Ao interagir com o vendedor do Mart ou acessar o PC (`PC DE ALGUÉM`, `PC de Phael`, `DESLIGAR`), as opções são partidas ao meio: o topo fica encostado à esquerda e a parte inferior (`SAIR`/`DESLIGAR`) é deslocada 80px para o lado.
+   - **Causa Raiz Geral Identificada:** O corte fixo de `px < 104 && py < 48` em `3ds_video.c` (criado para a plaquinha de rotas) atinge todos os menus do campo que usam a camada `BG0`. O plano de correção desativa esse corte durante menus/diálogos ativos para manter todos os menus íntegros e perfeitamente alinhados com suas caixas de texto.
 4. **Área Reduzida no Menu de Compras da Loja (Poké Mart) e Sprite MONEY:**
    - A tela de compras (`CTR_CENTRED_SHOP`) também fica restrita a 240x160 centralizada na tela inferior touch de 320x240, além do sprite de saldo exibir `MONEY` em inglês.
 5. **Área Reduzida no Menu da Equipe de Pokémon (Party Menu):**
