@@ -163,9 +163,25 @@ Este documento registra detalhadamente todos os apontamentos, impressões de tes
   - Desenhar/estender uma borda ou moldura de acabamento no topo da gaveta ou estender sua renderização vertical até o teto da tela touch (`Y = 0` do 3DS), garantindo um acabamento estético natural e polido.
   - Localizar o botão `CANCEL` em `graphics/pokemon_storage/menu.png` para **`VOLTAR`** ou **`CANCELAR`**.
 
+### ⚔️ Item I: Transição de Batalha contra Treinadores (Efeito de Pokébolas e Fatiamento de Tela)
+- **Cenário Atual (v10):**
+  - Ao entrar em batalha contra um **treinador** (não ocorre em batalhas com Pokémon selvagens):
+    - A tela de transição exibe Pokébolas cruzando a tela acompanhadas de grandes blocos/faixas pretas horizontais que cortam o cenário do mapa de forma desconexa (efeito de "fatias soltas" ou "tabuleiro quebrado"), revelando o mapa por trás antes da hora.
+- **Diagnóstico Técnico da Causa Raiz:**
+  - **Especificidade do Treinador:** Em encontros selvagens, o jogo utiliza efeitos de distorção de onda e esmaecimento radial/blur (que cobrem a tela uniformemente). Já nas batalhas contra treinadores, o Emerald seleciona transições geométricas como `B_TRANSITION_POKEBALLS_TRAIL` (`src/battle_transition.c`).
+  - **Mapeamento de Resolução GBA (240x160) vs. Widescreen 3DS (400x240):**
+    - Em `battle_transition.c` (`SpriteCB_FldEffPokeballTrail`), as 5 Pokébolas se movem horizontalmente e escrevem blocos pretos no mapa de `BG0` (`SET_TILE(ptr, posY, posX, 1)`), preenchendo 4 tiles de altura atrás de si até cobrir toda a largura de 240 pixels do GBA.
+    - No 3DS widescreen, o Overworld (`TransitionField` em `3ds_video.c`) é desenhado em **400x240** pixels, enquanto a transição (`TransitionPicture`) é renderizada a 1.5x ocupando apenas **360x240** pixels no centro (de `X = 20` até `X = 380`).
+    - Além disso, o preenchimento fixo das margens de 20px com retângulos pretos sólidos (`C2D_DrawRectSolid` em `3ds_video.c:7359`) desenha pilares pretos nas bordas laterais antes que as Pokébolas cheguem a elas.
+    - Como o rastro preto das Pokébolas foi dimensionado para uma tela 4:3 de 240px, no widescreen ele cria um recorte parcial no meio da tela, deixando as extremidades do cenário visíveis e gerando o efeito de fatias pretas estraçalhadas.
+- **Plano de Solução Arquitetônica:**
+  1. **Ajuste Dinâmico das Margens Laterais:** Não forçar preenchimento preto sólido nas bordas de 20px durante transições com cortina progressiva até que a varredura atinja as extremidades.
+  2. **Widescreen da Cortina de Pokébolas:** Estender o rastro do `BG0` e o trajeto das Pokébolas para varrer a largura real de 400 pixels do 3DS (ou cobrir a largura total do canvas de cena `sSceneTex`), fazendo com que as cortinas pretas fechem a tela inteira sem deixar "buracos" de Overworld nas laterais.
+  3. **Fallback Elegante:** Se a transição baseada em tiles for geometricamente incompatível com os 400px, suavizar a transição com um fade/wipe integral para manter a transição fluida e sem cortes aparentes.
+
 ---
 
 ## 📌 Status Atual de Desenvolvimento
 - [x] Feedbacks e imagens anotados e catalogados.
-- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas de Armazenamento e Gaveta do PC).
+- [x] Diagnóstico técnico preliminar concluído (Healthboxes, Mochila em Batalha, Menus do Campo/PC/Mart, Loja Touch, Equipe de Pokémon, Cartão de Treinador, Caixas do PC, Gaveta da Equipe e Transições de Batalha).
 - [ ] **Aguardando término da bateria de testes do usuário** para consolidar todos os novos requisitos antes de abrir uma nova branch de compilação.

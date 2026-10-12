@@ -462,5 +462,8 @@ A telemetria do `port.log` e a análise do crash dump (`crash_dump_00000005.dmp`
 8. **Corte Superior na Gaveta da Equipe nas Caixas do PC e Botão CANCEL:**
    - Ao abrir a gaveta da equipe nas caixas do PC, o topo da gaveta sofre um corte horizontal reto e seco contra o papel de parede laranja do PC.
    - **Causa Raiz Microscópica:** O tilemap da gaveta tem 176px de altura (`12x22` tiles), sem moldura de teto nativa. No GBA original (160px), a gaveta saía pelo topo da tela física (`Y = 0`) encostando na carcaça de plástico. No 3DS, como a sub-tela de 240x160 é renderizada no centro da tela de 320x240 com repetição do papel de parede ao redor, o corte ocorre exatamente no limite de `Y = 0` do GBA (`Y = 40` do 3DS). Além disso, o botão de saída exibe `CANCEL` em inglês (`pokemon_storage/menu.png`).
+9. **Transição de Batalha contra Treinadores (Efeito de Pokébolas e Fatiamento de Tela):**
+   - Ao entrar em batalha contra treinadores, o jogo usa a transição `POKEBALLS_TRAIL` (onde Pokébolas cruzam a tela deixando rastros pretos).
+   - **Causa Raiz Técnica:** As Pokébolas preenchem o rastro preto no `BG0` baseado em 240px de largura do GBA, enquanto o Overworld no 3DS é desenhado em widescreen 400x240. Isso gera um corte parcial da cortina preta no meio da tela (deixando buracos de mapa nas laterais) e faixas pretas sólidas fixas nas margens de 20px antes da hora. Solução: sincronizar a varredura das Pokébolas para cobrir a largura total de 400px ou aplicar fade limpo.
 
 > **Diretiva de Operação:** Nenhuma compilação ou nova branch será disparada até que o usuário conclua todos os testes em andamento no console e emulador. Todos os pontos foram consolidados em `docs/FEEDBACKS_E_MELHORIAS.md`.
